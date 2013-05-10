@@ -1,0 +1,9 @@
+<component name="CopyrightManager">
+  <copyright>
+    <option name="notice" value="Copyright (c) &amp;#36;today.year Daniel Asarnow&#10;&#10;Permission is hereby  granted, free of charge, to any  person obtaining a copy&#10;of this software and associated  documentation files (the &quot;Software&quot;), to deal&#10;in the Software without restriction, subject to the following conditions:&#10;&#10;The above copyright notice and this permission notice shall be included in all&#10;copies or substantial portions of the Software.&#10;&#10;The software is provided &quot;as is&quot;, without warranty of any kind." />
+    <option name="keyword" value="Copyright" />
+    <option name="allowReplaceKeyword" value="Daniel Asarnow" />
+    <option name="myName" value="permissive" />
+    <option name="myLocal" value="true" />
+  </copyright>
+</component>
