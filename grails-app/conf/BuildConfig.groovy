@@ -46,7 +46,7 @@ grails.project.dependency.resolution = {
 //        runtime ':hibernate-spatial:1.1.1'
 //        runtime ':hibernate-spatial-mysql:1.1.1'
 
-        compile ':opencsv:2.3'
+//        compile 'net.sf:opencsv:2.3'
 
     }
 
