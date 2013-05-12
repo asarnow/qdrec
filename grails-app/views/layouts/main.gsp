@@ -12,12 +12,26 @@
 		<link rel="shortcut icon" href="${resource(dir: 'images', file: 'favicon.ico')}" type="image/x-icon">
 		<link rel="stylesheet" href="${resource(dir: 'css', file: 'main.css')}" type="text/css">
     <g:javascript library="jquery" />
-		<g:layoutHead/>
-		<r:layoutResources />
+    <r:layoutResources />
+    <g:layoutHead/>
 	</head>
 	<body>
+    <div id="title">
+      <a class="logout" href="${createLink(controller: 'logout')}">Logout</a>
+      <h1>Phenome Trainer</h1>
+      <div class="nav">
+        <ul>
+          <li>
+            <a href="${createLink(controller: 'train', action: 'index')}">Trainer</a>
+            <a href="${createLink(controller: 'page', action: 'help')}">Instructions</a>
+          </li>
+        </ul>
+      </div>
+    </div>
 
-		<g:javascript library="application"/>
+		<g:layoutBody/>
+		<div class="footer" role="contentinfo"></div>
+		%{--<g:javascript library="application"/>--}%
 		<r:layoutResources />
 	</body>
 </html>

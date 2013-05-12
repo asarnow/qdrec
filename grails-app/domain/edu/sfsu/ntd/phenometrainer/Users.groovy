@@ -5,7 +5,7 @@ class Users {
 	transient springSecurityService
 
   static hasMany = [trainedParasites: ParasiteTrainState]
-  static hasOne = [lastImage: Image]
+//  static hasOne = [lastImage: Image]
 
 	String username
 	String password
@@ -14,6 +14,7 @@ class Users {
 	boolean accountExpired
 	boolean accountLocked
 	boolean passwordExpired
+  Image lastImage
 
 	static constraints = {
 		username blank: false, unique: true

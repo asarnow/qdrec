@@ -95,7 +95,7 @@ grails.plugins.springsecurity.userLookup.userDomainClassName = 'edu.sfsu.ntd.phe
 grails.plugins.springsecurity.userLookup.authorityJoinClassName = 'edu.sfsu.ntd.phenometrainer.UserRole'
 grails.plugins.springsecurity.authority.className = 'edu.sfsu.ntd.phenometrainer.Role'
 /* Added by the Hibernate Spatial Plugin. */
-grails.gorm.default.mapping = {
+/*grails.gorm.default.mapping = {
    'user-type'(type:org.hibernatespatial.GeometryUserType, class:com.vividsolutions.jts.geom.Geometry)
    'user-type'(type:org.hibernatespatial.GeometryUserType, class:com.vividsolutions.jts.geom.GeometryCollection)
    'user-type'(type:org.hibernatespatial.GeometryUserType, class:com.vividsolutions.jts.geom.LineString)
@@ -108,4 +108,4 @@ grails.gorm.default.mapping = {
    'user-type'(type:org.hibernatespatial.GeometryUserType, class:com.vividsolutions.jts.geom.Puntal)
    'user-type'(type:org.hibernatespatial.GeometryUserType, class:com.vividsolutions.jts.geom.Lineal)
    'user-type'(type:org.hibernatespatial.GeometryUserType, class:com.vividsolutions.jts.geom.Polygonal)
-}
+}*/

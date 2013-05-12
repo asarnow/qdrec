@@ -1,16 +1,19 @@
-import edu.sfsu.ntd.phenometrainer.Role
-import edu.sfsu.ntd.phenometrainer.UserRole
+import edu.sfsu.ntd.phenometrainer.Image
 import edu.sfsu.ntd.phenometrainer.Users
 
 class BootStrap {
 
-    def init = { servletContext ->
-      def userRole = new Role(authority: 'ROLE_USER').save(flush: true)
+    def bootStrapService
 
-      def user = new Users(username:'schisto', enabled: true, password: 'schisto', dateCreated: new Date())
-      user.save(failOnError: true)
-      UserRole.create user, userRole, true
+    def init = { servletContext ->
+//      bootStrapService.initCompound()
+//      bootStrapService.initImage()
+//      bootStrapService.initUsers()
+//      bootStrapService.initParasite()
+
+      Users.findById(1).lastImage = Image.findById(1)
     }
+
     def destroy = {
     }
 }

@@ -1,24 +1,23 @@
 package edu.sfsu.ntd.phenometrainer
 
-import com.vividsolutions.jts.geom.Polygon
-import org.hibernatespatial.GeometryUserType
-
 class Parasite {
 
   static hasMany = [trainStates: ParasiteTrainState]
-
-  Image image
+  static belongsTo = [image: Image]
+//  Image image
   Integer region
-  Polygon boundingBox
-
+//  Polygon boundingBox
+  Integer x,y,width,height
+  byte[] boundingBox
 
 
     static constraints = {
+      boundingBox nullable: true
     }
 
-    static mapping = {
+/*    static mapping = {
       columns {
         boundingBox type: GeometryUserType, sqlType: "Geometry"
       }
-    }
+    }*/
 }

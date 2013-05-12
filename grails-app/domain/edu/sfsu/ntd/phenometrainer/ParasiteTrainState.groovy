@@ -2,7 +2,10 @@ package edu.sfsu.ntd.phenometrainer
 
 class ParasiteTrainState {
 
-  static hasOne = [parasite: Parasite, trainState: TrainState, trainer: Users]
+//  static hasOne = [trainState: TrainState]
+  static belongsTo = [parasite: Parasite, trainer: Users]
+
+  TrainState trainState
 
   static constraints = {
   }

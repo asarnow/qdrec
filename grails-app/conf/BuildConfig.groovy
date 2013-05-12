@@ -1,7 +1,8 @@
 grails.servlet.version = "2.5" // Change depending on target container compliance (2.5 or 3.0)
-grails.project.class.dir = "target/classes"
-grails.project.test.class.dir = "target/test-classes"
-grails.project.test.reports.dir = "target/test-reports"
+//grails.project.class.dir = "target/classes"
+//grails.project.test.class.dir = "target/test-classes"
+//grails.project.test.reports.dir = "target/test-reports"
+grails.project.work.dir = "target"
 grails.project.target.level = 1.6
 grails.project.source.level = 1.6
 //grails.project.war.file = "target/${appName}-${appVersion}.war"
@@ -34,7 +35,7 @@ grails.project.dependency.resolution = {
         // uncomment these (or add new ones) to enable remote dependency resolution from public Maven repositories
         //mavenRepo "http://snapshots.repository.codehaus.org"
         //mavenRepo "http://repository.codehaus.org"
-        //mavenRepo "http://download.java.net/maven/2/"
+        mavenRepo "http://download.java.net/maven/2/"
         //mavenRepo "http://repository.jboss.com/maven2/"
     }
 
@@ -45,12 +46,17 @@ grails.project.dependency.resolution = {
 //        runtime ':hibernate-spatial:1.1.1'
 //        runtime ':hibernate-spatial-mysql:1.1.1'
 
+        compile ':opencsv:2.3'
+
     }
 
     plugins {
         runtime ":hibernate:$grailsVersion"
         runtime ":jquery:1.8.3"
         runtime ":resources:1.1.6"
+
+        compile ":jquery-ui:1.8.24"
+        compile ":spring-security-core:1.2.7.3"
 
         // Uncomment these (or add new ones) to enable additional resources capabilities
         //runtime ":zipped-resources:1.0"
