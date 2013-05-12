@@ -15,7 +15,7 @@ class TrainController {
       def numTrained = user.trainedParasites.size()
 
       def image = user.lastImage
-//      def image = Image.findById(1)
+
       def control = image.control
 
       session["parasites"] = [:]
@@ -72,7 +72,7 @@ class TrainController {
     }
 
 
-    user.lastImage = Image.findById(user.lastImage.id+1)
+    user.lastImage = Image.findById( (user.lastImage.id+1)>118 ? 1 : user.lastImage.id+1 )
     user.save(flush: true)
 
     session["parasites"] = null
