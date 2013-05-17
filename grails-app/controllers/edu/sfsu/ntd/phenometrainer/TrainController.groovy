@@ -107,4 +107,10 @@ class TrainController {
     response.outputStream << image
     response.outputStream.flush(image)
   }
+
+  def userTrainStates() {
+    List<String> csvLines = trainService.findAllUserTrainStates(params.userId)
+    // Format is image.id, image.name, para.id, para.region, trainState
+    render csvLines.join("\n")
+  }
 }

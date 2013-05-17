@@ -88,4 +88,22 @@ class TrainService {
       return parasite
     }
 
+    def findAllUserTrainStates(userId) {
+
+      def images = Image.findAll()
+
+      def user = Users.findById(Integer.valueOf(userId))
+
+      def lines = []
+
+      images.each { i ->
+        i.parasites.each { Parasite p ->
+          def pts = ParasiteTrainState.findByParasiteAndTrainer(p,user)
+          lines.add(i.id.toString() + "," + i.name.toUpperCase() + "," +
+                  p.id.toString() + "," + p.region.toString() + "," + pts.trainState.toString())
+        }
+      }
+      return lines
+    }
+
 }
