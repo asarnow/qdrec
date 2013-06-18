@@ -99,7 +99,7 @@ class TrainService {
       images.each { i ->
         i.parasites.each { Parasite p ->
           def pts = ParasiteTrainState.findByParasiteAndTrainer(p,user)
-          lines.add(i.id.toString() + "," + i.name.toUpperCase() + "," +
+          lines.add(i.id.toString() + "," + i.name.toUpperCase() + "," + i.control.id.toString() + "," +
                   p.id.toString() + "," + p.region.toString() + "," + pts.trainState.toString())
         }
       }
