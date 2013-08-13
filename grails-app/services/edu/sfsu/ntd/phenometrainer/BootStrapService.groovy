@@ -151,7 +151,9 @@ class BootStrapService {
     new Compound(name:"metitepine", alias: "methiopin#e4").save(flush: true)                                    
     new Compound(name:"promazine", alias: "a5").save(flush: true)
     new Compound(name:"triflupromazine", alias: "b8").save(flush: true)
-
+    new Compound(name:"ibandronate", alias: "iban").save(flush: true)
+    new Compound(name:"niclosamide", alias: "nic").save(flush: true)
+    new Compound(name:"sorafenib", alias: "sor").save(flush: true)
     
   }
 
