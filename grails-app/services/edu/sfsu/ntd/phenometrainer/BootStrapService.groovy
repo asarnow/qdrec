@@ -14,14 +14,20 @@ class BootStrapService {
     UserRole.create user, userRole, true
   }
 
+  def initDataset(String description) {
+    Dataset dataset = new Dataset()
+    dataset.description = description
+    dataset.save(flush: true)
+    return dataset
+  }
 
-  def initImage() {
-    String datadir = "/home/da/Documents/Segmentation/Schisto/Data/imagedb_4conor";
-
+  def initImage(String datadir, Dataset dataset) {
     CSVReader reader = new CSVReader(new FileReader(datadir + File.separator + "imagedb.csv"))
     List<String[]> lines = reader.readAll()
     for (String[] line : lines) {
       Image image = new Image()
+
+      image.dataset = dataset
 
       if (line[1].equals("control")) {
         image.cdId = 0

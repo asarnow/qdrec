@@ -4,6 +4,7 @@ class Image {
 
   static hasMany = [parasites: Parasite]
   static hasOne = [imageData: ImageData]
+  static belongsTo = [dataset: Dataset]
 
   String name
   Date date

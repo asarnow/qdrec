@@ -1,3 +1,4 @@
+import edu.sfsu.ntd.phenometrainer.Dataset
 import edu.sfsu.ntd.phenometrainer.Image
 import edu.sfsu.ntd.phenometrainer.Users
 
@@ -6,10 +7,19 @@ class BootStrap {
     def bootStrapService
 
     def init = { servletContext ->
-//      bootStrapService.initCompound()
-//      bootStrapService.initImage()
-//      bootStrapService.initUsers()
-//      bootStrapService.initParasite()
+      bootStrapService.initCompound()
+
+      Dataset dataset = bootStrapService.initDataset("118 statin images (Brian)")
+      bootStrapService.initImage("/home/da/Documents/Segmentation/Schisto/Data/imagedb_4conor",dataset)
+
+      dataset = bootStrapService.initDataset("438 statin images (Lili)")
+      bootStrapService.initImage("/home/da/Documents/Segmentation/Schisto/Data/imagedb_lili",dataset)
+
+      dataset = bootStrapService.initDataset("210 statin images (Lili)")
+      bootStrapService.initImage("/home/da/Documents/Segmentation/Schisto/Data/imagedb_lilinew",dataset)
+
+      bootStrapService.initUsers()
+      bootStrapService.initParasite()
 
       Users.findById(1).lastImage = Image.findById(1)
     }

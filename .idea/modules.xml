@@ -3,7 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/PhenomeTrainer.iml" filepath="$PROJECT_DIR$/PhenomeTrainer.iml" />
-      <module fileurl="file://$PROJECT_DIR$/PhenomeTrainer-grailsPlugins.iml" filepath="$PROJECT_DIR$/PhenomeTrainer-grailsPlugins.iml" />
     </modules>
   </component>
 </project>
