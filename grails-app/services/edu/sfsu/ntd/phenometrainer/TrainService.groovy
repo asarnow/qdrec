@@ -88,4 +88,33 @@ class TrainService {
       return parasite
     }
 
+    def determineLastImageForDataset(Dataset dataset) {
+      def user = (Users)springSecurityService.getCurrentUser()
+      def currentID = 0
+      def trainStates = ParasiteTrainState.findAllByTrainer(user)
+      for (ParasiteTrainState pts : trainStates) {
+        if ((pts.parasite.image.dataset == dataset) && (pts.id > currentID)) {
+          currentID = pts.id
+        }
+      }
+      if (currentID==0) {
+        return Image.findByDataset(dataset)
+      } else {
+        return ParasiteTrainState.get(currentID).parasite.image
+      }
+    }
+
+    def saveCurrentImageState(parasites) {
+      def user = (Users)springSecurityService.getCurrentUser()
+      parasites.each { k,v ->
+        def parasite = Parasite.findById(v.id)
+        def parasiteTrainState = ParasiteTrainState.findByTrainerAndParasite(user,parasite)
+        if (parasiteTrainState==null) parasiteTrainState = new ParasiteTrainState()
+        parasiteTrainState.parasite = parasite
+        parasiteTrainState.trainState = v.trainState
+        parasiteTrainState.trainer = user
+        parasiteTrainState.save(flush: true)
+      }
+    }
+
 }
