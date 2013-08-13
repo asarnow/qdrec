@@ -12,11 +12,22 @@ class TrainController {
     def index() {
       def user = (Users)springSecurityService.getCurrentUser()
 
-      def numTrained = user.trainedParasites.size()
+//      def numTrained = user.trainedParasites.size()
 
       def image = user.lastImage
 
       def control = image.control
+
+      session["dataset"] = image.dataset
+
+      session["images"] = Image.findAllByDataset(session["dataset"], [sort:'id', order:'asc'])
+      def idx = session["images"].indexOf(image)
+
+      if (idx==-1) {
+        // image not in dataset (unreachable)
+        response.status = 500
+        return
+      }
 
       session["parasites"] = [:]
       image.parasites.each {it -> session["parasites"][it.id] = trainService.dom2web(it)}
@@ -24,12 +35,14 @@ class TrainController {
       def parasites = []
       session["parasites"].each {k,v -> parasites.add(v) }
 
-      render( view: 'index', model: [ imageID: image.id,
+      render( view: 'index', model: [ dataset: session["dataset"],
+                                      datasetSize: session["images"].size(),
+                                      imageIdx: idx,
+                                      imageID: image.id,
                                       imageName: image.name,
                                       controlID: control.id,
                                       controlName: control.name,
-                                      parasites: parasites as JSON,
-                                      numTrained: numTrained ] )
+                                      parasites: parasites as JSON ] )
     }
 
   def imageParasites() {
@@ -58,46 +71,49 @@ class TrainController {
     render parasites as JSON
   }
 
-  def nextImage() {
+  def switchDataset() {
+    trainService.saveCurrentImageState(session["parasites"])
     def user = (Users)springSecurityService.getCurrentUser()
-
-    session["parasites"].each { k,v ->
-      def parasite = Parasite.findById(v.id)
-      def parasiteTrainState = ParasiteTrainState.findByTrainerAndParasite(user,parasite)
-      if (parasiteTrainState==null) parasiteTrainState = new ParasiteTrainState()
-      parasiteTrainState.parasite = parasite
-      parasiteTrainState.trainState = v.trainState
-      parasiteTrainState.trainer = user
-      parasiteTrainState.save(flush: true)
-    }
-
-
-    user.lastImage = Image.findById( (user.lastImage.id+1)>118 ? 1 : user.lastImage.id+1 )
+    def dataset = Dataset.get(Integer.valueOf(params.datasetID))
+    user.lastImage = trainService.determineLastImageForDataset(dataset)
     user.save(flush: true)
+    redirect(action: 'index')
+  }
 
-    session["parasites"] = null
-
-    redirect( action: 'index' )
+  def nextImage() {
+    trainService.saveCurrentImageState(session["parasites"])
+    def idx = Integer.valueOf(params.imageIdx)
+    idx = idx==session["images"].size()-1 ? 0 : idx+1
+    forward(action: 'selectImage', params: [imageIdx: idx])
   }
 
   def prevImage() {
+    trainService.saveCurrentImageState(session["parasites"])
+    def idx = Integer.valueOf(params.imageIdx)
+    idx = idx==0 ? session["images"].size()-1 : idx-1
+    forward(action: 'selectImage', params: [imageIdx: idx])
+  }
+
+  def selectImage() {
+    def idx = Integer.valueOf(params.imageIdx)
+    Image image = session["images"][idx]
     def user = (Users)springSecurityService.getCurrentUser()
-    session["parasites"].each { k,v ->
-      def parasite = Parasite.findById(v.id)
-      def parasiteTrainState = ParasiteTrainState.findByTrainerAndParasite(user,parasite)
-      if (parasiteTrainState==null) parasiteTrainState = new ParasiteTrainState()
-      parasiteTrainState.parasite = parasite
-      parasiteTrainState.trainState = v.trainState
-      parasiteTrainState.trainer = user
-      parasiteTrainState.save(flush: true)
-    }
-
-    user.lastImage = Image.findById(Math.max(user.lastImage.id-1,1))
-    user.save(flush:true)
-
+    user.lastImage = image
+    user.save(flush: true)
     session["parasites"] = null
+    session["parasites"] = [:]
+    image.parasites.each {it -> session["parasites"][it.id] = trainService.dom2web(it)}
 
-    redirect( action: 'index' )
+    def parasites = []
+    session["parasites"].each {k,v -> parasites.add(v) }
+
+    render(template: 'trainUI', model: [imageIdx: idx,
+                                        datasetSize: session["images"].size(),
+                                        imageID: image.id,
+                                        imageName: image.name,
+                                        controlID: image.control.id,
+                                        controlName: image.control.name,
+                                        parasites: parasites])
   }
 
   def image() {
