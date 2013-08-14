@@ -6,6 +6,7 @@ import edu.sfsu.ntd.phenometrainer.Dataset
  */
 
 def bootStrapService = ctx.bootStrapService
+def sessionFactory = ctx.sessionFactory
 
 bootStrapService.initCompound()
 
@@ -17,6 +18,9 @@ bootStrapService.initImage("/home/da/Documents/Segmentation/Schisto/Data/imagedb
 
 dataset = bootStrapService.initDataset("210 statin images (Lili)")
 bootStrapService.initImage("/home/da/Documents/Segmentation/Schisto/Data/imagedb/lili210",dataset)
+
+bootStrapService.assocControls()
+sessionFactory.getCurrentSession().flush()
 
 bootStrapService.initUsers()
 bootStrapService.initParasite()
