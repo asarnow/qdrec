@@ -92,16 +92,21 @@ class BootStrapService {
 
   def assocControls() {
     for (Image image : Image.findAll()) {
-      def query = Image.where {
-        (dataset==image.dataset && cdId==0 && day==image.day && series==image.series && date==image.date)
-      }
-      def control = query.find()
+      def control = null
+      try {
+        def query = Image.where {
+          (dataset==image.dataset && cdId==0 && day==image.day && series==image.series && date==image.date)
+        }
+        control = query.find()
 
-      if (control == null) {
-        def query2 = Image.where {
-                (dataset==image.dataset && cdId==0 && day==image.day && date==image.date)
-              }
-        control = query2.find();
+        if (control == null) {
+          def query2 = Image.where {
+                  (dataset==image.dataset && cdId==0 && day==image.day && date==image.date)
+                }
+          control = query2.findAll()[0];
+        }
+      } catch (Exception e) {
+        log.error("Couldn't associate control for " + image.name,e)
       }
 
       image.control = control
