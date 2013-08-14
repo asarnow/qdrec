@@ -1,6 +1,7 @@
 package edu.sfsu.ntd.phenometrainer
 import au.com.bytecode.opencsv.CSVReader
 import groovy.sql.Sql
+import org.codehaus.groovy.grails.plugins.DomainClassGrailsPlugin
 
 class BootStrapService {
 
@@ -24,7 +25,8 @@ class BootStrapService {
   def initImage(String datadir, Dataset dataset) {
     CSVReader reader = new CSVReader(new FileReader(datadir + File.separator + "imagedb.csv"))
     List<String[]> lines = reader.readAll()
-    for (String[] line : lines) {
+    for (int i=0; i<lines.size(); i++) {
+      String[] line = lines[i]
       Image image = new Image()
 
       image.dataset = dataset
@@ -68,27 +70,36 @@ class BootStrapService {
         parasites.add(parasite)
       }
       image.parasites = parasites
-      image.save()
+      image.save(flush: true)
+
+      // Memory leak workaround
+      if (i!=lines.size()-1) {
+//        def hibSession = sessionFactory.getCurrentSession()
+//        assert hibSession != null
+//        hibSession.flush()
+        DomainClassGrailsPlugin.PROPERTY_INSTANCE_MAP.get().clear()
+      }
+      log.info "Inserted " + datadir + File.separator + line[0] + ".png"
     }
     reader.close()
-    assocControls()
-
+    log.info "Finished inserting images"
+//    assocControls()
     def hibSession = sessionFactory.getCurrentSession()
     assert hibSession != null
     hibSession.flush()
-
+//    log.info "Associated images with controls"
   }
 
   def assocControls() {
     for (Image image : Image.findAll()) {
       def query = Image.where {
-        (cdId==0 && day==image.day && series==image.series && date==image.date)
+        (dataset==image.dataset && cdId==0 && day==image.day && series==image.series && date==image.date)
       }
       def control = query.find()
 
       if (control == null) {
         def query2 = Image.where {
-                (cdId==0 && day==image.day && date==image.date)
+                (dataset==image.dataset && cdId==0 && day==image.day && date==image.date)
               }
         control = query2.find();
       }
