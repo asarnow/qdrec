@@ -58,6 +58,7 @@ Thumbs.db
 # Project specific locations
 trunk/web/web-app/images/thumbnail/*
 out
+target/*
 out/*
 trunk/web/target
 trunk/web/target/*
