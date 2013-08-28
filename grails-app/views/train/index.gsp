@@ -17,7 +17,7 @@
   <div id="main">
     <div>
       <g:form>
-        <g:select name="datasetID" from="${Dataset.findAll()}" optionValue="description" optionKey="id" value="${dataset.id}"/>
+        <g:select name="datasetID" from="${datasets}" optionValue="description" optionKey="id" value="${datasetID}"/>
         <g:actionSubmit value="Switch" action="switchDataset" />
       </g:form>
     </div>
