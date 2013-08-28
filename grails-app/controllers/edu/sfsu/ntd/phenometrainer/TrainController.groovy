@@ -20,8 +20,8 @@ class TrainController {
 
       session["dataset"] = image.dataset
 
-      session["images"] = Image.findAllByDataset(session["dataset"], [sort:'id', order:'asc'])
-      def idx = session["images"].indexOf(image)
+
+      def idx = image.position
 
       if (idx==-1) {
         // image not in dataset (unreachable)
@@ -35,8 +35,9 @@ class TrainController {
       def parasites = []
       session["parasites"].each {k,v -> parasites.add(v) }
 
-      render( view: 'index', model: [ dataset: session["dataset"],
-                                      datasetSize: session["images"].size(),
+      render( view: 'index', model: [ datasets: Dataset.findAll(),
+                                      datasetID: image.dataset.id,
+                                      datasetSize: image.dataset.size,
                                       imageIdx: idx,
                                       imageID: image.id,
                                       imageName: image.name,
@@ -83,20 +84,20 @@ class TrainController {
   def nextImage() {
     trainService.saveCurrentImageState(session["parasites"])
     def idx = Integer.valueOf(params.imageIdx)
-    idx = idx==session["images"].size()-1 ? 0 : idx+1
+    idx = idx==session["dataset"].size-1 ? 0 : idx+1
     forward(action: 'selectImage', params: [imageIdx: idx])
   }
 
   def prevImage() {
     trainService.saveCurrentImageState(session["parasites"])
     def idx = Integer.valueOf(params.imageIdx)
-    idx = idx==0 ? session["images"].size()-1 : idx-1
+    idx = idx==0 ? session["dataset"].size-1 : idx-1
     forward(action: 'selectImage', params: [imageIdx: idx])
   }
 
   def selectImage() {
     def idx = Integer.valueOf(params.imageIdx)
-    Image image = session["images"][idx]
+    Image image = Image.findByDatasetAndPosition(session["dataset"],idx)
     def user = (Users)springSecurityService.getCurrentUser()
     user.lastImage = image
     user.save(flush: true)
@@ -108,7 +109,7 @@ class TrainController {
     session["parasites"].each {k,v -> parasites.add(v) }
 
     render(template: 'trainUI', model: [imageIdx: idx,
-                                        datasetSize: session["images"].size(),
+                                        datasetSize: session["dataset"].size,
                                         imageID: image.id,
                                         imageName: image.name,
                                         controlID: image.control.id,
