@@ -13,9 +13,11 @@ class Image {
   Integer day
   char series
   Image control
+  Integer position
 
   static constraints = {
     control nullable: true
+    position nullable: true
 //    cdId nullable: true
   }
 }
