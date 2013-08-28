@@ -25,11 +25,15 @@ class BootStrapService {
   def initImage(String datadir, Dataset dataset) {
     CSVReader reader = new CSVReader(new FileReader(datadir + File.separator + "imagedb.csv"))
     List<String[]> lines = reader.readAll()
+    def position = dataset.size
+
     for (int i=0; i<lines.size(); i++) {
       String[] line = lines[i]
       Image image = new Image()
 
       image.dataset = dataset
+      dataset.size++
+      image.position = position++
 
       if (line[1].equals("control")) {
         image.cdId = 0
@@ -45,7 +49,7 @@ class BootStrapService {
       image.name = line[0]
 
       image.imageData = new ImageData()
-      image.imageData.stream = new FileInputStream(datadir + File.separator + line[0] + ".png").getBytes()
+      image.imageData.stream = new BufferedInputStream(new FileInputStream(datadir + File.separator + line[0] + ".png")).getBytes()
 //      image.imageData.save(flush: true)
 
       String[] P = line[6].split(';')
@@ -82,6 +86,9 @@ class BootStrapService {
       log.info "Inserted " + datadir + File.separator + line[0] + ".png"
     }
     reader.close()
+
+    dataset.save(flush: true)
+
     log.info "Finished inserting images"
 //    assocControls()
     def hibSession = sessionFactory.getCurrentSession()
