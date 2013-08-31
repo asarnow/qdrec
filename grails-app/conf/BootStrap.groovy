@@ -21,6 +21,8 @@ class BootStrap {
 //      bootStrapService.initUsers()
 //      bootStrapService.initParasite()
 
+//      bootStrapService.initImagePos()
+
 //      Users.findById(1).lastImage = Image.findById(1)
     }
 
