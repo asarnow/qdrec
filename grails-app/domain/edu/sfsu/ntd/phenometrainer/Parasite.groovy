@@ -4,6 +4,9 @@ class Parasite {
 
   static hasMany = [trainStates: ParasiteTrainState]
   static belongsTo = [image: Image]
+
+//  List trainStates
+
 //  Image image
   Integer region
 //  Polygon boundingBox

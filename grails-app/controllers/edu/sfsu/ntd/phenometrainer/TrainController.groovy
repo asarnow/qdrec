@@ -1,5 +1,4 @@
 package edu.sfsu.ntd.phenometrainer
-
 import grails.converters.JSON
 import org.springframework.security.access.annotation.Secured
 
@@ -8,6 +7,7 @@ class TrainController {
 
     def springSecurityService
     def trainService
+    def sessionFactory
 
     def index() {
       def user = (Users)springSecurityService.getCurrentUser()
@@ -18,10 +18,13 @@ class TrainController {
 
       def control = image.control
 
-      session["dataset"] = image.dataset
+//      session["dataset"] = image.dataset
+      def q = sessionFactory.currentSession.createSQLQuery("select images_idx from image where id = :code")
+//      q.addEntity(Integer.class)
+      q.setLong("code",image.id)
+      def idx = q.list()[0]
 
-      session["images"] = Image.findAllByDataset(session["dataset"], [sort:'id', order:'asc'])
-      def idx = session["images"].indexOf(image)
+//      def idx = Image.executeQuery("select i.images_idx from Image i where i.id = ?",[image.id])
 
       if (idx==-1) {
         // image not in dataset (unreachable)
@@ -35,8 +38,9 @@ class TrainController {
       def parasites = []
       session["parasites"].each {k,v -> parasites.add(v) }
 
-      render( view: 'index', model: [ dataset: session["dataset"],
-                                      datasetSize: session["images"].size(),
+      render( view: 'index', model: [ datasets: Dataset.findAll(),
+                                      datasetID: image.dataset.id,
+                                      datasetSize: image.dataset.size,
                                       imageIdx: idx,
                                       imageID: image.id,
                                       imageName: image.name,
@@ -82,21 +86,24 @@ class TrainController {
 
   def nextImage() {
     trainService.saveCurrentImageState(session["parasites"])
+    def image = Image.get(params.imageID)
     def idx = Integer.valueOf(params.imageIdx)
-    idx = idx==session["images"].size()-1 ? 0 : idx+1
-    forward(action: 'selectImage', params: [imageIdx: idx])
+    idx = idx==image.dataset.size-1 ? 0 : idx+1
+    forward(action: 'selectImage', params: [imageIdx: idx, imageID: image.id])
   }
 
   def prevImage() {
     trainService.saveCurrentImageState(session["parasites"])
+    def image = Image.get(params.imageID)
     def idx = Integer.valueOf(params.imageIdx)
-    idx = idx==0 ? session["images"].size()-1 : idx-1
-    forward(action: 'selectImage', params: [imageIdx: idx])
+    idx = idx==0 ? image.dataset.size-1 : idx-1
+    forward(action: 'selectImage', params: [imageIdx: idx, imageID: image.id])
   }
 
   def selectImage() {
     def idx = Integer.valueOf(params.imageIdx)
-    Image image = session["images"][idx]
+    Image image = Image.get(params.imageID)
+//    Image image = Image.findByDatasetAndPosition(session["dataset"],idx)
     def user = (Users)springSecurityService.getCurrentUser()
     user.lastImage = image
     user.save(flush: true)
@@ -107,8 +114,8 @@ class TrainController {
     def parasites = []
     session["parasites"].each {k,v -> parasites.add(v) }
 
-    render(template: 'trainUI', model: [imageIdx: idx,
-                                        datasetSize: session["images"].size(),
+    render(template: 'trainUI', model: [datasetSize: image.dataset.size,
+                                        imageIdx: idx,
                                         imageID: image.id,
                                         imageName: image.name,
                                         controlID: image.control.id,
@@ -117,7 +124,7 @@ class TrainController {
   }
 
   def image() {
-    def image = Image.get(Integer.valueOf(params.imageID)).imageData.stream
+    def image = (Image.get(Integer.valueOf(params.imageID)).imageData as List)[0].stream
     response.contentLength = image.length
     response.contentType = 'image/png'
     response.outputStream << image

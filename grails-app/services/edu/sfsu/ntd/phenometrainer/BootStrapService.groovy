@@ -1,7 +1,6 @@
 package edu.sfsu.ntd.phenometrainer
 import au.com.bytecode.opencsv.CSVReader
 import groovy.sql.Sql
-import org.codehaus.groovy.grails.plugins.DomainClassGrailsPlugin
 
 class BootStrapService {
 
@@ -25,11 +24,15 @@ class BootStrapService {
   def initImage(String datadir, Dataset dataset) {
     CSVReader reader = new CSVReader(new FileReader(datadir + File.separator + "imagedb.csv"))
     List<String[]> lines = reader.readAll()
+//    def position = dataset.size
+
     for (int i=0; i<lines.size(); i++) {
       String[] line = lines[i]
       Image image = new Image()
-
       image.dataset = dataset
+//      dataset.addToImages(image)
+//      dataset.size++
+//      image.position = position++
 
       if (line[1].equals("control")) {
         image.cdId = 0
@@ -44,12 +47,16 @@ class BootStrapService {
 
       image.name = line[0]
 
-      image.imageData = new ImageData()
-      image.imageData.stream = new FileInputStream(datadir + File.separator + line[0] + ".png").getBytes()
+//      image.imageData = [new ImageData()]
+//      image.imageData[0].stream = new BufferedInputStream(new FileInputStream(datadir + File.separator + line[0] + ".png")).getBytes()
 //      image.imageData.save(flush: true)
+//      image.addToImageData( new ImageData(new BufferedInputStream(new FileInputStream(datadir + File.separator + line[0] + ".png")).getBytes()) )
+      ImageData imageData = new ImageData(new BufferedInputStream(new FileInputStream(datadir + File.separator + line[0] + ".png")).getBytes())
+      imageData.image = image
+      imageData.save(flush: true)
 
       String[] P = line[6].split(';')
-      Set<Parasite> parasites = new HashSet<Parasite>()
+//      Set<Parasite> parasites = new HashSet<Parasite>()
       for (String p : P) {
         Parasite parasite = new Parasite()
         String[] q = p.split(',')
@@ -66,10 +73,11 @@ class BootStrapService {
         parasite.width = width
         parasite.height = height
 
-//        parasite.save(flush: true)
-        parasites.add(parasite)
+        parasite.save(flush: true)
+//        parasites.add(parasite)
+//        image.addToParasites(parasite)
       }
-      image.parasites = parasites
+//      image.parasites = parasites
       image.save(flush: true)
 
       // Memory leak workaround
@@ -77,11 +85,15 @@ class BootStrapService {
 //        def hibSession = sessionFactory.getCurrentSession()
 //        assert hibSession != null
 //        hibSession.flush()
-        DomainClassGrailsPlugin.PROPERTY_INSTANCE_MAP.get().clear()
+//        DomainClassGrailsPlugin.PROPERTY_INSTANCE_MAP.get().clear()
       }
       log.info "Inserted " + datadir + File.separator + line[0] + ".png"
     }
     reader.close()
+
+    dataset.size = dataset.images.size()
+    dataset.save(flush: true)
+
     log.info "Finished inserting images"
 //    assocControls()
     def hibSession = sessionFactory.getCurrentSession()
@@ -171,6 +183,20 @@ class BootStrapService {
     new Compound(name:"niclosamide", alias: "nic").save(flush: true)
     new Compound(name:"sorafenib", alias: "sor").save(flush: true)
     
+  }
+
+  def initImagePos() {
+    def datasets = Dataset.findAll()
+    datasets.each { ds ->
+      def images = Image.findAllByDataset(ds)
+      images.each {
+        it.dataset = ds
+        it.save(flush: true)
+      }
+//      DomainClassGrailsPlugin.PROPERTY_INSTANCE_MAP.get().clear()
+      ds.size = ds.images.size()
+      ds.save(flush: true)
+    }
   }
 
 }

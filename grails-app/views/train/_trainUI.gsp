@@ -62,8 +62,8 @@
 
 </g:javascript>
 <div id="imageNavigation">
-  <a href="${remoteLink(action: 'prevImage', params: [imageIdx:imageIdx], update: 'trainDiv')}"><button class="button">Previous</button></a>
-  <a href="${remoteLink(action: 'nextImage', params: [imageIdx:imageIdx], update: 'trainDiv')}"><button class="button">Next</button></a>
+  %{--<a href="${remoteLink(action: 'prevImage', params: [imageIdx:imageIdx], update: 'trainDiv')}"><button class="button">Previous</button></a>--}%
+  %{--<a href="${remoteLink(action: 'nextImage', params: [imageIdx:imageIdx], update: 'trainDiv')}"><button class="button">Next</button></a>--}%
 </div>
 <div id="currentImage" class="parasiteImage">
   <h4>${imageName}</h4>
