@@ -1,6 +1,8 @@
 package edu.sfsu.ntd.phenometrainer
+import ar.com.hjg.pngj.PngReader
 import au.com.bytecode.opencsv.CSVReader
 import groovy.sql.Sql
+import org.codehaus.groovy.grails.plugins.DomainClassGrailsPlugin
 
 class BootStrapService {
 
@@ -9,9 +11,15 @@ class BootStrapService {
 
   def initUsers() {
     def userRole = new Role(authority: 'ROLE_USER').save(flush: true)
-    def user = new Users(username:'schisto', enabled: true, password: 'schisto', dateCreated: new Date(), lastImage: Image.get(1))
+    def user = new Users(username:'schisto', enabled: true, password: 'schisto', dateCreated: new Date(), lastImageSubset: SubsetImage.first())
     user.save(failOnError: true)
     UserRole.create user, userRole, true
+
+    def adminRole = new Role(authority: 'ROLE_ADMIN').save(flush: true)
+    def admin = new Users(username:'da', enabled: true, password: 'gh0stly', dateCreated: new Date(), lastImageSubset: SubsetImage.first())
+    admin.save(failOnError: true)
+    UserRole.create admin, adminRole, true
+    UserRole.create admin, userRole, true
   }
 
   def initDataset(String description) {
@@ -25,34 +33,43 @@ class BootStrapService {
     CSVReader reader = new CSVReader(new FileReader(datadir + File.separator + "imagedb.csv"))
     List<String[]> lines = reader.readAll()
 //    def position = dataset.size
-
+    def datasetID = dataset.id
     for (int i=0; i<lines.size(); i++) {
       String[] line = lines[i]
-      Image image = new Image()
-      image.dataset = dataset
-//      dataset.addToImages(image)
 //      dataset.size++
 //      image.position = position++
-
+      def cdId
       if (line[1].equals("control")) {
-        image.cdId = 0
+        cdId = 0
       } else {
-        image.cdId = Compound.findByAliasLike("%"+line[1]+"%").id
+        cdId = Compound.findByAliasLike("%"+line[1]+"%").id
       }
-
+      Image image = new Image()
+      image.dataset = dataset
+      image.cdId = cdId
       image.conc = Double.valueOf(line[2])
       image.day = Integer.valueOf(line[3])
       image.series = line[4].charAt(0)
       image.date = Date.parse("MMddyy",line[5])
 
       image.name = line[0]
+//      BufferedImage bi = ImageIO.read(new File(datadir + File.separator + line[0] + ".png"))
+//      image.width = bi.getWidth()
+//      image.height = bi.getHeight()
+      def pngReader = new PngReader( new File(datadir + File.separator + line[0] + ".png") )
+      def info = pngReader.getChunkseq().getImageInfo()
+      image.width = info.cols
+      image.height = info.rows
+      image.displayScale = image.width*image.height > 768**2 ? 0.5 : 1.0;
 
-//      image.imageData = [new ImageData()]
-//      image.imageData[0].stream = new BufferedInputStream(new FileInputStream(datadir + File.separator + line[0] + ".png")).getBytes()
-//      image.imageData.save(flush: true)
+      dataset.addToImages(image)
+      image.save()
+
 //      image.addToImageData( new ImageData(new BufferedInputStream(new FileInputStream(datadir + File.separator + line[0] + ".png")).getBytes()) )
-      ImageData imageData = new ImageData(new BufferedInputStream(new FileInputStream(datadir + File.separator + line[0] + ".png")).getBytes())
+      ImageData imageData = new ImageData()
+      imageData.stream = new BufferedInputStream(new FileInputStream(datadir + File.separator + line[0] + ".png")).getBytes()
       imageData.image = image
+//      image.addToImageData(imageData)
       imageData.save(flush: true)
 
       String[] P = line[6].split(';')
@@ -73,19 +90,22 @@ class BootStrapService {
         parasite.width = width
         parasite.height = height
 
-        parasite.save(flush: true)
+        parasite.save()
 //        parasites.add(parasite)
 //        image.addToParasites(parasite)
       }
 //      image.parasites = parasites
-      image.save(flush: true)
-
+//      image.save()
+//      dataset.addToImages(image)
       // Memory leak workaround
-      if (i!=lines.size()-1) {
-//        def hibSession = sessionFactory.getCurrentSession()
-//        assert hibSession != null
-//        hibSession.flush()
-//        DomainClassGrailsPlugin.PROPERTY_INSTANCE_MAP.get().clear()
+      if (i%10 == 0 && i!=lines.size()-1) {
+        dataset.save()
+        def hibSession = sessionFactory.getCurrentSession()
+        assert hibSession != null
+        hibSession.flush()
+        hibSession.clear()
+        DomainClassGrailsPlugin.PROPERTY_INSTANCE_MAP.get().clear()
+        dataset = Dataset.get(datasetID)
       }
       log.info "Inserted " + datadir + File.separator + line[0] + ".png"
     }
@@ -196,6 +216,40 @@ class BootStrapService {
 //      DomainClassGrailsPlugin.PROPERTY_INSTANCE_MAP.get().clear()
       ds.size = ds.images.size()
       ds.save(flush: true)
+    }
+  }
+
+  def initSubsets() {
+    Dataset.findAll().each { dataset ->
+      def day4images = Image.findAllByDatasetAndDay(dataset,4)
+      def subset = new Subset()
+//      subset.dataset = dataset
+      dataset.addToSubsets(subset)
+      subset.description = "Complete set"
+      dataset.images.each { image ->
+        def imageSubset = new SubsetImage()
+//        imageSubset.subset = subset
+        subset.addToImageSubsets(imageSubset)
+        imageSubset.image = image
+//        imageSubset.save()
+      }
+      subset.size = subset.imageSubsets.size()
+//      subset.save()
+
+      subset = new Subset()
+      dataset.addToSubsets(subset)
+      subset.description = "Day 4 images"
+      day4images.each { image ->
+        def imageSubset = new SubsetImage()
+//        imageSubset.subset = subset
+        subset.addToImageSubsets(imageSubset)
+        imageSubset.image = image
+//        imageSubset.save()
+      }
+      subset.size = subset.imageSubsets.size()
+//      subset.save()
+
+      dataset.save()
     }
   }
 
