@@ -8,18 +8,18 @@ class TrainService {
 
     def findParasiteByLocation(String imageID, String parasiteX, String parasiteY) {
 
-      Image image = Image.get(Integer.valueOf(imageID))
+      Image image = Image.get(imageID)
 
       double x = Double.valueOf(parasiteX)
       double y = Double.valueOf(parasiteY)
 
-      def scale = 2.0;
-      def nativeWidth = 1388;
-      def nativeHeight = 1040;
+      def scale = image.displayScale;
+      def nativeWidth = image.width;
+      def nativeHeight = image.height;
       // This formula includes the +1 for MATLAB indexing, and selects the
       // upper left pixel of the four possible pixels from the original scale.
-      x = Math.min( Math.floor((x+0.5)*scale + 0.5), nativeWidth)
-      y = Math.min( Math.floor((y+0.5)*scale + 0.5), nativeHeight)
+      x = Math.min( Math.floor((x+0.5)/scale + 0.5), nativeWidth)
+      y = Math.min( Math.floor((y+0.5)/scale + 0.5), nativeHeight)
 
 //      Coordinate coordinate = new Coordinate(x,y)
 //      Point point = new GeometryFactory().createPoint(coordinate)
@@ -49,11 +49,11 @@ class TrainService {
 
       def p = Parasite.get(id)
 
-      return dom2web(p)
+      return dom2web(p, scale)
 
     }
 
-    def dom2web(Parasite p) {
+    def dom2web(Parasite p, double scale) {
 
 //      def db = new Sql(dataSource)
 //      def result = db.firstRow("SELECT asText(bounding_box) FROM parasite WHERE parasite.id = ${p.id}")
@@ -77,10 +77,10 @@ class TrainService {
 //      def coords = p.boundingBox.getCoordinates()
 //      assert coords.size() == 4
 //      coords.sort()
-      parasite.upperLeftX = Math.max(Math.floor((p.x-0.5) / 2), 0)
-      parasite.upperLeftY = Math.max(Math.floor((p.y-0.5) / 2), 0)
-      parasite.width = Math.round(p.width / 2)
-      parasite.height = Math.round(p.height / 2)
+      parasite.upperLeftX = Math.max(Math.floor((p.x-0.5) * scale), 0)
+      parasite.upperLeftY = Math.max(Math.floor((p.y-0.5) * scale), 0)
+      parasite.width = Math.round(p.width * scale)
+      parasite.height = Math.round(p.height * scale)
 
       def user = (Users)springSecurityService.getCurrentUser()
       def pts = ParasiteTrainState.findByParasiteAndTrainer(p,user)
@@ -88,12 +88,25 @@ class TrainService {
       return parasite
     }
 
+    def findAllUserSubsetTrainStates(userID, subsetID) {
+      def user = Users.get(userID)
+      def subset = Subset.get(subsetID)
+      def lines = []
+      subset.imageSubsets.image.each { i ->
+        i.parasites.each { Parasite p ->
+          def pts = ParasiteTrainState.findByParasiteAndTrainer(p,user)
+          lines.add(i.id.toString() + "," + i.name.toUpperCase() + "," + i.control.id.toString() + "," +
+                  p.id.toString() + "," + p.region.toString() + "," + pts.trainState.toString())
+        }
+      }
+      return lines
+    }
 
     def findAllUserTrainStates(userId) {
 
       def images = Image.findAll()
 
-      def user = Users.findById(Integer.valueOf(userId))
+      def user = Users.get(userId)
 
       def lines = []
 
@@ -107,28 +120,20 @@ class TrainService {
       return lines
     }
 
-    def determineLastImageForDataset(Dataset dataset) {
+    def determineLastImageForSubset(Subset subset) {
       def user = (Users)springSecurityService.getCurrentUser()
-      def currentID = 0
-      def trainStates = ParasiteTrainState.findAllByTrainer(user)
-      for (ParasiteTrainState pts : trainStates) {
-        if ((pts.parasite.image.dataset == dataset) && (pts.id > currentID)) {
-          currentID = pts.id
-        }
+      def trainStates = ParasiteTrainState.findAll(max: 1, sort: "lastUpdated", order: "desc") {
+        trainer == user && subset.imageSubsets.image.contains(parasite.image)
       }
-      if (currentID==0) {
-        return Image.findByDataset(dataset)
-      } else {
-        return ParasiteTrainState.get(currentID).parasite.image
-      }
+      def latestImage = trainStates[0].parasite.image ?: subset.imageSubsets[0].image
+      return SubsetImage.findBySubsetAndImage(subset,latestImage)
     }
 
     def saveCurrentImageState(parasites) {
       def user = (Users)springSecurityService.getCurrentUser()
       parasites.each { k,v ->
-        def parasite = Parasite.findById(v.id)
-        def parasiteTrainState = ParasiteTrainState.findByTrainerAndParasite(user,parasite)
-        if (parasiteTrainState==null) parasiteTrainState = new ParasiteTrainState()
+        def parasite = Parasite.get(v.id)
+        def parasiteTrainState = ParasiteTrainState.findByTrainerAndParasite(user,parasite) ?: new ParasiteTrainState()
         parasiteTrainState.parasite = parasite
         parasiteTrainState.trainState = v.trainState
         parasiteTrainState.trainer = user
