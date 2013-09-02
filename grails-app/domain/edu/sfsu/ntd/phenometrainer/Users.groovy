@@ -14,7 +14,7 @@ class Users {
 	boolean accountExpired
 	boolean accountLocked
 	boolean passwordExpired
-  Image lastImage
+  SubsetImage lastImageSubset
 
 	static constraints = {
 		username blank: false, unique: true
