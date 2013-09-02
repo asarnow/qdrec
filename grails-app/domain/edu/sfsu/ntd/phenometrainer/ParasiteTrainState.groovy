@@ -6,6 +6,7 @@ class ParasiteTrainState {
   static belongsTo = [parasite: Parasite, trainer: Users]
 
   TrainState trainState
+  Date lastUpdated
 
   static constraints = {
   }

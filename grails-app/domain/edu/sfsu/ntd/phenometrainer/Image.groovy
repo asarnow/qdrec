@@ -10,13 +10,16 @@ class Image {
 //  List parasites
 
   String name
+  Integer width
+  Integer height
+  double displayScale
   Date date
   Integer cdId
   double conc
   Integer day
   char series
   Image control
-//  Integer position // list idx instead
+  Integer position
 
   static constraints = {
     control nullable: true
@@ -24,4 +27,9 @@ class Image {
 //    imageData unique: true
 //    cdId nullable: true
   }
+
+  static mapping = {
+    position updateable: false, insertable: false
+  }
+
 }

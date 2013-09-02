@@ -1,20 +1,19 @@
 <%@ page import="edu.sfsu.ntd.phenometrainer.TrainState" %>
 <g:javascript>
-  var parasites = ${parasites};
-  var theCanvas = $("#parasiteImageCanvas").get(0);
-  var context = theCanvas.getContext("2d");
-  context.lineWidth = 2;
+  var parasites;
+  var theCanvas;
+  var context;
+  var image;
+  var imageID;
 
-  $("#currentImg").load(function (){
-//        $("#currentImg").width(694)
-//        $("#currentImg").height(520)
-//        theCanvas.width = 694;
-//        theCanvas.height = 520;
-  });
+  function refreshVars() {
+    theCanvas = $("#parasiteImageCanvas").get(0);
+    context = theCanvas.getContext("2d");
+    context.lineWidth = 2;
+    image = $("#currentImg").get(0);
+  }
 
-  var image = $("#currentImg").get(0);
-
-  function drawBoundingBoxes() {
+  function drawBoundingBoxes(parasites, context) {
       for (var i=0; i < parasites.length; i++) {
 
           parasites[i].trainState.name == "${TrainState.NORMAL}" ?
@@ -28,9 +27,9 @@
       }
   }
 
-  function draw() {
-      context.drawImage(image,0,0,694,520);
-      drawBoundingBoxes();
+  function draw(parasites, context, image) {
+      context.drawImage(image,0,0,image.width,image.height);
+      drawBoundingBoxes(parasites, context);
   }
 
   function getMousePos(canvas, evt) {
@@ -41,41 +40,67 @@
       };
   }
 
-  theCanvas.addEventListener("click", function (event) {
-          var mousePos = getMousePos(theCanvas, event);
-          jQuery.ajax({type: 'GET',
-                       data: { parasiteX: mousePos.x, parasiteY: mousePos.y, imageID: "${imageID}" },
-                       dataType: 'json',
-                       url: '/PhenomeTrainer/train/parasite',
-                       success: function (data, textStatus) {
-                           parasites = data; // Object from JSON as parsed by JQuery
-                           draw();
-                       },
-                       error: function (XMLHttpRequest, textStatus, errorThrown) {
-                           alert("No (segmented) parasite at cursor location");
-                       }});
-      }, false);
+  function updateCanvas(canvas,img) {
+          canvas.addEventListener("click", function (event) {
+                    var mousePos = getMousePos(canvas, event);
+                    jQuery.ajax({type: 'GET',
+                                 data: { parasiteX: mousePos.x, parasiteY: mousePos.y, imageID: imageID },
+                                 dataType: 'json',
+                                 url: '/PhenomeTrainer/train/parasite',
+                                 success: function (data, textStatus) {
+                                     parasites = data; // Object from JSON as parsed by JQuery
+                                     draw(parasites, context, img);
+                                 },
+                                 error: function (XMLHttpRequest, textStatus, errorThrown) {
+                                     alert("No (segmented) parasite at cursor location");
+                                 }});
+                }, false);
+    }
 
-  $(window).load(function () {
-      draw();
-  });
+  function refreshTrainUI() {
+    refreshVars();
+    updateCanvas(theCanvas,image);
+    draw(parasites, context, image);
+  }
+
+  function setImageOnLoad() {
+    $("#currentImg").load(refreshTrainUI());
+  }
 
 </g:javascript>
 <div id="imageNavigation">
-  %{--<a href="${remoteLink(action: 'prevImage', params: [imageIdx:imageIdx], update: 'trainDiv')}"><button class="button">Previous</button></a>--}%
-  %{--<a href="${remoteLink(action: 'nextImage', params: [imageIdx:imageIdx], update: 'trainDiv')}"><button class="button">Next</button></a>--}%
+  <g:remoteLink action="prevImage" params="[imageSubsetID: imageSubset.id]" update="trainDiv" onSuccess="setImageOnLoad();">
+                %{--onSuccess="${remoteFunction(action: "imageParasites", params: [imageID: image.id], onSuccess: "setParasites(data);")}">--}%
+    <button class="button">Prev</button>
+  </g:remoteLink>
+  <g:remoteLink action="nextImage" params="[imageSubsetID: imageSubset.id]" update="trainDiv" onSuccess="setImageOnLoad();">
+                %{--onSuccess="${remoteFunction(action: "imageParasites", params: [imageID: image.id], onSuccess: "setParasites(data);")}">--}%
+    <button class="button">Next</button>
+  </g:remoteLink>
+  <script>
+    parasites = ${parasites};
+    imageID = ${image.id};
+  </script>
 </div>
 <div id="currentImage" class="parasiteImage">
-  <h4>${imageName}</h4>
-  <h4 class="right">${imageIdx} out of ${datasetSize}</h4>
-  <img id="currentImg" class="parasiteImage" src="${createLink(action: 'image', params: [imageID: imageID])}" />
-  <canvas id="parasiteImageCanvas" width="694" height="520">HTML5 Canvas not supported.</canvas>
+  <h4>${image.name}</h4>
+  <h4 class="right">${imageSubset.position + 1} out of ${subset.size}</h4>
+  <img id="currentImg" class="parasiteImage"
+       onload="refreshTrainUI();"
+       src="${createLink(action: 'image', params: [imageID: image.id])}"
+       width="${image.width*image.displayScale}"
+       height="${image.height*image.displayScale}"/>
+  <canvas id="parasiteImageCanvas"
+          width="${image.width*image.displayScale}"
+          height="${image.height*image.displayScale}">
+    HTML5 Canvas not supported.
+  </canvas>
 </div>
 
 <div id="control" class="parasiteImage">
   %{--<canvas id="controlImageCanvas"></canvas>--}%
-  <h4>${controlName}</h4>
-  <img id="controlImg" class="parasiteImage" src="${createLink(action: 'image', params: [imageID: controlID])}" />
+  <h4>${control.name}</h4>
+  <img id="controlImg" class="parasiteImage" src="${createLink(action: 'image', params: [imageID: control.id])}" width="${control.width*control.displayScale}" height="${control.height*control.displayScale}" />
 </div>
 
 <div class="clearDiv"></div>
