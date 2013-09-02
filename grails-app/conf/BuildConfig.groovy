@@ -35,8 +35,9 @@ grails.project.dependency.resolution = {
         // uncomment these (or add new ones) to enable remote dependency resolution from public Maven repositories
         //mavenRepo "http://snapshots.repository.codehaus.org"
         //mavenRepo "http://repository.codehaus.org"
-        mavenRepo "http://download.java.net/maven/2/"
+        //mavenRepo "http://download.java.net/maven/2/"
         //mavenRepo "http://repository.jboss.com/maven2/"
+        mavenRepo "http://repo1.maven.org"
     }
 
     dependencies {
@@ -46,7 +47,8 @@ grails.project.dependency.resolution = {
 //        runtime ':hibernate-spatial:1.1.1'
 //        runtime ':hibernate-spatial-mysql:1.1.1'
 
-//        compile 'net.sf:opencsv:2.3'
+        compile 'net.sf:opencsv:2.3'
+        compile 'ar.com.hjg:pngj:2.0.1'
 
     }
 
