@@ -11,7 +11,13 @@ class BootStrap {
 //      bootStrapService.initUsers()
 //      bootStrapService.initParasite()
 
-      Users.findById(1).lastImage = Image.findById(1)
+//      def user = Users.findById(2)
+//      user.lastImage = Image.findById(1)
+//      user.save()
+      
+//      user = Users.findById(3)
+//      user.lastImage = Image.findById(1)
+//      user.save()
     }
 
     def destroy = {
