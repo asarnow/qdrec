@@ -1,4 +1,4 @@
-package phenometrainer
+package edu.sfsu.ntd.phenometrainer
 
 import grails.test.mixin.TestFor
 

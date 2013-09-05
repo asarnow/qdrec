@@ -1,23 +1,29 @@
+import edu.sfsu.ntd.phenometrainer.Dataset
 import edu.sfsu.ntd.phenometrainer.Image
 import edu.sfsu.ntd.phenometrainer.Users
 
 class BootStrap {
 
-    def bootStrapService
+//    def bootStrapService
 
     def init = { servletContext ->
 //      bootStrapService.initCompound()
-//      bootStrapService.initImage()
+
+//      Dataset dataset = bootStrapService.initDataset("118 statin images (Brian)")
+//      bootStrapService.initImage("/home/da/Documents/Segmentation/Schisto/Data/imagedb/imagedb_4conor",dataset)
+
+//      dataset = bootStrapService.initDataset("438 statin images (Lili)")
+//      bootStrapService.initImage("/home/da/Documents/Segmentation/Schisto/Data/imagedb/lili438",dataset)
+
+//      dataset = bootStrapService.initDataset("210 statin images (Lili)")
+//      bootStrapService.initImage("/home/da/Documents/Segmentation/Schisto/Data/imagedb/lili210",dataset)
+
 //      bootStrapService.initUsers()
 //      bootStrapService.initParasite()
 
-//      def user = Users.findById(2)
-//      user.lastImage = Image.findById(1)
-//      user.save()
-      
-//      user = Users.findById(3)
-//      user.lastImage = Image.findById(1)
-//      user.save()
+//      bootStrapService.initImagePos()
+
+//      Users.findById(1).lastImage = Image.findById(1)
     }
 
     def destroy = {

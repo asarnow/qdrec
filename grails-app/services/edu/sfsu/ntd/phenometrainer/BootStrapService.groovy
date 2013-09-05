@@ -1,6 +1,8 @@
 package edu.sfsu.ntd.phenometrainer
+import ar.com.hjg.pngj.PngReader
 import au.com.bytecode.opencsv.CSVReader
 import groovy.sql.Sql
+import org.codehaus.groovy.grails.plugins.DomainClassGrailsPlugin
 
 class BootStrapService {
 
@@ -9,49 +11,78 @@ class BootStrapService {
 
   def initUsers() {
     def userRole = new Role(authority: 'ROLE_USER').save(flush: true)
-//    def user = new Users(username:'schisto', enabled: true, password: 'schisto', dateCreated: new Date(), lastImage: Image.get(1))
-//    user.save(failOnError: true)
-//    UserRole.create user, userRole, true
 
     def user = new Users(username:'lili', enabled: true, password: 'liliucsf', dateCreated: new Date(), lastImage: Image.get(1))
 	user.save(failOnError: true)
 	UserRole.create user, userRole, true
 
+//    user = new Users(username:'train', enabled: true, password: 'train', dateCreated: new Date(), lastImage: Image.get(1))
+//    user.save(failOnError: true)
+//    UserRole.create user, userRole, true
 
-    user = new Users(username:'train', enabled: true, password: 'train', dateCreated: new Date(), lastImage: Image.get(1))
-	user.save(failOnError: true)
-	UserRole.create user, userRole, true
+    def user = new Users(username:'schisto', enabled: true, password: 'schisto', dateCreated: new Date(), lastImageSubset: SubsetImage.first())
+    user.save(failOnError: true)
+    UserRole.create user, userRole, true
+
+    def adminRole = new Role(authority: 'ROLE_ADMIN').save(flush: true)
+    def admin = new Users(username:'da', enabled: true, password: 'gh0stly', dateCreated: new Date(), lastImageSubset: SubsetImage.first())
+    admin.save(failOnError: true)
+    UserRole.create admin, adminRole, true
+    UserRole.create admin, userRole, true
   }
 
+  def initDataset(String description) {
+    Dataset dataset = new Dataset()
+    dataset.description = description
+    dataset.save(flush: true)
+    return dataset
+  }
 
-  def initImage() {
-//    String datadir = "/home/da/Documents/Segmentation/Schisto/Data/imagedb_4conor";
-	String datadir = "/home/dev/imagedb_4conor";
-
+  def initImage(String datadir, Dataset dataset) {
     CSVReader reader = new CSVReader(new FileReader(datadir + File.separator + "imagedb.csv"))
     List<String[]> lines = reader.readAll()
-    for (String[] line : lines) {
-      Image image = new Image()
-
+//    def position = dataset.size
+    def datasetID = dataset.id
+    for (int i=0; i<lines.size(); i++) {
+      String[] line = lines[i]
+//      dataset.size++
+//      image.position = position++
+      def cdId
       if (line[1].equals("control")) {
-        image.cdId = 0
+        cdId = 0
       } else {
-        image.cdId = Compound.findByAliasLike("%"+line[1]+"%").id
+        cdId = Compound.findByAliasLike("%"+line[1]+"%").id
       }
-
+      Image image = new Image()
+      image.dataset = dataset
+      image.cdId = cdId
       image.conc = Double.valueOf(line[2])
       image.day = Integer.valueOf(line[3])
       image.series = line[4].charAt(0)
       image.date = Date.parse("MMddyy",line[5])
 
       image.name = line[0]
+//      BufferedImage bi = ImageIO.read(new File(datadir + File.separator + line[0] + ".png"))
+//      image.width = bi.getWidth()
+//      image.height = bi.getHeight()
+      def pngReader = new PngReader( new File(datadir + File.separator + line[0] + ".png") )
+      def info = pngReader.getChunkseq().getImageInfo()
+      image.width = info.cols
+      image.height = info.rows
+      image.displayScale = image.width*image.height > 768**2 ? 0.5 : 1.0;
 
-      image.imageData = new ImageData()
-      image.imageData.stream = new FileInputStream(datadir + File.separator + line[0] + ".png").getBytes()
-//      image.imageData.save(flush: true)
+      dataset.addToImages(image)
+      image.save()
+
+//      image.addToImageData( new ImageData(new BufferedInputStream(new FileInputStream(datadir + File.separator + line[0] + ".png")).getBytes()) )
+      ImageData imageData = new ImageData()
+      imageData.stream = new BufferedInputStream(new FileInputStream(datadir + File.separator + line[0] + ".png")).getBytes()
+      imageData.image = image
+//      image.addToImageData(imageData)
+      imageData.save(flush: true)
 
       String[] P = line[6].split(';')
-      Set<Parasite> parasites = new HashSet<Parasite>()
+//      Set<Parasite> parasites = new HashSet<Parasite>()
       for (String p : P) {
         Parasite parasite = new Parasite()
         String[] q = p.split(',')
@@ -68,33 +99,55 @@ class BootStrapService {
         parasite.width = width
         parasite.height = height
 
-//        parasite.save(flush: true)
-        parasites.add(parasite)
+        parasite.save()
+//        parasites.add(parasite)
+//        image.addToParasites(parasite)
       }
-      image.parasites = parasites
-      image.save()
+//      image.parasites = parasites
+//      image.save()
+//      dataset.addToImages(image)
+      // Memory leak workaround
+      if (i%10 == 0 && i!=lines.size()-1) {
+        dataset.save()
+        def hibSession = sessionFactory.getCurrentSession()
+        assert hibSession != null
+        hibSession.flush()
+        hibSession.clear()
+        DomainClassGrailsPlugin.PROPERTY_INSTANCE_MAP.get().clear()
+        dataset = Dataset.get(datasetID)
+      }
+      log.info "Inserted " + datadir + File.separator + line[0] + ".png"
     }
     reader.close()
-    assocControls()
 
+    dataset.size = dataset.images.size()
+    dataset.save(flush: true)
+
+    log.info "Finished inserting images"
+//    assocControls()
     def hibSession = sessionFactory.getCurrentSession()
     assert hibSession != null
     hibSession.flush()
-
+//    log.info "Associated images with controls"
   }
 
   def assocControls() {
     for (Image image : Image.findAll()) {
-      def query = Image.where {
-        (cdId==0 && day==image.day && series==image.series && date==image.date)
-      }
-      def control = query.find()
+      def control = null
+      try {
+        def query = Image.where {
+          (dataset==image.dataset && cdId==0 && day==image.day && series==image.series && date==image.date)
+        }
+        control = query.find()
 
-      if (control == null) {
-        def query2 = Image.where {
-                (cdId==0 && day==image.day && date==image.date)
-              }
-        control = query2.find();
+        if (control == null) {
+          def query2 = Image.where {
+                  (dataset==image.dataset && cdId==0 && day==image.day && date==image.date)
+                }
+          control = query2.findAll()[0];
+        }
+      } catch (Exception e) {
+        log.error("Couldn't associate control for " + image.name,e)
       }
 
       image.control = control
@@ -155,8 +208,58 @@ class BootStrapService {
     new Compound(name:"metitepine", alias: "methiopin#e4").save(flush: true)                                    
     new Compound(name:"promazine", alias: "a5").save(flush: true)
     new Compound(name:"triflupromazine", alias: "b8").save(flush: true)
-
+    new Compound(name:"ibandronate", alias: "iban").save(flush: true)
+    new Compound(name:"niclosamide", alias: "nic").save(flush: true)
+    new Compound(name:"sorafenib", alias: "sor").save(flush: true)
     
+  }
+
+  def initImagePos() {
+    def datasets = Dataset.findAll()
+    datasets.each { ds ->
+      def images = Image.findAllByDataset(ds)
+      images.each {
+        it.dataset = ds
+        it.save(flush: true)
+      }
+//      DomainClassGrailsPlugin.PROPERTY_INSTANCE_MAP.get().clear()
+      ds.size = ds.images.size()
+      ds.save(flush: true)
+    }
+  }
+
+  def initSubsets() {
+    Dataset.findAll().each { dataset ->
+      def day4images = Image.findAllByDatasetAndDay(dataset,4)
+      def subset = new Subset()
+//      subset.dataset = dataset
+      dataset.addToSubsets(subset)
+      subset.description = "Complete set"
+      dataset.images.each { image ->
+        def imageSubset = new SubsetImage()
+//        imageSubset.subset = subset
+        subset.addToImageSubsets(imageSubset)
+        imageSubset.image = image
+//        imageSubset.save()
+      }
+      subset.size = subset.imageSubsets.size()
+//      subset.save()
+
+      subset = new Subset()
+      dataset.addToSubsets(subset)
+      subset.description = "Day 4 images"
+      day4images.each { image ->
+        def imageSubset = new SubsetImage()
+//        imageSubset.subset = subset
+        subset.addToImageSubsets(imageSubset)
+        imageSubset.image = image
+//        imageSubset.save()
+      }
+      subset.size = subset.imageSubsets.size()
+//      subset.save()
+
+      dataset.save()
+    }
   }
 
 }

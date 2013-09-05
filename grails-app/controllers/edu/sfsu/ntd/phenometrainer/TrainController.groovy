@@ -1,5 +1,4 @@
 package edu.sfsu.ntd.phenometrainer
-
 import grails.converters.JSON
 import org.springframework.security.access.annotation.Secured
 
@@ -12,30 +11,32 @@ class TrainController {
     def index() {
       def user = (Users)springSecurityService.getCurrentUser()
 
-      def numTrained = user.trainedParasites.size()
+//      def numTrained = user.trainedParasites.size()
 
-      def image = user.lastImage
-
-      def control = image.control
+      def imageSubset = user.lastImageSubset
+      def image = imageSubset.image
+      def dataset = image.dataset
 
       session["parasites"] = [:]
-      image.parasites.each {it -> session["parasites"][it.id] = trainService.dom2web(it)}
+      image.parasites.each {it -> session["parasites"][it.id] = trainService.dom2web(it,image.displayScale)}
 
       def parasites = []
       session["parasites"].each {k,v -> parasites.add(v) }
 
-      render( view: 'index', model: [ imageID: image.id,
-                                      imageName: image.name,
-                                      controlID: control.id,
-                                      controlName: control.name,
-                                      parasites: parasites as JSON,
-                                      numTrained: numTrained ] )
+      render( view: 'index', model: [ datasets: Dataset.findAll(),
+                                      dataset: image.dataset,
+                                      subsets: dataset.subsets,
+                                      imageSubset: imageSubset,
+                                      subset: imageSubset.subset,
+                                      image: image,
+                                      control: image.control,
+                                      parasites: parasites as JSON] )
     }
 
   def imageParasites() {
-    def image = Image.get( Integer.valueOf(params.imageId) )
+    def image = Image.get(params.imageID)
     def parasites = []
-    image.parasites.each {it -> parasites.add(trainService.dom2web(it))}
+    image.parasites.each {it -> parasites.add(trainService.dom2web(it, image.displayScale))}
     render parasites as JSON
   }
 
@@ -58,59 +59,67 @@ class TrainController {
     render parasites as JSON
   }
 
-  def nextImage() {
+  def switchDataset() {
+    trainService.saveCurrentImageState(session["parasites"])
     def user = (Users)springSecurityService.getCurrentUser()
-
-    session["parasites"].each { k,v ->
-      def parasite = Parasite.findById(v.id)
-      def parasiteTrainState = ParasiteTrainState.findByTrainerAndParasite(user,parasite)
-      if (parasiteTrainState==null) parasiteTrainState = new ParasiteTrainState()
-      parasiteTrainState.parasite = parasite
-      parasiteTrainState.trainState = v.trainState
-      parasiteTrainState.trainer = user
-      parasiteTrainState.save(flush: true)
-    }
-
-
-    user.lastImage = Image.findById( (user.lastImage.id+1)>118 ? 1 : user.lastImage.id+1 )
+//    def dataset = Dataset.get(params.datasetID)
+    def subset = Subset.get(params.subsetID)
+//    user.lastImageSubset = trainService.determineLastImageForSubset(subset)
+    user.lastImageSubset = subset.imageSubsets[0]
     user.save(flush: true)
+    redirect(action: 'index')
+  }
 
-    session["parasites"] = null
-
-    redirect( action: 'index' )
+  def nextImage() {
+    trainService.saveCurrentImageState(session["parasites"])
+    def imageSubset = SubsetImage.get(params.imageSubsetID)
+    def idx = imageSubset.position
+    idx = idx==imageSubset.subset.size-1 ? 0 : idx+1
+    def nextImageSubset = SubsetImage.findBySubsetAndPosition(imageSubset.subset, idx)
+    forward(action: 'selectImage', params: [switchTo: nextImageSubset.id])
   }
 
   def prevImage() {
+    trainService.saveCurrentImageState(session["parasites"])
+    def imageSubset = SubsetImage.get(params.imageSubsetID)
+    def idx = imageSubset.position
+    idx = idx==0 ? imageSubset.subset.size-1 : idx-1
+    def prevImageSubset = SubsetImage.findBySubsetAndPosition(imageSubset.subset, idx)
+    forward(action: 'selectImage', params: [switchTo: prevImageSubset.id])
+  }
+
+  def selectImage() {
+    def imageSubset = SubsetImage.get(params.switchTo)
+    def image = imageSubset.image
+//    Subset subset = imageSubset.subset
     def user = (Users)springSecurityService.getCurrentUser()
-    session["parasites"].each { k,v ->
-      def parasite = Parasite.findById(v.id)
-      def parasiteTrainState = ParasiteTrainState.findByTrainerAndParasite(user,parasite)
-      if (parasiteTrainState==null) parasiteTrainState = new ParasiteTrainState()
-      parasiteTrainState.parasite = parasite
-      parasiteTrainState.trainState = v.trainState
-      parasiteTrainState.trainer = user
-      parasiteTrainState.save(flush: true)
-    }
-
-    user.lastImage = Image.findById(Math.max(user.lastImage.id-1,1))
-    user.save(flush:true)
-
+    user.lastImageSubset = imageSubset
+    user.save(flush: true)
     session["parasites"] = null
+    session["parasites"] = [:]
+    image.parasites.each {it -> session["parasites"][it.id] = trainService.dom2web(it,image.displayScale)}
 
-    redirect( action: 'index' )
+    def parasites = []
+    session["parasites"].each {k,v -> parasites.add(v) }
+
+    render(template: 'trainUI', model: [imageSubset: imageSubset,
+                                        subset: imageSubset.subset,
+                                        image: image,
+                                        control: image.control,
+                                        parasites: parasites as JSON])
   }
 
   def image() {
-    def image = Image.get(Integer.valueOf(params.imageID)).imageData.stream
+    def image = (Image.get(params.imageID).imageData as List)[0].stream
     response.contentLength = image.length
     response.contentType = 'image/png'
     response.outputStream << image
     response.outputStream.flush(image)
   }
 
-  def userTrainStates() {
-    List<String> csvLines = trainService.findAllUserTrainStates(params.userId)
-    // Format is image.id, image.name, para.id, para.region, trainState
-    render csvLines.join("\n")
+  def subsets() {
+    def dataset = Dataset.get(params.datasetID)
+    render dataset?.subsets as JSON
   }
+
 }

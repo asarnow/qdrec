@@ -1,3 +1,5 @@
+import edu.sfsu.ntd.phenometrainer.BootStrapService
+
 // locations to search for config files that get merged into the main config;
 // config files can be ConfigSlurper scripts, Java properties files, or classes
 // in the classpath in ConfigSlurper format
@@ -88,6 +90,8 @@ log4j = {
            'org.springframework',
            'org.hibernate',
            'net.sf.ehcache.hibernate'
+
+    info   'grails.app'
 }
 
 // Added by the Spring Security Core plugin:
