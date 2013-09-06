@@ -181,7 +181,7 @@ class BootStrapService {
     new Compound(name:"acepromazine", alias: "ace#acetopromazine#aceto").save(flush: true)                        
     new Compound(name:"atorvastatin", alias: "ato#ator#atoravastin").save(flush: true)                            
     new Compound(name:"chlorpromazine", alias: "chl#chloropromazine#chlorprimazine#chloro#chlor").save(flush: true) 
-    new Compound(name:"clozapine", alias: "cloz").save(flush: true)
+    new Compound(name:"clozapine", alias: "cloz#clos#closapine").save(flush: true)
     new Compound(name:"fluvastatin", alias: "flu#fluv#fluva").save(flush: true)                                  
     new Compound(name:"K11777", alias: "k77#k777").save(flush: true)
     new Compound(name:"lovastatin", alias: "lov#lova").save(flush: true)                                        
