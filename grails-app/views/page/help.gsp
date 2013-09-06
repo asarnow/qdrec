@@ -18,12 +18,12 @@
     <p>
       The Phenome Trainer will present you with a series of matched experiment and control images.
       The experimental images are decorated with bounding rectangles which indicate the parasites which were found by the
-      computer vision algorithm. These rectangles are red, which indicates the "normal" classification.
+      computer vision algorithm. These rectangles are <span style="color:#0000ff">blue</span>, which indicates the "normal" classification.
     </p>
     <p>
-      Click inside a bounding box to mark a parasite as "degenerate." The bounding box will turn green, reflecting the
+      Click inside a bounding box to mark a parasite as "degenerate." The bounding box will turn <span style="color:#ff0000">red</span>, reflecting the
       recorded state of that parasite. You can switch a "degenerate" parasite back to "normal" by clicking in the box again.
-      This will also toggle the box color back to red.
+      This will also toggle the box color back to <span style="color:#0000ff">blue</span>.
     </p>
     <p>
       When you have finished classifying the parasites in an image, click <button class="button">Next</button> to advance to the next image.

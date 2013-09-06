@@ -17,7 +17,7 @@
       for (var i=0; i < parasites.length; i++) {
 
           parasites[i].trainState.name == "${TrainState.NORMAL}" ?
-                  context.strokeStyle = '#f00' : context.strokeStyle = '#0f0';
+                  context.strokeStyle = '#0000ff' : context.strokeStyle = '#ff0000';
 
           context.strokeRect(
                   parasites[i].upperLeftX,
