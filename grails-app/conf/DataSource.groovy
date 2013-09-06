@@ -18,7 +18,7 @@ environments {
         dataSource {
             username = "root"
             password = ""
-            dbCreate = "update" // one of 'create', 'create-drop', 'update', 'validate', ''
+            dbCreate = "validate" // one of 'create', 'create-drop', 'update', 'validate', ''
 //            url = "jdbc:h2:mem:devDb;MVCC=TRUE;LOCK_TIMEOUT=10000"
             url = "jdbc:mysql://localhost/phenome_trainer?useUnicode=yes&characterEncoding=UTF-8"
         }
