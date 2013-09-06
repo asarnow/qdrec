@@ -9,17 +9,21 @@ class BootStrapService {
   def dataSource
   def sessionFactory
 
-  def initUsers() {
-    def userRole = new Role(authority: 'ROLE_USER').save(flush: true)
-    def user = new Users(username:'schisto', enabled: true, password: 'schisto', dateCreated: new Date(), lastImageSubset: SubsetImage.first())
-    user.save(failOnError: true)
-    UserRole.create user, userRole, true
+  def initRole(name) {
+    new Role(authority: name).save(flush: true)
+  }
 
-    def adminRole = new Role(authority: 'ROLE_ADMIN').save(flush: true)
-    def admin = new Users(username:'da', enabled: true, password: 'gh0stly', dateCreated: new Date(), lastImageSubset: SubsetImage.first())
-    admin.save(failOnError: true)
-    UserRole.create admin, adminRole, true
-    UserRole.create admin, userRole, true
+  def initUser(name, password, auth) {
+    def role = Role.findByAuthority(auth)
+    def user = new Users(username:name, enabled: true, password: password, dateCreated: new Date(), lastImageSubset: SubsetImage.first())
+    user.save(failOnError: true)
+    UserRole.create user, role, true
+  }
+
+  def addUserRole(name, auth) {
+    def user = Users.findByUsername(name)
+    def role = Role.findByAuthority(auth)
+    UserRole.create user, role, true
   }
 
   def initDataset(String description) {
