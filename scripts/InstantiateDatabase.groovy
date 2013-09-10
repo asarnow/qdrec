@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2013 Daniel Asarnow
+ */
+
 import edu.sfsu.ntd.phenometrainer.Dataset
 
 /**
