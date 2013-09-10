@@ -16,7 +16,7 @@ def ds = Dataset.get(5)
 def subset = new Subset()
 ds.addToSubsets(subset)
 
-subset.description = "Day 2-3, 0.01-10 \u03BCM, Series A"
+subset.description = "Day 2-3, 0.01-10 \u00B5M, Series A"
 
 Image.where {
   dataset == ds && (day == 2 || day == 3) && conc > 0.001 && (series == '1' || series == 'a')
