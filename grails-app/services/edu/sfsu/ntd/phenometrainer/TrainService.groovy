@@ -128,6 +128,32 @@ class TrainService {
       return SubsetImage.findBySubsetAndImage(subset,latestImage)
     }
 
+    def saveCurrentUserSubsetPosition(Subset subset) {
+      def user = (Users)springSecurityService.getCurrentUser()
+      def currentSubset = user.lastImageSubset.subset
+
+      def spu = SubsetPositionUser.findBySubsetAndUser(currentSubset,user)
+      if (!spu) {
+        spu = new SubsetPositionUser()
+        spu.user = user
+        spu.subset = currentSubset
+      }
+      spu.subsetImage = user.lastImageSubset
+      spu.save(flush: true)
+
+      def newSPU = SubsetPositionUser.findBySubsetAndUser(subset,user)
+      if (!newSPU) {
+        newSPU = new SubsetPositionUser()
+        newSPU.user = user
+        newSPU.subset = subset
+        newSPU.subsetImage = subset.imageSubsets[0]
+      }
+
+      user.lastImageSubset = newSPU.subsetImage
+      user.save(flush: true)
+    }
+
+
     def saveCurrentImageState(parasites) {
       def user = (Users)springSecurityService.getCurrentUser()
       parasites.each { k,v ->

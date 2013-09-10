@@ -61,12 +61,8 @@ class TrainController {
 
   def switchDataset() {
     trainService.saveCurrentImageState(session["parasites"])
-    def user = (Users)springSecurityService.getCurrentUser()
-//    def dataset = Dataset.get(params.datasetID)
     def subset = Subset.get(params.subsetID)
-//    user.lastImageSubset = trainService.determineLastImageForSubset(subset)
-    user.lastImageSubset = subset.imageSubsets[0]
-    user.save(flush: true)
+    trainService.saveCurrentUserSubsetPosition(subset)
     redirect(action: 'index')
   }
 
