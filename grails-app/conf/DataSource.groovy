@@ -34,7 +34,7 @@ environments {
             username = "root"
             password = ""
             dbCreate = "validate"
-            url = "jdbc:mysql://localhost/phenome_trainer?useUnicode=yes&characterEncoding=UTF-8"
+            url = "jdbc:mysql://localhost/phenome_trainer?useUnicode=yes&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull"
             pooled = true
             properties {
                maxActive = -1
