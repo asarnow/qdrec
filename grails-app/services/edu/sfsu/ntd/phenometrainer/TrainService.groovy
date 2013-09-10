@@ -41,13 +41,12 @@ class TrainService {
       def rs = preparedStatement.getResultSet()
       def id = rs.getInt(1)*/
 
-      def result = db.firstRow("SELECT id FROM parasite WHERE MBRContains(bounding_box, GeomFromText('Point(" + x +" " + y + ")')) AND parasite.image_id = :imageID",
+      def result = db.rows("SELECT id FROM parasite WHERE MBRContains(bounding_box, GeomFromText('Point(" + x +" " + y + ")')) AND parasite.image_id = :imageID",
                       [imageID: image.id])
 
-//      def result = db.firstRow(queryString)
-      def id = result.id
 
-      def p = Parasite.get(id)
+      def parasites = Parasite.getAll(result*.id)
+      def p = parasites.min { it.height * it.width }
 
       return dom2web(p, scale)
 
