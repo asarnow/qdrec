@@ -69,11 +69,11 @@
 
 </g:javascript>
 <div id="imageNavigation">
-  <g:remoteLink action="prevImage" params="[imageSubsetID: imageSubset.id]" update="trainDiv" onSuccess="setImageOnLoad();">
+  <g:remoteLink action="prevImage" params="[imageSubsetID: imageSubset.id]" update="trainDiv" >
                 %{--onSuccess="${remoteFunction(action: "imageParasites", params: [imageID: image.id], onSuccess: "setParasites(data);")}">--}%
     <button class="button">Prev</button>
   </g:remoteLink>
-  <g:remoteLink action="nextImage" params="[imageSubsetID: imageSubset.id]" update="trainDiv" onSuccess="setImageOnLoad();">
+  <g:remoteLink action="nextImage" params="[imageSubsetID: imageSubset.id]" update="trainDiv" >
                 %{--onSuccess="${remoteFunction(action: "imageParasites", params: [imageID: image.id], onSuccess: "setParasites(data);")}">--}%
     <button class="button">Next</button>
   </g:remoteLink>
