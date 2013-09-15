@@ -168,18 +168,26 @@ class TrainService {
     }
 
     def toggleParasites(sessionParasites) {
-
+      def parasites = []
       sessionParasites.each { k,v ->
         if ( sessionParasites[k].trainState == TrainState.NORMAL ) {
           sessionParasites[k].trainState = TrainState.DEGENERATE
         } else {
           sessionParasites[k].trainState = TrainState.NORMAL
         }
+        parasites.add(v)
       }
-      def parasites = []
-      sessionParasites.each {k,v -> parasites.add(v) }
-
       return parasites
+    }
+
+    def resetParasites(sessionParasites) {
+      def parasites = []
+      sessionParasites.each { k,v ->
+        sessionParasites[k].trainState = TrainState.NORMAL
+        parasites.add(v)
+      }
+      return parasites
+
     }
 
 }

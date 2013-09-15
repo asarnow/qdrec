@@ -82,9 +82,12 @@
                 %{--onSuccess="${remoteFunction(action: "imageParasites", params: [imageID: image.id], onSuccess: "setParasites(data);")}">--}%
     <button class="button">Next</button>
   </g:remoteLink>
-  <g:remoteLink action="toggleAllParasites" onSuccess="refreshVars();updateParasites(data);">
+  <g:remoteLink action="toggleParasites" onSuccess="updateParasites(data);">
     <button class="button">Toggle all</button>
   </g:remoteLink>
+  <g:remoteLink action="resetParasites" onSuccess="updateParasites(data);">
+      <button class="button">Reset all</button>
+    </g:remoteLink>
   <script>
     parasites = ${parasites};
     imageID = ${image.id};
