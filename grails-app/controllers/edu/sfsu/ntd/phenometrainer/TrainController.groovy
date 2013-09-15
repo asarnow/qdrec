@@ -118,4 +118,9 @@ class TrainController {
     render dataset?.subsets as JSON
   }
 
+  def toggleAllParasites() {
+    def parasites = trainService.toggleParasites(session["parasites"])
+    render parasites as JSON
+  }
+
 }

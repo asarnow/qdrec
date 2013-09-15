@@ -1,4 +1,5 @@
 package edu.sfsu.ntd.phenometrainer
+
 import groovy.sql.Sql
 
 class TrainService {
@@ -164,6 +165,21 @@ class TrainService {
         parasiteTrainState.trainer = user
         parasiteTrainState.save(flush: true)
       }
+    }
+
+    def toggleParasites(sessionParasites) {
+
+      sessionParasites.each { k,v ->
+        if ( sessionParasites[k].trainState == TrainState.NORMAL ) {
+          sessionParasites[k].trainState = TrainState.DEGENERATE
+        } else {
+          sessionParasites[k].trainState = TrainState.NORMAL
+        }
+      }
+      def parasites = []
+      sessionParasites.each {k,v -> parasites.add(v) }
+
+      return parasites
     }
 
 }
