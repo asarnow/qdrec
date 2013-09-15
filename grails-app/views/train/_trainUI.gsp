@@ -67,6 +67,11 @@
     $("#currentImg").load(refreshTrainUI());
   }
 
+  function updateParasites(data) {
+    parasites = data;
+    draw(parasites, context, image);
+  }
+
 </g:javascript>
 <div id="imageNavigation">
   <g:remoteLink action="prevImage" params="[imageSubsetID: imageSubset.id]" update="trainDiv" >
@@ -76,6 +81,9 @@
   <g:remoteLink action="nextImage" params="[imageSubsetID: imageSubset.id]" update="trainDiv" >
                 %{--onSuccess="${remoteFunction(action: "imageParasites", params: [imageID: image.id], onSuccess: "setParasites(data);")}">--}%
     <button class="button">Next</button>
+  </g:remoteLink>
+  <g:remoteLink action="toggleAllParasites" onSuccess="refreshVars();updateParasites(data);">
+    <button class="button">Toggle all</button>
   </g:remoteLink>
   <script>
     parasites = ${parasites};
