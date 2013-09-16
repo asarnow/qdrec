@@ -40,6 +40,14 @@
       <g:render template="trainUI" model="['imageSubset': imageSubset, 'subset':subset, 'image':image, 'control':control, parasites: parasites]"/>
     </div>
 
+    <div id="control" class="parasiteImage">
+      %{--<canvas id="controlImageCanvas"></canvas>--}%
+      <h4>${control.name}</h4>
+      <img id="controlImg" class="parasiteImage" src="${createLink(action: 'image', params: [imageID: control.id])}" width="${control.width*control.displayScale}" height="${control.height*control.displayScale}" />
+    </div>
+
+    <div class="clearDiv"></div>
+
   </div>
 </body>
 </html>

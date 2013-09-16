@@ -5,6 +5,7 @@
   var context;
   var image;
   var imageID;
+  var controlSrc, controlW, controlH;
 
   function refreshVars() {
     theCanvas = $("#parasiteImageCanvas").get(0);
@@ -72,13 +73,22 @@
     draw(parasites, context, image);
   }
 
+  function updateControl() {
+    var controlImg = $("#controlImg");
+    if ( controlImg.attr('src') !== controlSrc) {
+      controlImg.attr('src',controlSrc);
+      controlImg.css('width',controlW);
+      controlImg.css('height',controlH);
+    }
+  }
+
 </g:javascript>
 <div id="imageNavigation">
-  <g:remoteLink action="prevImage" params="[imageSubsetID: imageSubset.id]" update="trainDiv" >
+  <g:remoteLink action="prevImage" params="[imageSubsetID: imageSubset.id]" update="trainDiv" onComplete="updateControl();">
                 %{--onSuccess="${remoteFunction(action: "imageParasites", params: [imageID: image.id], onSuccess: "setParasites(data);")}">--}%
     <button class="button">Prev</button>
   </g:remoteLink>
-  <g:remoteLink action="nextImage" params="[imageSubsetID: imageSubset.id]" update="trainDiv" >
+  <g:remoteLink action="nextImage" params="[imageSubsetID: imageSubset.id]" update="trainDiv" onComplete="updateControl();">
                 %{--onSuccess="${remoteFunction(action: "imageParasites", params: [imageID: image.id], onSuccess: "setParasites(data);")}">--}%
     <button class="button">Next</button>
   </g:remoteLink>
@@ -91,6 +101,9 @@
   <script>
     parasites = ${parasites};
     imageID = ${image.id};
+    controlSrc = "${createLink(action: 'image', params: [imageID: control.id])}";
+    controlW = ${control.width * control.displayScale};
+    controlH = ${control.height * control.displayScale};
   </script>
 </div>
 <div id="currentImage" class="parasiteImage">
@@ -107,11 +120,3 @@
     HTML5 Canvas not supported.
   </canvas>
 </div>
-
-<div id="control" class="parasiteImage">
-  %{--<canvas id="controlImageCanvas"></canvas>--}%
-  <h4>${control.name}</h4>
-  <img id="controlImg" class="parasiteImage" src="${createLink(action: 'image', params: [imageID: control.id])}" width="${control.width*control.displayScale}" height="${control.height*control.displayScale}" />
-</div>
-
-<div class="clearDiv"></div>
