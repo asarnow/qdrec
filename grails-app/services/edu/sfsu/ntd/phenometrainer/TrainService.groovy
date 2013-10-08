@@ -96,7 +96,7 @@ class TrainService {
         i.parasites.each { Parasite p ->
           def pts = ParasiteTrainState.findByParasiteAndTrainer(p,user)
           lines.add(i.id.toString() + "," + i.name.toUpperCase() + "," + i.control.id.toString() + "," +
-                  p.id.toString() + "," + p.region.toString() + "," + pts.trainState.toString())
+                  p.id.toString() + "," + p.region.toString() + "," + p.getBBString() + "," + pts.trainState.toString())
         }
       }
       return lines
@@ -114,7 +114,7 @@ class TrainService {
         i.parasites.each { Parasite p ->
           def pts = ParasiteTrainState.findByParasiteAndTrainer(p,user)
           lines.add(i.id.toString() + "," + i.name.toUpperCase() + "," + i.control.id.toString() + "," +
-                  p.id.toString() + "," + p.region.toString() + "," + pts.trainState.toString())
+                  p.id.toString() + "," + p.region.toString() + "," + p.getBBString() + "," + pts.trainState.toString())
         }
       }
       return lines
