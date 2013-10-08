@@ -23,4 +23,8 @@ class Parasite {
         boundingBox type: GeometryUserType, sqlType: "Geometry"
       }
     }*/
+
+  def getBBString() {
+    return "$x,$y,$width,$height".toString()
+  }
 }

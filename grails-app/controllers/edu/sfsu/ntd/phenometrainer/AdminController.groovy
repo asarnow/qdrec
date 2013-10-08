@@ -12,8 +12,13 @@ class AdminController {
   }
 
   def userTrainStates() {
-    List<String> csvLines = trainService.findAllUserTrainStates(params.userId)
+    List<String> csvLines = trainService.findAllUserTrainStates(params.userID)
     // Format is image.id, image.name, para.id, para.region, trainState
+    render csvLines.join("\n")
+  }
+
+  def userSubsetTrainStates() {
+    List<String> csvLines = trainService.findAllUserSubsetTrainStates(params.userID, params.subsetID)
     render csvLines.join("\n")
   }
 }
