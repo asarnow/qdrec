@@ -342,3 +342,10 @@ img.parasiteImage {
     /*height: 520px;*/
 }
 
+#imageListDiv {
+    float: left;
+}
+
+#subsetDiv {
+    /*float: left;*/
+}
