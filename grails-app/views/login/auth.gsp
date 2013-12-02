@@ -33,6 +33,9 @@
 				<input type='submit' id="submit" value='${message(code: "springSecurity.login.button")}'/>
 			</p>
 		</form>
+
+    <a href="${createLink(controller: 'admin', action: 'createUser')}">Create new user</a>
+
 	</div>
 </div>
 <script type='text/javascript'>
