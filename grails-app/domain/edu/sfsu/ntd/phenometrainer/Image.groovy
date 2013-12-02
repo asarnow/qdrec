@@ -9,6 +9,8 @@ class Image {
 //  List imageData
 //  List parasites
 
+//  Dataset dataset
+
   String name
   Integer width
   Integer height
@@ -23,6 +25,7 @@ class Image {
 
   static constraints = {
     control nullable: true
+    dataset unique: 'name'
 //    position nullable: true
 //    imageData unique: true
 //    cdId nullable: true

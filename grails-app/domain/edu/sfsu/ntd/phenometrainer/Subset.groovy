@@ -9,6 +9,7 @@ class Subset {
   String description
 
   static constraints = {
+    dataset unique: 'description'
   }
 
   static mapping = {

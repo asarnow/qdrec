@@ -16,5 +16,6 @@ class ImageData {
 
   static constraints = {
     stream(maxSize: 3145728)
+    image unique: true
   }
 }
