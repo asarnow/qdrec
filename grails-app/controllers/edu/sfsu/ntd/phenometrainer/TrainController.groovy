@@ -106,11 +106,14 @@ class TrainController {
   }
 
   def image() {
-    def image = (Image.get(params.imageID).imageData as List)[0].stream
-    response.contentLength = image.length
+//    def stream = (Image.get(params.imageID).imageData as List)[0].stream
+    def image = Image.get(params.imageID)
+    def imagef = grailsApplication.config.PhenomeTrainer.dataDir + File.separator + image.dataset.id + File.separator + image.name + '.png'
+    def stream = new BufferedInputStream(new FileInputStream(imagef)).getBytes()
+    response.contentLength = stream.length
     response.contentType = 'image/png'
-    response.outputStream << image
-    response.outputStream.flush(image)
+    response.outputStream << stream
+    response.outputStream.flush()
   }
 
   def subsets() {
