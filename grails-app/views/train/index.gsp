@@ -20,8 +20,10 @@
 </g:javascript>
 <html>
 <head>
-  <title>Phenome Trainer</title>
+  <title>PhenomeTrainer: Training</title>
   <meta name="layout" content="main" />
+  <g:javascript library="jquery" />
+  <r:layoutResources/>
 </head>
 <body>
   <div id="main">
@@ -32,7 +34,7 @@
                   onchange="${remoteFunction(controller: "train", action: "subsets",
                           params: '\'datasetID=\' + this.value', onSuccess: "updateSubset(data)")}"/>
         <g:select name="subsetID" id="subset" from="${subsets}" optionValue="description" optionKey="id" value="${subset.id}"/>
-        <g:actionSubmit value="Switch" action="switchDataset" />
+        <g:actionSubmit value="Switch" action="switchDataset" class="button" />
       </g:form>
     </div>
 
