@@ -9,6 +9,7 @@
     voting="false"
     colorPicker="false"
     allowedExtensions="png"
+    noSound="true"
     maxSize="${2**20 * 50}" />
 </div>
 <div id="segUploadrDiv">
@@ -22,12 +23,18 @@
     voting="false"
     colorPicker="false"
     allowedExtensions="png"
+    noSound="true"
     maxSize="${2**20 * 50}" />
 </div>
 <div id="datasetFormDiv">
-    <g:formRemote name="datasetForm" url="[controller: 'upload', action: 'createDataset']" update="uploadDiv">
+    <g:formRemote name="datasetForm"
+                  url="[controller: 'upload', action: 'createDataset']"
+                  update="uploadDiv"
+                  before="if (\$('#datasetForm').valid()){"
+                  after="}"
+                  class="validatedForm">
       <label for="datasetName">Type a name for this data set:</label><g:textField name="datasetName"/><br />
       <g:hiddenField name="datasetDir" value="${datasetDir}"/>
-      <g:submitButton name="datasetSubmit" value="Submit" class="button"/>
+      <g:submitButton name="datasetSubmit" value="Submit" class="button" />
     </g:formRemote>
 </div>
