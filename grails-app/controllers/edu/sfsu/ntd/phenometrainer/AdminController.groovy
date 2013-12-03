@@ -30,7 +30,7 @@ class AdminController {
 
   def initUser() {
     def user = adminService.initUser(params.username, params.password, 'ROLE_USER')
-    return user
+    render(template: 'createUserResponse', model: [user: user])
   }
 
 }
