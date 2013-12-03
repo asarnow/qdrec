@@ -4,9 +4,13 @@ import edu.sfsu.ntd.phenometrainer.Users
 
 class BootStrap {
 
-//    def bootStrapService
+    def bootStrapService
 
     def init = { servletContext ->
+
+      bootStrapService.initRole("ROLE_USER")
+      bootStrapService.initRole("ROLE_ADMIN")
+
 //      bootStrapService.initCompound()
 
 //      Dataset dataset = bootStrapService.initDataset("118 statin images (Brian)")
