@@ -349,3 +349,14 @@ img.parasiteImage {
 #subsetDiv {
     /*float: left;*/
 }
+
+#imageUploadrDiv {
+    float:left;
+}
+#segUploadrDiv {
+    float: left;
+}
+
+#datasetFormDiv {
+    clear: both;
+}
