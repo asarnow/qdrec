@@ -9,9 +9,9 @@ class UploadController {
 
   def index() {
     def skipUpload = params.skipUpload
-    skipUpload = skipUpload != null ? skipUpload : 0L
-    def dataset = Dataset.last()
-    def datasetDir = grailsApplication.config.PhenomeTrainer.dataDir + File.separator + (dataset.id+1)
+    skipUpload = skipUpload != null ? skipUpload : false
+    def datasetID = Dataset.last()?.id ?: 1
+    def datasetDir = grailsApplication.config.PhenomeTrainer.dataDir + File.separator + datasetID
     render(view: 'upload', model: [datasetDir: datasetDir, skipUpload: skipUpload])
   }
 
