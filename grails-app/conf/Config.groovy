@@ -67,13 +67,13 @@ environments {
     }
     production {
         grails.logging.jul.usebridge = false
-        // TODO: grails.serverURL = "http://www.changeme.com"
+        grails.serverURL = "http://haddock4.sfsu.edu"
     }
 }
 
 PhenomeTrainer {
-  dataDir = "${userHome}${File.separator}PhenomeTrainerData"
-  svmsFile = "${userHome}${File.separator}PhenomeTrainerData${File.separator}svms.mat"
+  dataDir = "/home/da/Documents/IDEAProjects/PhenomeTrainer/app-data"
+  svmsFile = "/home/da/Documents/IDEAProjects/PhenomeTrainer/app-data/svms.mat"
 }
 
 // log4j configuration
