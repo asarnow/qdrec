@@ -11,7 +11,7 @@ class AdminService {
 
   def initUser(name, password, auth) {
     def role = Role.findByAuthority(auth)
-    def user = new Users(username:name, enabled: true, password: password, dateCreated: new Date(), lastImageSubset: SubsetImage.first())
+    def user = new Users(username:name, enabled: true, password: password, dateCreated: new Date(), lastImageSubset: null)
     user = user.save(failOnError: false)
     if (user != null) {
       UserRole.create user, role, true
@@ -32,7 +32,7 @@ class AdminService {
     }
 
     PhenomJ phenomJ = new PhenomJ()
-    phenomJ.imageDatabase(1,datasetDir)
+    phenomJ.imageDatabase(datasetDir)
 
     initImage(datasetDir, dataset)
     assocControls(dataset)
