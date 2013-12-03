@@ -11,55 +11,30 @@
 <head>
   <title>PhenomeTrainer: Create new user</title>
   <meta name='layout' content='main'/>
-  <g:javascript library="jquery" />
-  <r:layoutResources/>
-  <jqval:resources/>
-
+  <r:require modules="jquery-validate"/>
 </head>
 <body>
 <g:javascript>
-    $('.validatedForm').validate({
-      debug: true,
-      submitHandler: function(form) {
-        $.ajax({
-          type:     'POST',
-          data:     $(form).serialize(),
-          url:      '${createLink(controller: 'admin', action: 'initUser')}',
-          success:  function(data,textStatus){},
-          error:    function(XMLHttpRequest,textStatus,errorThrown){}
-        });
-        return false;
-      },
-      invalidHandler: function(event, validator) {
-          // 'this' refers to the form
-          var errors = validator.numberOfInvalids();
-          if (errors) {
-            var message = errors == 1
-              ? 'You missed 1 field. It has been highlighted'
-              : 'You missed ' + errors + ' fields. They have been highlighted';
-            $("div.error span").html(message);
-            $("div.error").show();
-          } else {
-            $("div.error").hide();
-          }
-      },
-      rules: {
-        username: {
-          minlength: 4,
-          required: true
-        },
-        password: {
-          minlength: 5,
-          required: true
-        },
-        password_confirm: {
-          minlength: 5,
-          equalTo: "#password",
-          required: true
-        }
-      }
-    });
 
+    $(document).ready(function() {
+      $('.validatedForm').validate({
+        rules: {
+          username: {
+            minlength: 4,
+            required: true
+          },
+          password: {
+            minlength: 5,
+            required: true
+          },
+          passwordConfirm: {
+            minlength: 5,
+            equalTo: "#password",
+            required: true
+          }
+        }
+      });
+    });
     /*$('.password').change(function() {
       if (!$('.validatedForm').valid()) {
         $('#passwordMessage').text("Passwords do not match!")
@@ -69,25 +44,33 @@
     });*/
 </g:javascript>
   <div id="createUserFormDiv">
-  %{--<g:formRemote name="createUserForm" url="[controller: 'admin', action: 'initUser']" class="validatedForm">--}%
-    <form method="post" action="${createLink(controller: 'admin', action: 'initUser')}" class="validatedForm" id="createUserForm">
+  <g:formRemote name="createUserForm"
+                url="[controller: 'admin', action: 'initUser']"
+                class="validatedForm"
+                before="if (\$('#createUserForm').valid()){"
+                after="}"
+                update="createUserResult">
+    %{--<form method="post" action="${createLink(controller: 'admin', action: 'initUser')}" class="validatedForm" id="createUserForm">--}%
       <p>
         <label for="username">Username:</label>
-        <g:textField name="username" maxlength="50"></g:textField>
+        <g:textField name="username" maxlength="50"/>
       </p>
       <p>
         <label for="password">Password:</label>
-        <input type="password" name="password" id="password" class="password"/>
+        %{--<input type="password" name="password" id="password" class="password"/>--}%
+        <g:passwordField name="password" class="password" />
       </p>
       <p>
         <label for="passwordConfirm">Confirm:</label>
-        <input type="password" name="password_confirm" id="passwordConfirm" class="password"/>
-        <span id="passwordMessage"></span>
+        %{--<input type="password" name="password_confirm" id="passwordConfirm" class="password"/>--}%
+        <g:passwordField name="passwordConfirm" class="password" />
+        %{--<span id="passwordMessage"></span>--}%
       </p>
-      <button class='button' id="createUserSubmit">Submit</button>
-    </form>
-  %{--</g:formRemote>--}%
+      %{--<button class='button' id="createUserSubmit">Submit</button>--}%
+    <g:submitButton name="createUserSubmit" value="Submit" class="button"/>
+    %{--</form>--}%
+  </g:formRemote>
   </div>
-<r:layoutResources/>
+  <div id="createUserResult"></div>
 </body>
 </html>
