@@ -11,7 +11,7 @@
 <head>
   <title></title>
   <meta name="layout" content="main" />
-  <r:require modules="uploadr"/>
+  <r:require modules="uploadr,jquery-validate"/>
   <g:javascript>
 
     function invertSelection(list) {
@@ -29,6 +29,17 @@
       $('#clearButton').click(function(){
         clearSelection($('#imageList'));
       });
+
+//      $('#datasetForm').addClass('validatedForm')
+      $('.validatedForm').validate({
+        rules: {
+                  datasetName: {
+                    minlength: 4,
+                    required: true
+                }
+        }
+      });
+
     });
   </g:javascript>
 </head>
