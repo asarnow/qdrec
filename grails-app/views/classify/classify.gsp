@@ -10,7 +10,6 @@
 <html>
 <head>
   <title>PhenomeTrainer: Classifier</title>
-  <g:javascript library="jquery" />
   <meta name="layout" content="main" />
   <g:javascript>
 
