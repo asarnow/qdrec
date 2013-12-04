@@ -1,4 +1,4 @@
-<g:form>
+<g:form class="validatedForm">
   <label for="datasetID">Select dataset:</label>
   <g:select name="datasetID" from="${datasets}" optionValue="description" optionKey="id" value="${datasetID}"
                     onchange="${remoteFunction(controller: "train", action: "subsets",
