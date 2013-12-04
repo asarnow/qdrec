@@ -27,14 +27,13 @@
     maxSize="${2**20 * 50}" />
 </div>
 <div id="datasetFormDiv">
-    <g:formRemote name="datasetForm"
+    <g:form name="datasetForm"
                   url="[controller: 'upload', action: 'createDataset']"
-                  update="uploadDiv"
                   before="if (\$('#datasetForm').valid()){"
                   after="}"
                   class="validatedForm">
       <label for="datasetName">Type a name for this data set:</label><g:textField name="datasetName"/><br />
       <g:hiddenField name="datasetDir" value="${datasetDir}"/>
       <g:submitButton name="datasetSubmit" value="Submit" class="button" />
-    </g:formRemote>
+    </g:form>
 </div>
