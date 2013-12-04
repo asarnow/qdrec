@@ -11,6 +11,7 @@
 <head>
   <title>PhenomeTrainer: Classifier</title>
   <meta name="layout" content="main" />
+  <r:require modules="jquery-validate"/>
   <g:javascript>
 
     function updateSubset(data,elem) {
@@ -27,6 +28,18 @@
       $('#trainingDiv').hide();
       $('#trainSVM').change(function(){
         $('#trainingDiv').toggle(this.checked);
+      });
+      $('.validatedForm').validate({
+        rules: {
+          sigma: {
+            number: true,
+            required: true
+          },
+          boxConstraint: {
+            number: true,
+            required: true
+          }
+        }
       });
     });
   </g:javascript>
