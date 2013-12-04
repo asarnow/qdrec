@@ -14,21 +14,7 @@
   <r:require modules="uploadr,jquery-validate"/>
   <g:javascript>
 
-    function invertSelection(list) {
-      $(list).children().prop('selected',function(i,selected){return !selected;});
-    }
-
-    function clearSelection(list) {
-      $(list).children().prop('selected',function(i){return false;});
-    }
-
     $(document).ready( function() {
-      $('#invertButton').click(function(){
-        invertSelection($('#imageList'));
-      });
-      $('#clearButton').click(function(){
-        clearSelection($('#imageList'));
-      });
 
 //      $('#datasetForm').addClass('validatedForm')
       $('.validatedForm').validate({
@@ -45,17 +31,9 @@
 </head>
 <body>
   <div id="uploadDiv">
-    <g:if test="${skipUpload}">
-      <g:render template="dataset" model="[datasetDir: datasetDir, dataset: Dataset.get(skipUpload)]"/>
-    </g:if>
-    <g:else>
-      <g:render template="uploadForm" model="[datasetDir: datasetDir]"/>
-    </g:else>
-
+    <g:render template="uploadForm" model="[datasetDir: datasetDir]"/>
   </div>
   <div id="statusDiv">
-
   </div>
-
 </body>
 </html>
