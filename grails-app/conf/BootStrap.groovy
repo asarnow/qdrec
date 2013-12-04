@@ -5,11 +5,14 @@ import edu.sfsu.ntd.phenometrainer.Users
 class BootStrap {
 
     def bootStrapService
+    def grailsApplication
 
     def init = { servletContext ->
 
       bootStrapService.initRole("ROLE_USER")
       bootStrapService.initRole("ROLE_ADMIN")
+      bootStrapService.initUser("schisto","schisto","ROLE_USER")
+      new File(grailsApplication.config.PhenomeTrainer.dataDir + "/1").deleteDir()
 
 //      bootStrapService.initCompound()
 
