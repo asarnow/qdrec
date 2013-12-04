@@ -8,21 +8,34 @@ class UploadController {
   def adminService
 
   def index() {
-    def skipUpload = params.skipUpload
-    skipUpload = skipUpload != null ? skipUpload : false
     def datasetID = Dataset.last()?.id ?: 1
     def datasetDir = grailsApplication.config.PhenomeTrainer.dataDir + File.separator + datasetID
-    render(view: 'upload', model: [datasetDir: datasetDir, skipUpload: skipUpload])
+    render(view: 'upload', model: [datasetDir: datasetDir])
   }
 
   def createDataset() {
     def dataset = adminService.initDataset(params.datasetName, params.datasetDir)
-    render(template: 'dataset', model: [dataset: dataset])
+    redirect(action: 'define', params: [datasetID: dataset.id])
+  }
+
+  def define() {
+    def dataset
+    if (params.datasetID != null) {
+      dataset = Dataset.get(params.datasetID)
+    } else {
+      dataset = Dataset.last()
+    }
+    render(view: 'define', model: [dataset: dataset])
+  }
+
+  def dataset() {
+    render(template: 'dataset', model: [dataset: Dataset.get(params.datasetID)])
   }
 
   def createSubset() {
-    def dataset = adminService.defineSubset(params.subsetName, params.datasetID, params.imageList)
-    render(template: 'subset', model: [subsets: dataset.subsets])
+    adminService.defineSubset(params.subsetName, params.datasetID, params.imageList)
+//    render(template: 'subset', model: [subsets: Dataset.get(params.datasetID).subsets])
+    render(template: 'dataset', model: [dataset: Dataset.get(params.datasetID)])
   }
 
   def imageList() {
