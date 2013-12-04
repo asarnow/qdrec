@@ -2,12 +2,13 @@ package edu.sfsu.ntd.phenometrainer
 import ar.com.hjg.pngj.PngReader
 import au.com.bytecode.opencsv.CSVReader
 import groovy.sql.Sql
-import org.codehaus.groovy.grails.plugins.DomainClassGrailsPlugin
 import phenomj.PhenomJ
 
 class AdminService {
 
   def grailsApplication
+  def sessionFactory
+  def dataSource
 
   def initUser(name, password, auth) {
     def role = Role.findByAuthority(auth)
@@ -34,11 +35,11 @@ class AdminService {
     PhenomJ phenomJ = new PhenomJ()
     phenomJ.imageDatabase(datasetDir)
 
-    initImage(datasetDir, dataset)
+    dataset = initImage(datasetDir, dataset)
     assocControls(dataset)
     initParasite(dataset)
 
-    return dataset.save()
+    return dataset.save(flush: true)
   }
 
   def defineSubset(subsetName, datasetID, images) {
@@ -52,7 +53,8 @@ class AdminService {
     subset = new Subset()
     dataset.addToSubsets(subset)
     subset.description = subsetName
-    images.each { image ->
+    images.each { imageID ->
+      def image = Image.get(imageID)
       def imageSubset = new SubsetImage()
       subset.addToImageSubsets(imageSubset)
       imageSubset.image = image
@@ -64,14 +66,22 @@ class AdminService {
   def initImage(String datadir, Dataset dataset) {
     CSVReader reader = new CSVReader(new FileReader(datadir + File.separator + "imagedb.csv"))
     List<String[]> lines = reader.readAll()
-//    def position = dataset.size
-    def datasetID = dataset.id
+//    def datasetID = dataset.id
     for (int i=0; i<lines.size(); i++) {
       String[] line = lines[i]
-//      dataset.size++
-//      image.position = position++
+
+      Image image = new Image()
+      image.dataset = dataset
+
+      image.conc = Double.valueOf(line[2])
+      image.day = Integer.valueOf(line[3])
+      image.series = line[4].charAt(0)
+      image.date = Date.parse("MMddyy",line[5])
+
+      image.name = line[0]
+
       def cdId
-      if (line[1].equals("control")) {
+      if (line[1].equals("control") || image.conc==0D) {
         cdId = 0
       } else {
         def compound = Compound.findByAliasLike("%"+line[1]+"%")
@@ -79,19 +89,12 @@ class AdminService {
           compound = new Compound()
           compound.name = line[1]
           compound.alias = line[1]
-          compound = compound.save()
+          compound = compound.save(flush: true)
         }
         cdId = compound.id
       }
-      Image image = new Image()
-      image.dataset = dataset
-      image.cdId = cdId
-      image.conc = Double.valueOf(line[2])
-      image.day = Integer.valueOf(line[3])
-      image.series = line[4].charAt(0)
-      image.date = Date.parse("MMddyy",line[5])
 
-      image.name = line[0]
+      image.cdId = cdId
 //      BufferedImage bi = ImageIO.read(new File(datadir + File.separator + line[0] + ".png"))
 //      image.width = bi.getWidth()
 //      image.height = bi.getHeight()
@@ -102,7 +105,7 @@ class AdminService {
       image.displayScale = image.width*image.height > 768**2 ? 0.5 : 1.0;
 
       dataset.addToImages(image)
-      image.save()
+      image.save(flush: true)
 
 //      image.addToImageData( new ImageData(new BufferedInputStream(new FileInputStream(datadir + File.separator + line[0] + ".png")).getBytes()) )
 //      ImageData imageData = new ImageData()
@@ -129,15 +132,16 @@ class AdminService {
         parasite.width = width
         parasite.height = height
 
-        parasite.save()
+        parasite = parasite.save(flush: true)
 //        parasites.add(parasite)
-//        image.addToParasites(parasite)
+        image.addToParasites(parasite)
+        parasite.save(flush: true)
       }
 //      image.parasites = parasites
-//      image.save()
+      image.save(flush: true)
 //      dataset.addToImages(image)
       // Memory leak workaround
-      if (i%10 == 0 && i!=lines.size()-1) {
+      /*if (i%10 == 0 && i!=lines.size()-1) {
         dataset.save()
         def hibSession = sessionFactory.getCurrentSession()
         assert hibSession != null
@@ -145,20 +149,21 @@ class AdminService {
         hibSession.clear()
         DomainClassGrailsPlugin.PROPERTY_INSTANCE_MAP.get().clear()
         dataset = Dataset.get(datasetID)
-      }
+      }*/
       log.info "Inserted " + datadir + File.separator + 'img' + File.separator + line[0] + ".png"
     }
     reader.close()
 
     dataset.size = dataset.images.size()
-    dataset.save(flush: true)
+    dataset = dataset.save(flush: true)
 
     log.info "Finished inserting images"
 //    assocControls()
-    def hibSession = sessionFactory.getCurrentSession()
-    assert hibSession != null
-    hibSession.flush()
+//    def hibSession = sessionFactory.getCurrentSession()
+//    assert hibSession != null
+//    hibSession.flush()
 //    log.info "Associated images with controls"
+    return dataset
   }
 
   def assocControls(Dataset dataset) {
@@ -166,13 +171,13 @@ class AdminService {
       def control = null
       try {
         def query = Image.where {
-          (dataset==image.dataset && cdId==0 && day==image.day && series==image.series && date==image.date)
+          (dataset==image.dataset && (cdId==0||conc==0) && day==image.day && series==image.series && date==image.date)
         }
         control = query.find()
 
         if (control == null) {
           def query2 = Image.where {
-                  (dataset==image.dataset && cdId==0 && day==image.day && date==image.date)
+                  (dataset==image.dataset && (cdId==0||conc==0) && day==image.day && date==image.date)
                 }
           control = query2.findAll()[0];
         }
@@ -181,24 +186,30 @@ class AdminService {
       }
 
       image.control = control
-      image.save()
+      image.merge(flush: true)
     }
   }
 
   def initParasite(Dataset dataset) {
-      for (Parasite p : dataset.images.parasites.flatten()) {
+    def parasites = dataset.images.parasites.flatten()
+      for (Parasite p : parasites) {
+        if (p!=null) {
+          int X = p.x;
+          int Y = p.y;
+          int X1 = p.x + p.width
+          int Y1 = p.y + p.height
 
-        int X = p.x;
-        int Y = p.y;
-        int X1 = p.x + p.width
-        int Y1 = p.y + p.height
+          String param = "GeomFromText( 'POLYGON((" + X + " " + Y + "," + X1 + " " + Y + "," + X1 + " " + Y1 + "," + X + " " + Y1 + "," + X + " " + Y + "))' )";
+          def db = new Sql(dataSource)
 
-        String param = "GeomFromText( 'POLYGON((" + X + " " + Y + "," + X1 + " " + Y + "," + X1 + " " + Y1 + "," + X + " " + Y1 + "," + X + " " + Y + "))' )";
-        def db = new Sql(dataSource)
-
-        db.executeUpdate("UPDATE parasite set bounding_box "
-                                + "=" + param + " WHERE id = ${p.id}")
+          db.executeUpdate("UPDATE parasite set bounding_box "
+                                  + "=" + param + " WHERE id = ${p.id}")
+        }
       }
     }
+
+  def findDatasetDir(dataset) {
+    return grailsApplication.config.PhenomeTrainer.dataDir + File.separator + dataset.id
+  }
 
 }
