@@ -66,10 +66,10 @@ class ClassifyService {
     return result
   }
 
-  def findTrainingVector(user, subset) {
+  def findTrainingVector(Users user,Subset subset) {
     List<Boolean> trv = []
-    subset.imageSubsets.image.each { i ->
-      i.parasites.each { Parasite p ->
+    subset.imageSubsets.image.sort{a,b->a.id<=>b.id}.each { i ->
+      i.parasites.sort{a,b->a.id<=>b.id}.each { Parasite p ->
         def pts = ParasiteTrainState.findByParasiteAndTrainer(p,user)
         trv.add(pts.trainState == TrainState.DEGENERATE)
       }
