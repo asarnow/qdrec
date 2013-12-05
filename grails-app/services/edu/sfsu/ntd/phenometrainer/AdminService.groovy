@@ -60,7 +60,7 @@ class AdminService {
       imageSubset.image = image
     }
     subset.size = subset.imageSubsets.size()
-    return dataset.save()
+    return dataset.save(flush: true)
   }
 
   def initImage(String datadir, Dataset dataset) {
