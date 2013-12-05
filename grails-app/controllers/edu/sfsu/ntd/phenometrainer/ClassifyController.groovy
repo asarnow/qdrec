@@ -15,10 +15,15 @@ class ClassifyController {
     if (params.trainSVM) {
       def user = (Users)springSecurityService.getCurrentUser()
       def result = classifyService.trainAndClassify(params.datasetID,user,params.testingID,params.trainingID,params.sigma,params.boxConstraint)
-      render(template: 'result', model: [cm: result.cm, Rtrain: result.Rtrain, Rtest: result.Rtest, trainImages: result.trainImages, testImages:result.testImages])
+      render(template: 'result',
+              model: [cm: result.cm as double[][],
+                      Rtrain: result.Rtrain as double[][],
+                      Rtest: result.Rtest as double[][],
+                      trainImages: result.trainImages as List,
+                      testImages:result.testImages as List])
     } else {
       def result = classifyService.classifyOnly(params.datasetID,params.testingID)
-      render(template: 'result', model: [Rtest: result.Rtest, testImages: result.testImages])
+      render(template: 'result', model: [Rtest: result.Rtest as double[][], testImages: result.testImages as List])
     }
   }
 
