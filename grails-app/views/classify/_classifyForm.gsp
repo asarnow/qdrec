@@ -9,9 +9,9 @@
     <label for="trainingID">Select training set:</label>
     <g:select name="trainingID" from="${subsets}" optionKey="id" optionValue="description"/>
     <label for="sigma">RBF Sigma:</label>
-    <g:textField name="sigma" value="3.2789" />
+    <g:textField name="sigma" value="6.9414" />
     <label for="boxConstraint">Soft-margin box constraint:</label>
-    <g:textField name="boxConstraint" value="6.9414"/>
+    <g:textField name="boxConstraint" value="3.2789"/>
   </div>
   <br />
   <label for="testingID">Select testing set:</label>
