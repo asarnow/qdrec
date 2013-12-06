@@ -46,13 +46,14 @@ class AdminService {
     def dataset = Dataset.get(datasetID)
     def subset = Subset.findByDescriptionAndDataset(subsetName,dataset)
 
-    if (subset!=null) {
-      subset.delete() // should cascade to all subsetImage
+    if (subset==null) {
+      subset = new Subset()
+      dataset.addToSubsets(subset)
+      subset.description = subsetName
+    } else {
+      subset.imageSubsets.clear()
     }
 
-    subset = new Subset()
-    dataset.addToSubsets(subset)
-    subset.description = subsetName
     images.each { imageID ->
       def image = Image.get(imageID)
       def imageSubset = new SubsetImage()
@@ -60,6 +61,7 @@ class AdminService {
       imageSubset.image = image
     }
     subset.size = subset.imageSubsets.size()
+    subset = subset.save(flush:true)
     return dataset.save(flush: true)
   }
 
