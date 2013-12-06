@@ -15,7 +15,7 @@ class ClassifyService {
     double sigma = Double.valueOf(sigmaS)
     double C = Double.valueOf(boxConstraint)
 
-    def G = findTrainingVector(user,training)
+    boolean[] G = findTrainingVector(user,training)
 
     def vids_test = testing.imageSubsets.image.name
     def vids_train = training.imageSubsets.image.name
@@ -74,7 +74,9 @@ class ClassifyService {
         trv.add(pts.trainState == TrainState.DEGENERATE)
       }
     }
-    return trv
+    boolean[] trva = new boolean[trv.size()]
+    trv.eachWithIndex { boolean entry, int i -> trva[i] = entry}
+    return trva
   }
 
   def list2cell(List l) {
