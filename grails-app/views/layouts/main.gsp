@@ -17,7 +17,7 @@
 	<body>
     <div id="title">
       <a class="logout" href="${createLink(controller: 'logout')}">Logout</a>
-      <h1>Phenome Trainer</h1>
+      <h1>QDREC</h1>
       <div class="nav">
         <ul>
           <li>
