@@ -81,9 +81,9 @@ p {
     padding-right: 0;
     padding-left: 0;
     padding-bottom: 0;
-    background-color: #25587e;
+    background-color: #333333;
     margin: 5px 5px 5px 5px;
-    border: 1px solid #25587E; /* without border, IE won't fill bgcolor. One of IE styling issues. */
+    border: 1px solid #333333; /* without border, IE won't fill bgcolor. One of IE styling issues. */
     text-align: left;
     /*height: 58px;*/
 }
@@ -359,4 +359,44 @@ img.parasiteImage {
 
 #datasetFormDiv {
     clear: both;
+}
+
+#trainingDiv {
+    padding: 0.5em;
+}
+
+#testingDiv {
+    padding-top: 0.5em;
+}
+
+.confusionMatrix {
+    padding-left: 1em;
+    padding-top: 1em;
+}
+
+.confusionMatrix table {
+    border: 2px solid #333333;
+}
+
+.confusionMatrix td {
+    border: 1px solid #777777;
+}
+
+.result {
+    float: left;
+    padding-top: 1em;
+    padding-left: 1em;
+}
+
+.result table {
+    border: 2px solid #333333;
+}
+
+.result td {
+    border: 1px solid #777777;
+    text-align: center;
+}
+
+.confusionMatrix td.emptycell {
+    border: none;
 }

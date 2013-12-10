@@ -1,36 +1,50 @@
 <g:if test="${cm!=null}">
-  <div id="confusionMatrixDiv">
+  <div id="confusionMatrixDiv" class="confusionMatrix">
     <table>
       <thead>
         <tr>
-          Cross-validated confusion matrix
-        </tr>
-        <tr>
-          <td></td>
-          <td></td>
+          Training Set Confusion Matrix
         </tr>
       </thead>
       <tbody>
-        <g:each in="${cm}">
-          <tr>
-            <td>
-              ${it[0]}
-            </td>
-            <td>
-              ${it[1]}
-            </td>
-          </tr>
-        </g:each>
+        <tr>
+          <td class="emptycell"></td>
+          <td colspan="2" style="text-align: center; border: none;">Target Class</td>
+        </tr>
+        <tr>
+          <td class="emptycell">Output Class</td>
+          <td>Normal</td>
+          <td>Degenerate</td>
+        </tr>
+        <tr>
+          <td>Normal</td>
+          <td>
+            ${cm[0][0]}
+          </td>
+          <td>
+            ${cm[0][1]}
+          </td>
+        </tr>
+        <tr>
+          <td>Degenerate</td>
+          <td>
+            ${cm[1][0]}
+          </td>
+          <td>
+            ${cm[1][1]}
+          </td>
+        </tr>
+
       </tbody>
     </table>
   </div>
 </g:if>
 
 <g:if test="${Rtrain!=null}">
-  <div id="trainResultDiv">
+  <div id="trainResultDiv" class="result">
     <table>
       <thead>
-        <tr>Cross-validated Training</tr>
+        <tr>Training Set Results (cross-validated)</tr>
         <tr>
           <td>Image</td>
           <td>Response</td>
@@ -51,11 +65,11 @@
 </g:if>
 
 <g:if test="${Rtest!=null}">
-  <div id="testResultDiv">
+  <div id="testResultDiv" class="result">
     <table>
       <thead>
         <tr>
-          Testing
+          Test Set Results
         </tr>
         <tr>
           <td>Image</td>
