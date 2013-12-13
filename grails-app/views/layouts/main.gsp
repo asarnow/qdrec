@@ -15,23 +15,31 @@
     <r:layoutResources />
 	</head>
 	<body>
-    <div id="title">
-      <a class="logout" href="${createLink(controller: 'logout')}">Logout</a>
-      <h1>QDREC</h1>
+    <div id="topbar">
+      <div id="title">
+        <a class="logout" href="${createLink(controller: 'logout')}">Logout</a>
+        <a href="${createLink(controller: 'page', action: 'about')}"><img src="${resource(dir: 'images', file: 'schistosoma.png')}"/></a>
+          <a href="${createLink(controller: 'page', action: 'about')}"><h1>QDREC</h1></a>
+          <a href="${createLink(controller: 'page', action: 'about')}"><h2>Quantal Dose Response Calculator</h2></a>
+        </a>
+      </div>
       <div class="nav">
         <ul>
           <li>
+            <a href="${createLink(controller: 'page', action: 'about')}">About</a>
+            <a href="${createLink(controller: 'page', action: 'help')}">Instructions</a>
             <a href="${createLink(controller: 'upload', action: 'index')}">Upload</a>
             <a href="${createLink(controller: 'upload', action: 'define')}">Define</a>
             <a href="${createLink(controller: 'train', action: 'index')}">Train</a>
             <a href="${createLink(controller: 'classify', action: 'index')}">Classify</a>
-            <a href="${createLink(controller: 'page', action: 'help')}">Instructions</a>
           </li>
         </ul>
       </div>
     </div>
-
-		<g:layoutBody/>
+    <div class="clearDiv"></div>
+    <div class="content">
+		  <g:layoutBody/>
+    </div>
 		<div class="footer" role="contentinfo"></div>
 		%{--<g:javascript library="application"/>--}%
 		<r:layoutResources />
