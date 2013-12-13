@@ -97,7 +97,7 @@
   </g:remoteLink>
   <g:remoteLink action="resetParasites" onSuccess="updateParasites(data);">
       <button class="button">Reset all</button>
-    </g:remoteLink>
+  </g:remoteLink>
   <script>
     parasites = ${parasites};
     imageID = ${image.id};
