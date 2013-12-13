@@ -1,4 +1,7 @@
-<g:form class="validatedForm">
+<g:form name="classifyForm"
+        class="validatedForm"
+        before="if (\$('#classifyForm').valid()){"
+        after="}">
   <label for="datasetID">Select dataset:</label>
   <g:select name="datasetID" from="${datasets}" optionValue="description" optionKey="id" value="${datasetID}"
                     onchange="${remoteFunction(controller: "train", action: "subsets",
