@@ -1,5 +1,8 @@
 package edu.sfsu.ntd.phenometrainer
 
+import grails.plugins.springsecurity.Secured
+
+@Secured(['ROLE_USER'])
 class ClassifyController {
 
   def springSecurityService
