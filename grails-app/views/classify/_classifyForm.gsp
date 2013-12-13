@@ -19,7 +19,7 @@
   <div id="testingDiv">
     <label for="testingID">Select testing set:</label>
     <g:select name="testingID" from="${subsets}" optionKey="id" optionValue="description"/>
-    <g:submitToRemote name="classifySubmit" class="button" value="Go!"
+    <g:submitToRemote name="classifySubmit" class="button" value="Classify"
       url="[controller: 'classify', action: 'classify']" update="resultsDiv"/>
   </div>
 </g:form>
