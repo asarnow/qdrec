@@ -30,9 +30,11 @@
     <div>
       <h4>Subset "${subset.description}" selected from dataset "${dataset.description}"</h4>
       <g:form>
+        <label for="datasetID">Dataset:</label>
         <g:select name="datasetID" from="${datasets}" optionValue="description" optionKey="id" value="${dataset.id}"
                   onchange="${remoteFunction(controller: "train", action: "subsets",
                           params: '\'datasetID=\' + this.value', onSuccess: "updateSubset(data)")}"/>
+        <label for="subset">Subset:</label>
         <g:select name="subsetID" id="subset" from="${subsets}" optionValue="description" optionKey="id" value="${subset.id}"/>
         <g:actionSubmit value="Switch" action="switchDataset" class="button" />
       </g:form>
