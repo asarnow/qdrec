@@ -1,11 +1,13 @@
 package edu.sfsu.ntd.phenometrainer
 
+import grails.util.Holders
 import org.springframework.security.access.annotation.Secured
 
 @Secured(['ROLE_USER'])
 class UploadController {
 
   def adminService
+  def grailsApplication = Holders.getGrailsApplication()
 
   def index() {
     def datasetID = Dataset.last()?.id?: 0

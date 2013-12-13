@@ -1,10 +1,12 @@
 package edu.sfsu.ntd.phenometrainer
 import grails.converters.JSON
+import grails.util.Holders
 import org.springframework.security.access.annotation.Secured
 
 @Secured(['ROLE_USER'])
 class TrainController {
 
+    def grailsApplication = Holders.getGrailsApplication()
     def springSecurityService
     def trainService
 

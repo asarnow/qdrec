@@ -1,11 +1,12 @@
 import edu.sfsu.ntd.phenometrainer.Dataset
 import edu.sfsu.ntd.phenometrainer.Image
 import edu.sfsu.ntd.phenometrainer.Users
+import grails.util.Holders
 
 class BootStrap {
 
     def bootStrapService
-    def grailsApplication
+    def grailsApplication = Holders.getGrailsApplication()
 
     def init = { servletContext ->
 

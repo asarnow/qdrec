@@ -2,10 +2,11 @@ package edu.sfsu.ntd.phenometrainer
 import com.mathworks.toolbox.javabuilder.MWArray
 import com.mathworks.toolbox.javabuilder.MWCellArray
 import com.mathworks.toolbox.javabuilder.MWCharArray
+import grails.util.Holders
 import phenomj.PhenomJ
 
 class ClassifyService {
-  def grailsApplication
+  def grailsApplication = Holders.getGrailsApplication()
 
   def trainAndClassify(datasetID,user,testingID,trainingID,String sigmaS,String boxConstraint) {
 
