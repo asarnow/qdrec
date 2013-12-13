@@ -8,8 +8,11 @@ class UploadController {
   def adminService
 
   def index() {
-    def datasetID = Dataset.last()?.id ?: 1
+    def datasetID = Dataset.last()?.id?: 0
+    datasetID += 1
     def datasetDir = grailsApplication.config.PhenomeTrainer.dataDir + File.separator + datasetID
+    def dir = new File(datasetDir);
+    if (dir.exists()) dir.deleteDir();
     render(view: 'upload', model: [datasetDir: datasetDir])
   }
 
