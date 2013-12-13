@@ -1,4 +1,5 @@
 import edu.sfsu.ntd.phenometrainer.BootStrapService
+import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
 
 // locations to search for config files that get merged into the main config;
 // config files can be ConfigSlurper scripts, Java properties files, or classes
@@ -64,6 +65,7 @@ grails.hibernate.cache.queries = false
 environments {
     development {
         grails.logging.jul.usebridge = true
+        grails.app.context = "/PhenomeTrainer"
         PhenomeTrainer {
           dataDir = "/home/da/Documents/IDEAProjects/PhenomeTrainer/app-data"
           svmsFile = "/home/da/Documents/IDEAProjects/PhenomeTrainer/app-data/svms.mat"
@@ -71,7 +73,10 @@ environments {
     }
     production {
         grails.logging.jul.usebridge = false
+//        grails.app.context = "/qdrec"
         grails.serverURL = "http://haddock4.sfsu.edu"
+        grails.plugins.springsecurity.successHandler.defaultTargetUrl = "/qdrec"
+//        grails.plugins.springsecurity.logout.afterLogoutUrl = "/qdrec"
         PhenomeTrainer {
           dataDir = "/home/dev/qdrec-data"
           svmsFile = "/home/dev/qdrec-data/svms.mat"
