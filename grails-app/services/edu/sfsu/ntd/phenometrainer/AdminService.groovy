@@ -1,12 +1,13 @@
 package edu.sfsu.ntd.phenometrainer
 import ar.com.hjg.pngj.PngReader
 import au.com.bytecode.opencsv.CSVReader
+import grails.util.Holders
 import groovy.sql.Sql
 import phenomj.PhenomJ
 
 class AdminService {
 
-  def grailsApplication
+  def grailsApplication = Holders.getGrailsApplication()
   def sessionFactory
   def dataSource
 
