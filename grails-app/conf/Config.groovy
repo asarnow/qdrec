@@ -64,16 +64,19 @@ grails.hibernate.cache.queries = false
 environments {
     development {
         grails.logging.jul.usebridge = true
+        PhenomeTrainer {
+          dataDir = "/home/da/Documents/IDEAProjects/PhenomeTrainer/app-data"
+          svmsFile = "/home/da/Documents/IDEAProjects/PhenomeTrainer/app-data/svms.mat"
+        }
     }
     production {
         grails.logging.jul.usebridge = false
         grails.serverURL = "http://haddock4.sfsu.edu"
+        PhenomeTrainer {
+          dataDir = "/home/dev/qdrec-data"
+          svmsFile = "/home/dev/qdrec-data/svms.mat"
+        }
     }
-}
-
-PhenomeTrainer {
-  dataDir = "/home/da/Documents/IDEAProjects/PhenomeTrainer/app-data"
-  svmsFile = "/home/da/Documents/IDEAProjects/PhenomeTrainer/app-data/svms.mat"
 }
 
 // log4j configuration
