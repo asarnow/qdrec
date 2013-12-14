@@ -10,10 +10,10 @@ class BootStrap {
 
     def init = { servletContext ->
 
-      bootStrapService.initRole("ROLE_USER")
-      bootStrapService.initRole("ROLE_ADMIN")
-      bootStrapService.initUser("schisto","schisto","ROLE_USER")
-      bootStrapService.initUser("da","admin","ROLE_ADMIN")
+//      bootStrapService.initRole("ROLE_USER")
+//      bootStrapService.initRole("ROLE_ADMIN")
+//      bootStrapService.initUser("schisto","schisto","ROLE_USER")
+//      bootStrapService.initUser("da","admin","ROLE_ADMIN")
 //      new File(grailsApplication.config.PhenomeTrainer.dataDir + "/1").deleteDir()
 
 //      bootStrapService.initCompound()
