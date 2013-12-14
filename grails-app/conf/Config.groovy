@@ -65,7 +65,7 @@ grails.hibernate.cache.queries = false
 environments {
     development {
         grails.logging.jul.usebridge = true
-        grails.app.context = "/PhenomeTrainer"
+        grails.app.context = "/qdrec"
         PhenomeTrainer {
           dataDir = "/home/da/Documents/IDEAProjects/PhenomeTrainer/app-data"
           svmsFile = "/home/da/Documents/IDEAProjects/PhenomeTrainer/app-data/svms.mat"
