@@ -47,7 +47,7 @@ grails.project.dependency.resolution = {
     dependencies {
         // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes e.g.
 
-        runtime 'mysql:mysql-connector-java:5.1.22'
+        provided 'mysql:mysql-connector-java:5.1.22'
 //        runtime ':hibernate-spatial:1.1.1'
 //        runtime ':hibernate-spatial-mysql:1.1.1'
 
