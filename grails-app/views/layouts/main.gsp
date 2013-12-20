@@ -17,7 +17,12 @@
 	<body>
     <div id="topbar">
       <div id="title">
-        <a class="logout" href="${createLink(controller: 'logout')}">Logout</a>
+        <sec:ifLoggedIn>
+          <a class="logout" href="${createLink(controller: 'logout')}">Logout</a>
+        </sec:ifLoggedIn>
+        <sec:ifNotLoggedIn>
+          <a class="logout" href="${createLink(controller: 'login')}">Login</a>
+        </sec:ifNotLoggedIn>
         <a href="${createLink(controller: 'page', action: 'about')}"><img src="${resource(dir: 'images', file: 'schistosoma.png')}"/></a>
           <a href="${createLink(controller: 'page', action: 'about')}"><h1>QDREC</h1></a>
           <a href="${createLink(controller: 'page', action: 'about')}"><h2>Quantal Dose Response Calculator</h2></a>

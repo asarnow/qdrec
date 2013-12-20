@@ -7,8 +7,10 @@ class ClassifyController {
 
   def springSecurityService
   def classifyService
+  def trainService
 
   def index() {
+    trainService.saveCurrentImageState(session["parasites"])
     def datasetID = params.datasetID == null ? Dataset.first().id : params.datasetID
     def subsets = Dataset.get(datasetID).subsets
     render(view: 'classify', model: [datasetID:datasetID, subsets:subsets])

@@ -8,8 +8,10 @@ class UploadController {
 
   def adminService
   def grailsApplication = Holders.getGrailsApplication()
+  def trainService
 
   def index() {
+    trainService.saveCurrentImageState(session["parasites"])
     def datasetID = Dataset.last()?.id?: 0
     datasetID += 1
     def datasetDir = grailsApplication.config.PhenomeTrainer.dataDir + File.separator + datasetID
@@ -24,6 +26,7 @@ class UploadController {
   }
 
   def define() {
+    trainService.saveCurrentImageState(session["parasites"])
     def dataset
     if (params.datasetID != null) {
       dataset = Dataset.get(params.datasetID)
