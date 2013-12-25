@@ -7,9 +7,13 @@ class Dataset {
   List<Subset> subsets
   String description
   Integer size = 0
+  Subset lastSubset
+  String token
+  Boolean visible
 
   static constraints = {
     description unique: true
+    lastSubset nullable: true
   }
 
   static mapping = {
