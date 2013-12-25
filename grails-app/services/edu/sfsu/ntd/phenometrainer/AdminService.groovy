@@ -3,6 +3,7 @@ import ar.com.hjg.pngj.PngReader
 import au.com.bytecode.opencsv.CSVReader
 import grails.util.Holders
 import groovy.sql.Sql
+import org.apache.commons.lang.RandomStringUtils
 import phenomj.PhenomJ
 
 class AdminService {
@@ -23,18 +24,24 @@ class AdminService {
     }
   }
 
-  def initDataset(name, String datasetDir) {
+  def initDataset(name, String datasetDir, visible, seg) {
     def dataset = new Dataset()
     dataset.description = name
+    dataset.visible = visible==true
+    dataset.token = RandomStringUtils.random(6, ('a'..'z').join().toCharArray())
     dataset = dataset.save()
 
-    def dir = new File(datasetDir)
-    if (!dir.exists()) {
-      dir.mkdir()
+    def segmentation = 0
+    if (seg=='Proposed') segmentation = 1
+    if (seg=='Canny') segmentation = 2
+
+    if (segmentation > 0) {
+      def dir = new File(datasetDir + File.separator + 'bw')
+      if (!dir.exists()) dir.mkdir()
     }
 
     PhenomJ phenomJ = new PhenomJ()
-    phenomJ.imageDatabase(datasetDir)
+    phenomJ.imageDatabase(datasetDir,segmentation)
 
     dataset = initImage(datasetDir, dataset)
     assocControls(dataset)
