@@ -1,6 +1,3 @@
-import edu.sfsu.ntd.phenometrainer.BootStrapService
-import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
-
 // locations to search for config files that get merged into the main config;
 // config files can be ConfigSlurper scripts, Java properties files, or classes
 // in the classpath in ConfigSlurper format
@@ -103,7 +100,7 @@ environments {
         grails.logging.jul.usebridge = false
 //        grails.app.context = "/qdrec"
         grails.serverURL = "http://haddock4.sfsu.edu"
-        grails.plugins.springsecurity.successHandler.defaultTargetUrl = "/qdrec"
+//        grails.plugins.springsecurity.successHandler.defaultTargetUrl = "/qdrec"
 //        grails.plugins.springsecurity.logout.afterLogoutUrl = "/qdrec"
         PhenomeTrainer {
           dataDir = "/home/dev/qdrec-data"
@@ -142,9 +139,9 @@ environments {
 }
 
 // Added by the Spring Security Core plugin:
-grails.plugins.springsecurity.userLookup.userDomainClassName = 'edu.sfsu.ntd.phenometrainer.Users'
-grails.plugins.springsecurity.userLookup.authorityJoinClassName = 'edu.sfsu.ntd.phenometrainer.UserRole'
-grails.plugins.springsecurity.authority.className = 'edu.sfsu.ntd.phenometrainer.Role'
+//grails.plugins.springsecurity.userLookup.userDomainClassName = 'edu.sfsu.ntd.phenometrainer.Users'
+//grails.plugins.springsecurity.userLookup.authorityJoinClassName = 'edu.sfsu.ntd.phenometrainer.UserRole'
+//grails.plugins.springsecurity.authority.className = 'edu.sfsu.ntd.phenometrainer.Role'
 /* Added by the Hibernate Spatial Plugin. */
 /*grails.gorm.default.mapping = {
    'user-type'(type:org.hibernatespatial.GeometryUserType, class:com.vividsolutions.jts.geom.Geometry)

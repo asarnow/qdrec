@@ -12,7 +12,7 @@ class AdminService {
   def sessionFactory
   def dataSource
 
-  def initUser(name, password, auth) {
+  /*def initUser(name, password, auth) {
     def role = Role.findByAuthority(auth)
     def user = new Users(username:name, enabled: true, password: password, dateCreated: new Date(), lastImageSubset: null)
     user = user.save(failOnError: false)
@@ -22,7 +22,7 @@ class AdminService {
     } else {
       return null
     }
-  }
+  }*/
 
   def initDataset(name, String datasetDir, visible, seg) {
     def dataset = new Dataset()

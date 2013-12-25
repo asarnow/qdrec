@@ -46,7 +46,7 @@ class TrainService {
       return parasite
     }
 
-    def findAllUserSubsetTrainStates(userID, subsetID) {
+    /*def findAllUserSubsetTrainStates(userID, subsetID) {
       def user = Users.get(userID)
       def subset = Subset.get(subsetID)
       def lines = []
@@ -58,9 +58,9 @@ class TrainService {
         }
       }
       return lines
-    }
+    }*/
 
-    def findAllUserTrainStates(userId) {
+    /*def findAllUserTrainStates(userId) {
 
       def images = Image.findAll()
 
@@ -76,7 +76,7 @@ class TrainService {
         }
       }
       return lines
-    }
+    }*/
 
     def saveCurrentSubsetPosition(SubsetImage subsetImage) {
       def subset = subsetImage.subset
