@@ -7,17 +7,6 @@
 --%>
 
 <%@ page import="edu.sfsu.ntd.phenometrainer.Dataset; edu.sfsu.ntd.phenometrainer.TrainState; edu.sfsu.ntd.phenometrainer.ParasiteTrainState" contentType="text/html;charset=UTF-8" %>
-<g:javascript>
-  function updateSubset(data) {
-    if (data) {
-      var rselect = $("#subset");
-      rselect.empty();
-      $.each(data, function (k, v) {
-        rselect.append($("<option></option>").val(v.id).text(v.description));
-      });
-    }
-  }
-</g:javascript>
 <html>
 <head>
   <title>PhenomeTrainer: Training</title>
@@ -27,21 +16,10 @@
 </head>
 <body>
   <div id="main">
-    <div>
-      <h4>Subset "${subset.description}" selected from dataset "${dataset.description}"</h4>
-      <g:form>
-        <label for="datasetID">Dataset:</label>
-        <g:select name="datasetID" from="${datasets}" optionValue="description" optionKey="id" value="${dataset.id}"
-                  onchange="${remoteFunction(controller: "train", action: "subsets",
-                          params: '\'datasetID=\' + this.value', onSuccess: "updateSubset(data)")}"/>
-        <label for="subset">Subset:</label>
-        <g:select name="subsetID" id="subset" from="${subsets}" optionValue="description" optionKey="id" value="${subset.id}"/>
-        <g:actionSubmit value="Switch" action="switchDataset" class="button" />
-      </g:form>
-    </div>
 
     <div id="trainDiv">
-      <g:render template="trainUI" model="['imageSubset': imageSubset, 'subset':subset, 'image':image, 'control':control, parasites: parasites]"/>
+      <g:render template="trainUI" model="['dataset': dataset, 'subsets': dataset.subsets,
+              'imageSubset': imageSubset, 'subset':subset, 'image':image, 'control':control, parasites: parasites]"/>
     </div>
 
     <div id="control" class="parasiteImage">
