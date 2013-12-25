@@ -8,7 +8,7 @@ import phenomj.PhenomJ
 class ClassifyService {
   def grailsApplication = Holders.getGrailsApplication()
 
-  def trainAndClassify(datasetID,user,testingID,trainingID,String sigmaS,String boxConstraint) {
+  def trainAndClassify(datasetID,testingID,trainingID,String sigmaS,String boxConstraint) {
 
     def dataset = Dataset.get(datasetID)
     def testing = Subset.get(testingID)
@@ -16,7 +16,7 @@ class ClassifyService {
     double sigma = Double.valueOf(sigmaS)
     double C = Double.valueOf(boxConstraint)
 
-    boolean[] G = findTrainingVector(user,training)
+    boolean[] G = findTrainingVector(training)
 
     def vids_test = testing.imageSubsets.image.name
     def vids_train = training.imageSubsets.image.name
@@ -67,11 +67,11 @@ class ClassifyService {
     return result
   }
 
-  def findTrainingVector(Users user,Subset subset) {
+  def findTrainingVector(Subset subset) {
     List<Boolean> trv = []
     subset.imageSubsets.image.sort{a,b->a.id<=>b.id}.each { i ->
       i.parasites.sort{a,b->a.id<=>b.id}.each { Parasite p ->
-        def pts = ParasiteTrainState.findByParasiteAndTrainer(p,user)
+        def pts = ParasiteTrainState.findByParasite(p)
         trv.add(pts.trainState == TrainState.DEGENERATE)
       }
     }
