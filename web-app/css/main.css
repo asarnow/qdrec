@@ -507,19 +507,25 @@ img.parasiteImage {
 
 /* UPLOAD */
 
+#metaUploadDiv p {
+    float: left;
+    width: auto;
+}
+
 #uploadDiv {
     margin-top: 0.5em;
 }
 
 #imageUploadrDiv {
-    float:left;
+    /*float:left;*/
 }
+
 #segUploadrDiv {
-    float: left;
+    /*float: left;*/
 }
 
 #datasetFormDiv {
-    clear: both;
+    /*clear: both;*/
 }
 
 /* SUBSET DEFINITION */
