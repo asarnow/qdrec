@@ -1,9 +1,7 @@
 package edu.sfsu.ntd.phenometrainer
 import grails.converters.JSON
 import grails.util.Holders
-import org.springframework.security.access.annotation.Secured
 
-@Secured(['ROLE_USER'])
 class TrainController {
 
     def grailsApplication = Holders.getGrailsApplication()
@@ -11,17 +9,20 @@ class TrainController {
     def trainService
 
     def index() {
-      def user = (Users)springSecurityService.getCurrentUser()
+      def dataset = Dataset.get(session['datasetID'])
 
-//      def numTrained = user.trainedParasites.size()
+      if (!dataset) {
+        redirect(controller: 'upload', action: 'index', params: [message: "Incorrect project or no project selected."])
+        return
+      } else if (dataset.subsets?.size() < 1) { // true if list is null OR size is 0
+        redirect(controller: 'upload', action: 'define', params: [message: "At least one subset must be defined."])
+        return
+      }
 
-      def imageSubset = user.lastImageSubset ?: Subset.last().imageSubsets.first()
+      def subset = dataset.lastSubset ?: dataset.subsets.first()
+      def subsetImage = SubsetPosition.findBySubset(subset)?.subsetImage ?: subset.imageSubsets.first()
 
-      user.lastImageSubset = imageSubset
-      user = user.save(flush: true)
-
-      def image = imageSubset.image
-      def dataset = image.dataset
+      def image = subsetImage.image
 
       session["parasites"] = [:]
       image.parasites.each {it -> session["parasites"][it.id] = trainService.dom2web(it,image.displayScale)}
@@ -29,11 +30,10 @@ class TrainController {
       def parasites = []
       session["parasites"].each {k,v -> parasites.add(v) }
 
-      render( view: 'index', model: [ datasets: Dataset.findAll(),
-                                      dataset: image.dataset,
+      render( view: 'index', model: [ dataset: image.dataset,
                                       subsets: dataset.subsets,
-                                      imageSubset: imageSubset,
-                                      subset: imageSubset.subset,
+                                      imageSubset: subsetImage,
+                                      subset: subsetImage.subset,
                                       image: image,
                                       control: image.control,
                                       parasites: parasites as JSON] )
@@ -65,11 +65,27 @@ class TrainController {
     render parasites as JSON
   }
 
-  def switchDataset() {
+  def switchSubset() {
     trainService.saveCurrentImageState(session["parasites"])
-    def subset = Subset.get(params.subsetID)
-    trainService.saveCurrentUserSubsetPosition(subset)
-    redirect(action: 'index')
+
+    def dataset = Dataset.get(params.datasetID) // current dataset
+    def subsetImage = SubsetImage.get(params.imageSubsetID) // current subsetImage
+
+    trainService.saveCurrentSubsetPosition(subsetImage)
+
+    def subset = Subset.get(params.subsetID) // new subset
+    dataset.lastSubset = subset
+    dataset.save(flush: true)
+
+    def sp = SubsetPosition.findBySubset(subset)
+    if (!sp) {
+      sp = new SubsetPosition()
+      sp.subset = subset
+      sp.subsetImage = subset.imageSubsets.first()
+      sp.save(flush: true)
+    }
+
+    forward(action: 'selectImage', params: [switchTo: sp.subsetImage.id])
   }
 
   def nextImage() {
@@ -93,10 +109,9 @@ class TrainController {
   def selectImage() {
     def imageSubset = SubsetImage.get(params.switchTo)
     def image = imageSubset.image
-//    Subset subset = imageSubset.subset
-    def user = (Users)springSecurityService.getCurrentUser()
-    user.lastImageSubset = imageSubset
-    user.save(flush: true)
+
+    trainService.saveCurrentSubsetPosition(imageSubset)
+
     session["parasites"] = null
     session["parasites"] = [:]
     image.parasites.each {it -> session["parasites"][it.id] = trainService.dom2web(it,image.displayScale)}
@@ -104,8 +119,10 @@ class TrainController {
     def parasites = []
     session["parasites"].each {k,v -> parasites.add(v) }
 
-    render(template: 'trainUI', model: [imageSubset: imageSubset,
+    render(template: 'trainUI', model: [dataset: imageSubset.subset.dataset,
+                                        subsets: imageSubset.subset.dataset.subsets,
                                         subset: imageSubset.subset,
+                                        imageSubset: imageSubset,
                                         image: image,
                                         control: image.control,
                                         parasites: parasites as JSON])

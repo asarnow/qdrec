@@ -1,25 +1,29 @@
 package edu.sfsu.ntd.phenometrainer
 
-import grails.plugins.springsecurity.Secured
-
-@Secured(['ROLE_USER'])
 class ClassifyController {
 
-  def springSecurityService
   def classifyService
   def trainService
 
   def index() {
     trainService.saveCurrentImageState(session["parasites"])
-    def datasetID = params.datasetID == null ? Dataset.first().id : params.datasetID
-    def subsets = Dataset.get(datasetID).subsets
-    render(view: 'classify', model: [datasetID:datasetID, subsets:subsets])
+    def dataset = Dataset.get(session['datasetID'])
+
+    if (!dataset) {
+      redirect(controller: 'upload', action: 'index', params: [message: "Incorrect project or no project selected."])
+      return
+    } else if (dataset.subsets?.size() < 1) { // true if list is null OR size is 0
+      redirect(controller: 'upload', action: 'define', params: [message: "At least one subset must be defined."])
+      return
+    }
+
+    def subsets = dataset.subsets
+    render(view: 'classify', model: [datasetID:dataset.id, subsets:subsets])
   }
 
   def classify(){
     if (params.trainSVM) {
-      def user = (Users)springSecurityService.getCurrentUser()
-      def result = classifyService.trainAndClassify(params.datasetID,user,params.testingID,params.trainingID,params.sigma,params.boxConstraint)
+      def result = classifyService.trainAndClassify(params.datasetID,params.testingID,params.trainingID,params.sigma,params.boxConstraint)
       render(template: 'result',
               model: [cm: result.cm as double[][],
                       Rtrain: result.Rtrain as double[][],
