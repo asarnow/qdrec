@@ -1,9 +1,6 @@
 package edu.sfsu.ntd.phenometrainer
-
 import grails.util.Holders
-import org.springframework.security.access.annotation.Secured
 
-@Secured(['ROLE_USER'])
 class UploadController {
 
   def adminService
@@ -12,28 +9,51 @@ class UploadController {
 
   def index() {
     trainService.saveCurrentImageState(session["parasites"])
-    def datasetID = Dataset.last()?.id?: 0
-    datasetID += 1
-    def datasetDir = grailsApplication.config.PhenomeTrainer.dataDir + File.separator + datasetID
-    def dir = new File(datasetDir);
-    if (dir.exists()) dir.deleteDir();
-    render(view: 'upload', model: [datasetDir: datasetDir])
+    render(view: 'upload', model: [message: params.message])
   }
 
   def createDataset() {
-    def dataset = adminService.initDataset(params.datasetName, params.datasetDir)
-    redirect(action: 'define', params: [datasetID: dataset.id])
+    def dataset = adminService.initDataset(params.datasetName, params.datasetDir, params.visible, params.segmentation)
+    session['datasetID'] = dataset.id
+    redirect(action: 'define')
+  }
+
+  def load() {
+    def dataset = Dataset.get(params.datasetID)
+    session['datasetID'] = dataset?.id
+    redirect(action: 'define')
   }
 
   def define() {
     trainService.saveCurrentImageState(session["parasites"])
-    def dataset
-    if (params.datasetID != null) {
-      dataset = Dataset.get(params.datasetID)
-    } else {
-      dataset = Dataset.last()
+    def dataset = Dataset.get(session['datasetID'])
+    if (!dataset) {
+      redirect(view: 'upload', params: [message: "Incorrect project or no project selected."])
+      return
+    } else if (dataset.subsets?.size() < 1) { // true if list is null OR size is 0
+      redirect(view: 'define', params: [message: "At least one subset must be defined."])
+      return
     }
     render(view: 'define', model: [dataset: dataset])
+  }
+
+  def project() {
+    if (params.load=='true') {
+      render(view: 'upload')
+    } else {
+
+      def datasetID = Dataset.last()?.id?: 0
+      datasetID += 1
+      def datasetDir = grailsApplication.config.PhenomeTrainer.dataDir + File.separator + datasetID
+      def dir = new File(datasetDir);
+      if (dir.exists()) dir.deleteDir();
+
+      render(view: 'upload', model: [datasetDir: datasetDir])
+    }
+  }
+
+  def datasetInfo() {
+    render(template: 'datasetInfo', model: [dataset: Dataset.findByToken(params.token)])
   }
 
   def dataset() {
