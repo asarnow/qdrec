@@ -83,6 +83,16 @@
   }
 
 </g:javascript>
+<div>
+  <h4>Subset "${subset.description}" selected from dataset "${dataset.description}"</h4>
+  <g:form>
+    <g:hiddenField name="datasetID" value="${dataset.id}" />
+    <g:hiddenField name="imageSubsetID" value="${imageSubset.id}"/>
+    <label for="subset">Subset:</label>
+    <g:select name="subsetID" id="subset" from="${subsets}" optionValue="description" optionKey="id" value="${subset.id}"/>
+    <g:submitToRemote value="Switch" action="switchSubset" class="button" update="trainDiv"/>
+  </g:form>
+</div>
 <div id="imageNavigation">
   <g:remoteLink action="prevImage" params="[imageSubsetID: imageSubset.id]" update="trainDiv" onComplete="updateControl();">
                 %{--onSuccess="${remoteFunction(action: "imageParasites", params: [imageID: image.id], onSuccess: "setParasites(data);")}">--}%
