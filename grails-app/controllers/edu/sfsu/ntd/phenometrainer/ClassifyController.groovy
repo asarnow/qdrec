@@ -18,7 +18,7 @@ class ClassifyController {
     }
 
     def subsets = dataset.subsets
-    render(view: 'classify', model: [datasetID:dataset.id, subsets:subsets])
+    render(view: 'classify', model: [dataset:dataset, subsets:subsets])
   }
 
   def classify(){
@@ -37,6 +37,17 @@ class ClassifyController {
   }
 
   def testClassify() {
+    trainService.saveCurrentImageState(session["parasites"])
+    def dataset = Dataset.get(session['datasetID'])
+
+    if (!dataset) {
+      redirect(controller: 'upload', action: 'index', params: [message: "Incorrect project or no project selected."])
+      return
+    } else if (dataset.subsets?.size() < 1) { // true if list is null OR size is 0
+      redirect(controller: 'upload', action: 'define', params: [message: "At least one subset must be defined."])
+      return
+    }
+
     double[][] cm = [ [87.0, 3.0], [0.0, 76.0] ]
 
     double[][] Rtrain = [[0.04, 27.0],
@@ -73,8 +84,8 @@ class ClassifyController {
                           Rtest: Rtest as double[][],
                           trainImages: trainImages as List,
                           testImages: testImages as List,
-                          datasetID: params.datasetID,
-                          subsets: Dataset.get(params.datasetID).subsets])
+                          dataset: dataset,
+                          subsets: dataset.subsets])
   }
 
   def downloadResults() {
