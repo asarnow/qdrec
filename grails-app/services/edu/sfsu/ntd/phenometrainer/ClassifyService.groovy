@@ -24,7 +24,7 @@ class ClassifyService {
     def vids_test_cell = list2cell( vids_test )
     def vids_train_cell = list2cell( vids_train )
 
-    def datasetDir = grailsApplication.config.PhenomeTrainer.dataDir + File.separator + dataset.id
+    def datasetDir = grailsApplication.config.PhenomeTrainer.dataDir + File.separator + dataset.token
 
     PhenomJ phenomJ = new PhenomJ();
     Object[] R = phenomJ.trainAndClassify(3,vids_train_cell,vids_test_cell,G,datasetDir,C,sigma)
@@ -49,7 +49,7 @@ class ClassifyService {
     def testing = Subset.get(testingID)
     def vids = testing.imageSubsets.image.name
     def vids_cell = list2cell( vids )
-    def datasetDir = grailsApplication.config.PhenomeTrainer.dataDir + File.separator + dataset.id
+    def datasetDir = grailsApplication.config.PhenomeTrainer.dataDir + File.separator + dataset.token
     def svmsFile = grailsApplication.config.PhenomeTrainer.svmsFile
 
     PhenomJ phenomJ = new PhenomJ()

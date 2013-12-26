@@ -131,7 +131,7 @@ class TrainController {
   def image() {
 //    def stream = (Image.get(params.imageID).imageData as List)[0].stream
     def image = Image.get(params.imageID)
-    def imagef = grailsApplication.config.PhenomeTrainer.dataDir + File.separator + image.dataset.id + File.separator + 'img' + File.separator + image.name + '.png'
+    def imagef = grailsApplication.config.PhenomeTrainer.dataDir + File.separator + image.dataset.token + File.separator + 'img' + File.separator + image.name + '.png'
     def stream = new BufferedInputStream(new FileInputStream(imagef)).getBytes()
     response.contentLength = stream.length
     response.contentType = 'image/png'
