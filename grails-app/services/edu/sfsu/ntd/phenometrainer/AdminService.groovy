@@ -3,6 +3,7 @@ import ar.com.hjg.pngj.PngReader
 import au.com.bytecode.opencsv.CSVReader
 import grails.util.Holders
 import groovy.sql.Sql
+import org.apache.commons.io.FileUtils
 import org.apache.commons.lang.RandomStringUtils
 import phenomj.PhenomJ
 
@@ -27,7 +28,7 @@ class AdminService {
   def initDataset(name, String datasetDir, visible, seg) {
     def dataset = new Dataset()
     dataset.description = name
-    dataset.visible = visible==true
+    dataset.visible = visible=='on'
     dataset.token = RandomStringUtils.random(6, ('a'..'z').join().toCharArray())
     dataset = dataset.save()
 
@@ -46,6 +47,12 @@ class AdminService {
     dataset = initImage(datasetDir, dataset)
     assocControls(dataset)
     initParasite(dataset)
+
+    def src = new File(datasetDir)
+    def dest = new File(grailsApplication.config.PhenomeTrainer.dataDir + File.separator + dataset.token)
+
+    FileUtils.copyDirectory(src,dest)
+    FileUtils.deleteDirectory(src)
 
     return dataset.save(flush: true)
   }
@@ -219,7 +226,7 @@ class AdminService {
     }
 
   def findDatasetDir(dataset) {
-    return grailsApplication.config.PhenomeTrainer.dataDir + File.separator + dataset.id
+    return grailsApplication.config.PhenomeTrainer.dataDir + File.separator + dataset.token
   }
 
 }
