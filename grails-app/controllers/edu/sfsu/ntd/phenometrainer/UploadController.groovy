@@ -1,6 +1,8 @@
 package edu.sfsu.ntd.phenometrainer
 import grails.util.Holders
 
+import java.nio.file.Files
+
 class UploadController {
 
   def adminService
@@ -30,9 +32,6 @@ class UploadController {
     if (!dataset) {
       redirect(view: 'upload', params: [message: "Incorrect project or no project selected."])
       return
-    } else if (dataset.subsets?.size() < 1) { // true if list is null OR size is 0
-      redirect(view: 'define', params: [message: "At least one subset must be defined."])
-      return
     }
     render(view: 'define', model: [dataset: dataset])
   }
@@ -41,13 +40,7 @@ class UploadController {
     if (params.load=='true') {
       render(view: 'upload')
     } else {
-
-      def datasetID = Dataset.last()?.id?: 0
-      datasetID += 1
-      def datasetDir = grailsApplication.config.PhenomeTrainer.dataDir + File.separator + datasetID
-      def dir = new File(datasetDir);
-      if (dir.exists()) dir.deleteDir();
-
+      def datasetDir = Files.createTempDirectory('qdrec').toAbsolutePath().toString()
       render(view: 'upload', model: [datasetDir: datasetDir])
     }
   }
