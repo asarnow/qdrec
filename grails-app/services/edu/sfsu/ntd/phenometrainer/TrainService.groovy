@@ -81,7 +81,7 @@ class TrainService {
     def saveCurrentSubsetPosition(SubsetImage subsetImage) {
       def subset = subsetImage.subset
       def spd = SubsetPosition.findBySubset(subset)
-      if (~spd) {
+      if (spd==null) {
         spd = new SubsetPosition()
         spd.subset = subset
       }
