@@ -2,10 +2,8 @@
         class="validatedForm"
         before="if (\$('#classifyForm').valid()){"
         after="}">
-  <label for="datasetID">Select dataset:</label>
-  <g:select name="datasetID" from="${datasets}" optionValue="description" optionKey="id" value="${datasetID}"
-                    onchange="${remoteFunction(controller: "train", action: "subsets",
-                            params: '\'datasetID=\' + this.value', onSuccess: "updateSubset(data,'#training');updateSubset(data,'#testing')")}"/>
+  <h3><label for="datasetID">Classify in project: ${dataset.description}</label></h3>
+  <g:hiddenField name="datasetID" value="${dataset.id}"/>
   <br />
   <label for="trainSVM">Train SVM</label>
   <g:checkBox name="trainSVM" checked="${false}" />
