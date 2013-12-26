@@ -11,7 +11,7 @@
     <label for="token">Enter project token:</label>
     <g:textField name="token"/>
     <button class="button" type="button" onclick="${remoteFunction(action: 'datasetInfo',
-            params: '{token: $(\'#token\').value}', update: 'datasetInfo', method: 'GET')}">Check</button>
+            params: '{token: $(\'#token\').val()}', update: 'datasetInfo', method: 'GET')}">Check</button>
     <span id="datasetInfo"></span>
     <br />
     <g:submitButton name="datasetSubmit" class="button" value="Load project"/>
