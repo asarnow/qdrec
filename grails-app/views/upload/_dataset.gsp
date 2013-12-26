@@ -9,9 +9,13 @@
 
 <div id="manageDiv">
   %{--<h3>Define subsets for ${dataset.description}</h3>--}%
-  <h3>Define subsets for:<g:select name="datasetID" from="${Dataset.findAll()}" optionValue="description" optionKey="id" value="${dataset.id}"
-                        onchange="${remoteFunction(controller: "upload", action: "dataset",
-                                params: '\'datasetID=\' + this.value', update: 'datasetDiv')}"/></h3>
+  <h3>Define subsets for project: ${dataset.description}</h3>
+  <g:if test="${dataset.visible}">
+    The token <i>${dataset.token}</i> may be used to load this project directly.
+  </g:if>
+  <g:else>
+    This is a private project. The token <i>${dataset.token}</i> is required to load this project.
+  </g:else>
   <g:formRemote name="subsetForm" url="[controller: 'upload', action: 'createSubset']"
                 update="manageDiv"
                 class="validatedForm"
