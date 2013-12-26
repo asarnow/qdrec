@@ -96,17 +96,17 @@
 <div id="imageNavigation">
   <g:remoteLink action="prevImage" params="[imageSubsetID: imageSubset.id]" update="trainDiv" onComplete="updateControl();">
                 %{--onSuccess="${remoteFunction(action: "imageParasites", params: [imageID: image.id], onSuccess: "setParasites(data);")}">--}%
-    <button class="button">Prev</button>
+    <button class="button" type="button">Prev</button>
   </g:remoteLink>
   <g:remoteLink action="nextImage" params="[imageSubsetID: imageSubset.id]" update="trainDiv" onComplete="updateControl();">
                 %{--onSuccess="${remoteFunction(action: "imageParasites", params: [imageID: image.id], onSuccess: "setParasites(data);")}">--}%
-    <button class="button">Next</button>
+    <button class="button" type="button">Next</button>
   </g:remoteLink>
   <g:remoteLink action="toggleParasites" onSuccess="updateParasites(data);">
-    <button class="button">Toggle all</button>
+    <button class="button" type="button">Toggle all</button>
   </g:remoteLink>
   <g:remoteLink action="resetParasites" onSuccess="updateParasites(data);">
-      <button class="button">Reset all</button>
+      <button class="button" type="button">Reset all</button>
   </g:remoteLink>
   <script>
     parasites = ${parasites};
