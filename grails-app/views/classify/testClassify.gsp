@@ -50,7 +50,7 @@
 </head>
 <body>
   <div id="classifyDiv">
-    <g:render template="classifyForm" model="[datasets:Dataset.findAll(), datasetID:datasetID, subsets:subsets]"/>
+    <g:render template="classifyForm" model="[dataset:dataset, subsets:subsets]"/>
   </div>
   <div id="resultsDiv">
     <g:render template="result" model="[cm: cm,
