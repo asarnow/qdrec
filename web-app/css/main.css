@@ -562,6 +562,11 @@ img.parasiteImage {
     padding-top: 0.5em;
 }
 
+#plotDiv form p {
+    float: left;
+    width: auto;
+}
+
 .confusionMatrix {
     padding-left: 1em;
     padding-top: 1em;
