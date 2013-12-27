@@ -32,23 +32,23 @@ class ClassifyService {
     MWArray.disposeArray(vids_test_cell)
     MWArray.disposeArray(vids_train_cell)
 
-    def results = [:]
-    results.cm = (double[][])((MWArray)(R[0])).toArray()
-    results.Rtest = (double[][])((MWArray)(R[1])).toArray()
-    results.Rtrain = (double[][])((MWArray)(R[2])).toArray()
-    results.testImages = vids_test
-    results.trainImages = vids_train
+    def result = [:]
+    result.cm = (double[][])((MWArray)(R[0])).toArray()
+    result.Rtest = (double[][])((MWArray)(R[1])).toArray()
+    result.Rtrain = (double[][])((MWArray)(R[2])).toArray()
+    result.testImages = vids_test
+    result.trainImages = vids_train
 
     R.each {MWArray.disposeArray(it)}
 
-    return results
+    return result
   }
 
   def classifyOnly(datasetID,testingID) {
     def dataset = Dataset.get(datasetID)
     def testing = Subset.get(testingID)
-    def vids = testing.imageSubsets.image.name
-    def vids_cell = list2cell( vids )
+    def vids = testing.imageSubsets.image
+    def vids_cell = list2cell( vids.name )
     def datasetDir = grailsApplication.config.PhenomeTrainer.dataDir + File.separator + dataset.token
     def svmsFile = grailsApplication.config.PhenomeTrainer.svmsFile
 
@@ -60,7 +60,7 @@ class ClassifyService {
 
     def result = [:]
     result.Rtest = (double[][])((MWArray)(R[0])).toArray()
-    result.testImages = vids
+    result.testImages = vids.name
 
     R.each {MWArray.disposeArray(it)}
 
@@ -86,6 +86,40 @@ class ClassifyService {
       cell.set(i+1,new MWCharArray(l[i]))
     }
     return cell
+  }
+
+  def doseResponse(List<Image> vids, double[][] R) {
+    def v = []
+    vids.eachWithIndex { Image it, int i ->
+      v.add([name:it.name, compound:it.compound?.name?:'control', conc:it.conc, day:it.day, r:R[i][0]])
+    }
+    def groups = v.groupBy([{it.compound}, {it.conc}, {it.day}])
+    return groups
+  }
+
+  def timeResponse(List<Image> vids, double[][] R) {
+    def v = []
+    vids.eachWithIndex { Image it, int i ->
+      v.add([name:it.name, compound:it.compound?.name?:'control', conc:it.conc, day:it.day, r:R[i][0]])
+    }
+    def groups = v.groupBy([{it.compound}, {it.day}, {it.conc}])
+    return groups
+  }
+
+  def mean(list) {
+    def mu = 0
+    list.each(){mu+=it}
+    mu /= list.size()
+    return mu
+  }
+
+  def std(list) {
+    def mu = mean(list)
+    def sigma = 0
+    list.each(){sigma+=(mu-it)**2}
+    sigma /= list.size()
+    sigma = Math.sqrt(sigma)
+    return sigma
   }
 
 }
