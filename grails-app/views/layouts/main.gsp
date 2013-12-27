@@ -33,7 +33,7 @@
           <li>
             <a href="${createLink(controller: 'page', action: 'about')}">About</a>
             <a href="${createLink(controller: 'page', action: 'help')}">Instructions</a>
-            <a href="${createLink(controller: 'upload', action: 'index')}">Upload</a>
+            <a href="${createLink(controller: 'upload', action: 'index')}">Projects</a>
             <a href="${createLink(controller: 'upload', action: 'define')}">Define</a>
             <a href="${createLink(controller: 'train', action: 'index')}">Train</a>
             <a href="${createLink(controller: 'classify', action: 'index')}">Classify</a>
