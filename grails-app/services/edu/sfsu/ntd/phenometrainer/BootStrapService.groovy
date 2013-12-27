@@ -42,15 +42,15 @@ class BootStrapService {
       String[] line = lines[i]
 //      dataset.size++
 //      image.position = position++
-      def cdId
+      def compound
       if (line[1].equals("control")) {
-        cdId = 0
+        compound = null
       } else {
-        cdId = Compound.findByAliasLike("%"+line[1]+"%").id
+        compound = Compound.findByAliasLike("%"+line[1]+"%")
       }
       Image image = new Image()
       image.dataset = dataset
-      image.cdId = cdId
+      image.compound = compound
       image.conc = Double.valueOf(line[2])
       image.day = Integer.valueOf(line[3])
       image.series = line[4].charAt(0)
@@ -131,13 +131,13 @@ class BootStrapService {
       def control = null
       try {
         def query = Image.where {
-          (dataset==image.dataset && cdId==0 && day==image.day && series==image.series && date==image.date)
+          (dataset==image.dataset && compound==null && day==image.day && series==image.series && date==image.date)
         }
         control = query.find()
 
         if (control == null) {
           def query2 = Image.where {
-                  (dataset==image.dataset && cdId==0 && day==image.day && date==image.date)
+                  (dataset==image.dataset && compound==null && day==image.day && date==image.date)
                 }
           control = query2.findAll()[0];
         }

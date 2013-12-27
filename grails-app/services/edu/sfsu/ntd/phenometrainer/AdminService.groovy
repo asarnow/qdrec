@@ -97,21 +97,17 @@ class AdminService {
 
       image.name = line[0]
 
-      def cdId
-      if (line[1].equals("control") || image.conc==0D) {
-        cdId = 0
-      } else {
-        def compound = Compound.findByAliasLike("%"+line[1]+"%")
+      def compound = null
+      if (!(line[1].equals("control") || image.conc==0D)) {
+        compound = Compound.findByAliasLike("%"+line[1]+"%")
         if (compound==null) {
           compound = new Compound()
           compound.name = line[1]
           compound.alias = line[1]
           compound = compound.save(flush: true)
         }
-        cdId = compound.id
       }
-
-      image.cdId = cdId
+      image.compound = compound
 //      BufferedImage bi = ImageIO.read(new File(datadir + File.separator + line[0] + ".png"))
 //      image.width = bi.getWidth()
 //      image.height = bi.getHeight()
@@ -188,13 +184,13 @@ class AdminService {
       def control = null
       try {
         def query = Image.where {
-          (dataset==image.dataset && (cdId==0||conc==0) && day==image.day && series==image.series && date==image.date)
+          (dataset==image.dataset && (compound==null||conc==0) && day==image.day && series==image.series && date==image.date)
         }
         control = query.find()
 
         if (control == null) {
           def query2 = Image.where {
-                  (dataset==image.dataset && (cdId==0||conc==0) && day==image.day && date==image.date)
+                  (dataset==image.dataset && (compound==null||conc==0) && day==image.day && date==image.date)
                 }
           control = query2.findAll()[0];
         }
