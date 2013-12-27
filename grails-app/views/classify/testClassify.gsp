@@ -10,7 +10,7 @@
   To change this template use File | Settings | File Templates.
 --%>
 
-<%@ page import="edu.sfsu.ntd.phenometrainer.Dataset" contentType="text/html;charset=UTF-8" %>
+<%@ page import="edu.sfsu.ntd.phenometrainer.Compound; edu.sfsu.ntd.phenometrainer.Dataset" contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
   <title>PhenomeTrainer: Classifier</title>
@@ -53,11 +53,12 @@
     <g:render template="classifyForm" model="[dataset:dataset, subsets:subsets]"/>
   </div>
   <div id="resultsDiv">
-    <g:render template="result" model="[cm: cm,
+    %{--<g:render template="result" model="[cm: cm,
                               Rtrain: Rtrain,
                               Rtest: Rtest,
                               trainImages: trainImages,
-                              testImages: testImages]" />
+                              testImages: testImages]" />--}%
+    <g:render template="resultPlot" model="[error:session['tr']==null&&session['dr']==null, compounds:compounds]"/>
   </div>
 </body>
 </html>
