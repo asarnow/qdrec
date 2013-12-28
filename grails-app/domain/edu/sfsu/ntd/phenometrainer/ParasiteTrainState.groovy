@@ -9,5 +9,6 @@ class ParasiteTrainState {
   Date lastUpdated
 
   static constraints = {
+    trainer unique: 'parasite'
   }
 }

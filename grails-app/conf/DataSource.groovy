@@ -18,9 +18,9 @@ environments {
         dataSource {
             username = "root"
             password = ""
-            dbCreate = "validate" // one of 'create', 'create-drop', 'update', 'validate', ''
+            dbCreate = "update" // one of 'create', 'create-drop', 'update', 'validate', ''
 //            url = "jdbc:h2:mem:devDb;MVCC=TRUE;LOCK_TIMEOUT=10000"
-            url = "jdbc:mysql://localhost/phenome_trainer?useUnicode=yes&characterEncoding=UTF-8"
+            url = "jdbc:mysql://localhost/phenome_trainer2?useUnicode=yes&characterEncoding=UTF-8"
         }
     }
     test {
@@ -34,7 +34,7 @@ environments {
             username = "root"
             password = ""
             dbCreate = "validate"
-            url = "jdbc:mysql://localhost/phenome_trainer?useUnicode=yes&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull"
+            url = "jdbc:mysql://localhost/phenome_trainer2?useUnicode=yes&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull"
             pooled = true
             properties {
                maxActive = -1

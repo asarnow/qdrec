@@ -76,16 +76,24 @@ p {
 
 /* GENERAL */
 
-#title {
+#topbar {
     padding-top: 0;
     padding-right: 0;
     padding-left: 0;
     padding-bottom: 0;
-    background-color: #25587e;
-    margin: 5px 5px 5px 5px;
-    border: 1px solid #25587E; /* without border, IE won't fill bgcolor. One of IE styling issues. */
+    background-color: #333333;
+    margin: 5px 5px 0px 5px;
+    border: 1px solid #333333; /* without border, IE won't fill bgcolor. One of IE styling issues. */
     text-align: left;
-    /*height: 58px;*/
+    width: auto;
+    height: 85px;
+    /*background-image: url("../images/schistosoma.png");
+    background-repeat: no-repeat;
+    background-position: 60% 0  ;
+    background-size: contain;
+    background-clip: border-box;
+    overflow: visible;
+    z-index: 1;*/
 }
 
 #title h1 {
@@ -94,9 +102,31 @@ p {
     margin: auto;
     font-size: 18pt;
    	font-weight: bold;
-    line-height: 58px;
+    /*line-height: 36px;*/
    	color: white;
     vertical-align: middle;
+}
+
+#title h2 {
+    padding-left: 30px;
+    font-size: 12pt;
+    font-weight: normal;
+    color: #ffffff;
+}
+
+#title a {
+    color: white;
+    text-decoration: none;
+}
+
+#title img {
+    float: left;
+    /*margin-right: 25%;*/
+    height: 85px;
+    /*height: 100%;*/
+    /*max-height: 100%;*/
+    width: auto;
+    vertical-align: text-bottom;
 }
 
 #grailsLogo a {
@@ -105,6 +135,7 @@ p {
 }
 
 .content {
+    margin-left: 5px;
 }
 
 .content h1 {
@@ -134,17 +165,23 @@ p {
 /* NAVIGATION MENU */
 
 .nav {
+    /*clear: left;*/
+    /*display: block;*/
 	background-color: inherit;
-    padding-top: 0.5em;
+    padding-top: 0.75em;
     padding-right: 0;
     padding-left: 0;
     padding-bottom: 0;
 }
 
 .nav ul {
+    /*float: left;*/
+    /*background-color: inherit;*/
+    /*padding-top: 0.75em;*/
 	overflow: hidden;
 	padding-left: 0.5em;
-	zoom: 1;
+	/*zoom: 1;*/
+    /*z-index: 0;*/
 }
 
 .nav li {
@@ -172,7 +209,7 @@ p {
 
 .nav a:hover {
     color: whitesmoke;
-	text-decoration: underline;
+	text-decoration: none;
 }
 
 .nav a:active {
@@ -188,7 +225,6 @@ a.logout {
     color: white;
     float: right;
     margin-right: 5px;
-    text-decoration: none;
     font-weight: bold;
 }
 
@@ -198,20 +234,28 @@ a.logout:visited {
 
 a.logout:hover {
     color: whitesmoke;
-    text-decoration: underline;
+    text-decoration: none;
+}
+
+a.logout:active {
+    color: darkred;
 }
 
 /* ACTION BUTTONS */
 
 .button {
-	border: 1px solid #191970;
-	background: #4682b4;
+	border: 1px solid #000000;
+	background: #333333;
 	color: white;
+    -moz-border-radius: 2px;
+    -webkit-border-radius: 2px;
+    -khtml-border-radius: 2px;
+    border-radius: 2px;
 }
 
 .button:hover {
-	border: 1px solid #191970;
-	background: #87cefa;
+	border: 1px solid #000000;
+	background: #777777;
 	color: white;
 }
 
@@ -296,9 +340,128 @@ a.logout:hover {
     height: 12px;
 }
 
+/* HELP */
+
+div.help {
+    margin-left: 0.5em;
+    width: 75%;
+}
+
+.help h2 {
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+}
+
+.help h3 {
+    margin-top: 0.25em;
+    margin-bottom: 0.25em;
+}
+
+.help p {
+    width: 100%;
+    text-align: justify;
+}
+
+.help ul {
+    list-style-type: disc;
+    padding-left: 2.0em;
+    text-indent: 0.1em;
+}
+
+.help ul li {
+
+}
+
+.help ul li.level2 {
+    margin-left: 0.5em;
+    list-style-type: square;
+    font-size: small;
+}
+
+.help table {
+    border: 2px solid #333333;
+}
+
+.help td {
+    border: 1px solid #777777;
+    text-align: left;
+    padding: 0.25em 0.5em;
+}
+
+.help thead td {
+    text-align: center;
+    padding-bottom: 0;
+    padding-top: 0;
+}
+
+/* ABOUT */
+
+div.about {
+    float: left;
+    width: 48%;
+}
+
+.about h2 {
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+}
+
+.about p {
+    width: 100%;
+    text-align: justify;
+    
+    padding-left: 0.5em;
+}
+
+div.authors {
+    float: left;
+    margin-left: 2em;
+    width: 48%;
+}
+
+.authors h2 {
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+}
+
+.authors p {
+    width: 100%;
+    text-align: left;
+}
+
+.authors ul {
+    list-style-type: none;
+    padding-left: 0.5em;
+}
+
+.authors ul li {
+    padding-bottom: 0.25em;
+}
+
+/* TRAINER */
+
+#main {
+    margin-top: 0.5em;
+}
+
+#main h4 {
+    margin-bottom: 0.25em;
+}
+
+#subset {
+    margin-left: 2px;
+}
 
 #trainDiv {
+    margin-top: 0.5em;
+}
 
+#imageNavigation {
+    margin-bottom: 0.5em;
+}
+
+#imageNavigation a {
+    text-decoration: none;
 }
 
 #currentImage {
@@ -342,3 +505,85 @@ img.parasiteImage {
     /*height: 520px;*/
 }
 
+/* UPLOAD */
+
+#uploadDiv {
+    margin-top: 0.5em;
+}
+
+#imageUploadrDiv {
+    float:left;
+}
+#segUploadrDiv {
+    float: left;
+}
+
+#datasetFormDiv {
+    clear: both;
+}
+
+/* SUBSET DEFINITION */
+
+#datasetDiv {
+    margin-top: 0.5em;
+}
+
+#datasetID {
+    margin-left: 2px;
+}
+
+#imageListDiv {
+    float: left;
+    margin-right: 5px;
+}
+
+#subsetDiv {
+    /*float: left;*/
+    margin-top: 5px;
+}
+
+/* CLASSIFICATION */
+
+#classifyDiv {
+    margin-top: 0.5em;
+}
+
+#trainingDiv {
+    padding: 0.5em;
+}
+
+#testingDiv {
+    padding-top: 0.5em;
+}
+
+.confusionMatrix {
+    padding-left: 1em;
+    padding-top: 1em;
+}
+
+.confusionMatrix table {
+    border: 2px solid #333333;
+}
+
+.confusionMatrix td {
+    border: 1px solid #777777;
+}
+
+.result {
+    float: left;
+    padding-top: 1em;
+    padding-left: 1em;
+}
+
+.result table {
+    border: 2px solid #333333;
+}
+
+.result td {
+    border: 1px solid #777777;
+    text-align: center;
+}
+
+.confusionMatrix td.emptycell {
+    border: none;
+}

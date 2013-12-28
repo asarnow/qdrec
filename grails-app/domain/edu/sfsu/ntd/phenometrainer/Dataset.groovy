@@ -9,6 +9,7 @@ class Dataset {
   Integer size = 0
 
   static constraints = {
+    description unique: true
   }
 
   static mapping = {

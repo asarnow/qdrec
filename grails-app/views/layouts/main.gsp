@@ -11,25 +11,40 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<link rel="shortcut icon" href="${resource(dir: 'images', file: 'favicon.ico')}" type="image/x-icon">
 		<link rel="stylesheet" href="${resource(dir: 'css', file: 'main.css')}" type="text/css">
-    <g:javascript library="jquery" />
-    <r:layoutResources />
     <g:layoutHead/>
+    <r:layoutResources />
 	</head>
 	<body>
-    <div id="title">
-      <a class="logout" href="${createLink(controller: 'logout')}">Logout</a>
-      <h1>Phenome Trainer</h1>
+    <div id="topbar">
+      <div id="title">
+        <sec:ifLoggedIn>
+          <a class="logout" href="${createLink(controller: 'logout')}">Logout</a>
+        </sec:ifLoggedIn>
+        <sec:ifNotLoggedIn>
+          <a class="logout" href="${createLink(controller: 'login')}">Login</a>
+        </sec:ifNotLoggedIn>
+        <a href="${createLink(controller: 'page', action: 'about')}"><img src="${resource(dir: 'images', file: 'schistosoma.png')}"/></a>
+        <a href="${createLink(controller: 'page', action: 'about')}"><h1>QDREC</h1></a>
+        <a href="${createLink(controller: 'page', action: 'about')}"><h2>Quantal Dose Response Calculator</h2></a>
+        </a>
+      </div>
       <div class="nav">
         <ul>
           <li>
-            <a href="${createLink(controller: 'train', action: 'index')}">Trainer</a>
+            <a href="${createLink(controller: 'page', action: 'about')}">About</a>
             <a href="${createLink(controller: 'page', action: 'help')}">Instructions</a>
+            <a href="${createLink(controller: 'upload', action: 'index')}">Upload</a>
+            <a href="${createLink(controller: 'upload', action: 'define')}">Define</a>
+            <a href="${createLink(controller: 'train', action: 'index')}">Train</a>
+            <a href="${createLink(controller: 'classify', action: 'index')}">Classify</a>
           </li>
         </ul>
       </div>
     </div>
-
-		<g:layoutBody/>
+    <div class="clearDiv"></div>
+    <div class="content">
+		  <g:layoutBody/>
+    </div>
 		<div class="footer" role="contentinfo"></div>
 		%{--<g:javascript library="application"/>--}%
 		<r:layoutResources />

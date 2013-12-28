@@ -38,17 +38,22 @@ grails.project.dependency.resolution = {
         //mavenRepo "http://download.java.net/maven/2/"
         //mavenRepo "http://repository.jboss.com/maven2/"
         mavenRepo "http://repo1.maven.org"
+//        mavenRepo "http://repo.desirableobjects.co.uk/"
+
+//        flatDir name: 'localRepo', dirs: 'lib'
+
     }
 
     dependencies {
         // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes e.g.
 
-        runtime 'mysql:mysql-connector-java:5.1.22'
+        provided 'mysql:mysql-connector-java:5.1.22'
 //        runtime ':hibernate-spatial:1.1.1'
 //        runtime ':hibernate-spatial-mysql:1.1.1'
 
         compile 'net.sf:opencsv:2.3'
         compile 'ar.com.hjg:pngj:2.0.1'
+//        runtime ('localRepo:phenomj:1.0') {changing: true}
 
     }
 
@@ -58,8 +63,11 @@ grails.project.dependency.resolution = {
         runtime ":resources:1.1.6"
 
         compile ":jquery-ui:1.8.24"
+        compile: ":jquery-validation:1.9"
         compile ":spring-security-core:1.2.7.3"
 
+//        runtime ":ajax-uploader:1.1"
+      compile ":uploadr:latest.integration"
         // Uncomment these (or add new ones) to enable additional resources capabilities
         //runtime ":zipped-resources:1.0"
         //runtime ":cached-resources:1.0"

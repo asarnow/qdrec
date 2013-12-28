@@ -7,7 +7,6 @@ class Parasite {
 
 //  List trainStates
 
-//  Image image
   Integer region
 //  Polygon boundingBox
   Integer x,y,width,height
@@ -16,6 +15,7 @@ class Parasite {
 
     static constraints = {
       boundingBox nullable: true
+      image unique: 'region'
     }
 
 /*    static mapping = {

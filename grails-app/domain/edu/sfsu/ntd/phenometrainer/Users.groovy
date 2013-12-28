@@ -19,6 +19,7 @@ class Users {
 	static constraints = {
 		username blank: false, unique: true
 		password blank: false
+    lastImageSubset nullable: true
 	}
 
 	static mapping = {

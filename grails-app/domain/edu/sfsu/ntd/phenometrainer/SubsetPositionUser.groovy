@@ -5,5 +5,6 @@ class SubsetPositionUser {
     static belongsTo = [user: Users, subset:Subset, subsetImage: SubsetImage]
 
     static constraints = {
+      user unique: 'subset'
     }
 }

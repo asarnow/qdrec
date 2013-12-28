@@ -92,8 +92,8 @@ class TrainService {
       def user = Users.get(userID)
       def subset = Subset.get(subsetID)
       def lines = []
-      subset.imageSubsets.image.each { i ->
-        i.parasites.each { Parasite p ->
+      subset.imageSubsets.image.sort{a,b -> a.id <=> b.id}.each { i ->
+        i.parasites.sort{a,b -> a.id<=>b.id}.each { Parasite p ->
           def pts = ParasiteTrainState.findByParasiteAndTrainer(p,user)
           lines.add(i.id.toString() + "," + i.name.toUpperCase() + "," + i.control.id.toString() + "," +
                   p.id.toString() + "," + p.region.toString() + "," + p.getBBString() + "," + pts.trainState.toString())

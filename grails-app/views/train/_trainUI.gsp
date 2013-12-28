@@ -47,7 +47,7 @@
                     jQuery.ajax({type: 'GET',
                                  data: { parasiteX: mousePos.x, parasiteY: mousePos.y, imageID: imageID },
                                  dataType: 'json',
-                                 url: '/PhenomeTrainer/train/parasite',
+                                 url: '${request.contextPath}/train/parasite',
                                  success: function (data, textStatus) {
                                      parasites = data; // Object from JSON as parsed by JQuery
                                      draw(parasites, context, img);
@@ -97,7 +97,7 @@
   </g:remoteLink>
   <g:remoteLink action="resetParasites" onSuccess="updateParasites(data);">
       <button class="button">Reset all</button>
-    </g:remoteLink>
+  </g:remoteLink>
   <script>
     parasites = ${parasites};
     imageID = ${image.id};

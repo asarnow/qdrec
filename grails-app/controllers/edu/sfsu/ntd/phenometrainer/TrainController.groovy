@@ -1,10 +1,12 @@
 package edu.sfsu.ntd.phenometrainer
 import grails.converters.JSON
+import grails.util.Holders
 import org.springframework.security.access.annotation.Secured
 
 @Secured(['ROLE_USER'])
 class TrainController {
 
+    def grailsApplication = Holders.getGrailsApplication()
     def springSecurityService
     def trainService
 
@@ -13,7 +15,11 @@ class TrainController {
 
 //      def numTrained = user.trainedParasites.size()
 
-      def imageSubset = user.lastImageSubset
+      def imageSubset = user.lastImageSubset ?: Subset.last().imageSubsets.first()
+
+      user.lastImageSubset = imageSubset
+      user = user.save(flush: true)
+
       def image = imageSubset.image
       def dataset = image.dataset
 
@@ -106,11 +112,14 @@ class TrainController {
   }
 
   def image() {
-    def image = (Image.get(params.imageID).imageData as List)[0].stream
-    response.contentLength = image.length
+//    def stream = (Image.get(params.imageID).imageData as List)[0].stream
+    def image = Image.get(params.imageID)
+    def imagef = grailsApplication.config.PhenomeTrainer.dataDir + File.separator + image.dataset.id + File.separator + 'img' + File.separator + image.name + '.png'
+    def stream = new BufferedInputStream(new FileInputStream(imagef)).getBytes()
+    response.contentLength = stream.length
     response.contentType = 'image/png'
-    response.outputStream << image
-    response.outputStream.flush(image)
+    response.outputStream << stream
+    response.outputStream.flush()
   }
 
   def subsets() {
