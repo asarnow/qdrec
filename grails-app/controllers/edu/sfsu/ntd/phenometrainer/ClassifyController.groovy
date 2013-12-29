@@ -30,19 +30,23 @@ class ClassifyController {
       session['dr'] = classifyService.doseResponse(Image.where({name in result.testImages}).list(), result.Rtest)
       session['tr'] = classifyService.timeResponse(Image.where({name in result.testImages}).list(), result.Rtest)
       def compounds = (session['dr'] as Map).keySet() as List
-      render(template: 'resultPlot',
+      render(template: 'combinedResult',
               model: [cm: result.cm as double[][],
                       Rtrain: result.Rtrain as double[][],
                       Rtest: result.Rtest as double[][],
                       trainImages: result.trainImages as List,
                       testImages:result.testImages as List],
-                      compounds:compounds)
+                      compounds:compounds,
+                      error:session['tr']==null||session['dr']==null)
     } else {
       def result = classifyService.classifyOnly(params.datasetID,params.testingID)
       session['dr'] = classifyService.doseResponse(Image.where({name in result.testImages}).list(), result.Rtest)
       session['tr'] = classifyService.timeResponse(Image.where({name in result.testImages}).list(), result.Rtest)
       def compounds = (session['dr'] as Map).keySet() as List
-      render(template: 'resultPlot', model: [Rtest: result.Rtest as double[][], testImages: result.testImages as List, compounds: compounds])
+      render(template: 'combinedResult', model: [Rtest: result.Rtest as double[][],
+                                                 testImages: result.testImages as List,
+                                                 compounds: compounds,
+                                                 error:session['tr']==null||session['dr']==null])
     }
   }
 
@@ -102,7 +106,8 @@ class ClassifyController {
                           testImages: testImages as List,
                           dataset: dataset,
                           subsets: dataset.subsets,
-                          compounds:compounds])
+                          compounds:compounds,
+                          error:session['tr']==null||session['dr']==null])
   }
 
   def downloadResults() {
@@ -118,7 +123,7 @@ class ClassifyController {
       def tr = session['tr'][params.compound] as Map<Integer,Map<Double,Map>>;
       tr.keySet().each {curves.add(it)}
     }
-    render(template: 'curves', model: [curves:curves as List])
+    render(template: 'curves', model: [curves:(curves as List).sort()])
   }
 
   def plotsrc() {
@@ -128,6 +133,7 @@ class ClassifyController {
   def genplot() {
     def stream = null
     def curves = params.curves as List
+    def curve_cell = classifyService.list2cell(curves as List<String>)
     def compound = params.compound
     def tr = session['tr'][compound] as Map<Integer,Map<Double,Map>>;
     def dr = session['dr'][compound] as Map<Double,Map<Integer,Map>>;
@@ -145,7 +151,7 @@ class ClassifyController {
           smat[i][j] = classifyService.std(r)
         }
       }
-      stream = (phenomj.plotResponse(1,x,rmat,smat)[0] as MWNumericArray).byteData
+      stream = (phenomj.plotResponse(1,x,rmat,smat,'time',curve_cell,compound)[0] as MWNumericArray).byteData
     } else {
       def x = (dr.keySet() as List).toArray() as double[]
       double[][] rmat = new double[x.size()][curves.size()]
@@ -159,12 +165,58 @@ class ClassifyController {
           smat[i][j] = classifyService.std(r)
         }
       }
-      stream = (phenomj.plotResponse(1,x,rmat,smat)[0] as MWNumericArray).byteData
+      stream = (phenomj.plotResponse(1,x,rmat,smat,'conc',curve_cell,compound)[0] as MWNumericArray).byteData
     }
     response.contentLength = stream.length
     response.contentType = 'image/png'
     response.outputStream << stream
     response.outputStream.flush()
+  }
+
+  def csvdata() {
+    def curves = params.curves as List
+    def compound = params.compound
+    double[][] rmat
+    def labels = []
+    if (params.xdim=='time') {
+      def grp = session['tr'][compound] as Map<Integer,Map<Double,Map>>;
+      labels.add('Exposure')
+      curves.each {labels.add(it + ' &micro;M')}
+      def x = (grp.keySet() as List).toArray() as int[]
+      rmat = new double[x.size()][1 + 2*curves.size()];
+      x.eachWithIndex { double entry, int i -> rmat[i][0] = entry }
+      for (int i=0; i<x.size(); i++) {
+        for (int j=1; j<rmat[0].length; j+=2) {
+          def c = grp[x[i] as Integer]
+          def t = curves[(j-1)/2 as int] as Double
+          def r = c[t].r
+          rmat[i][j] = classifyService.mean(r)
+          rmat[i][j+1] = classifyService.std(r)
+        }
+      }
+    } else {
+      def grp = session['dr'][compound] as Map<Double,Map<Integer,Map>>;
+      labels.add('Log Concentration')
+      curves.each {labels.add(it + ' time units')}
+      def x = (grp.keySet() as List).toArray() as double[]
+      rmat = new double[x.size()][1 + 2*curves.size()]
+      x.eachWithIndex { double entry, int i -> rmat[i][0] = Math.log10(entry) }
+      for (int i=0; i<x.size(); i++) {
+        for (int j=1; j<rmat[0].length; j+=2) {
+          def c = grp[x[i]]
+          def t = curves[(j-1)/2 as int] as Integer
+          def r = c[t].r
+          rmat[i][j] = classifyService.mean(r)
+          rmat[i][j+1] = classifyService.std(r)
+        }
+      }
+    }
+    def csv = new StringBuilder()
+    csv.append(labels.join(',') + '\n')
+    for (int i=0; i<rmat.length; i++) {
+      csv.append((rmat[i] as List).join(',') + '\n')
+    }
+    render(contentType:'text/csv',text:csv.toString())
   }
 
 }
