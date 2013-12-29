@@ -16,7 +16,9 @@
   <title>PhenomeTrainer: Classifier</title>
   <meta name="layout" content="main" />
   <r:require modules="jquery-validate"/>
+  <g:javascript src="dygraph-combined.js"/>
   <g:javascript>
+    var g;
 
     function updateSubset(data,elem) {
         if (data) {
@@ -53,12 +55,10 @@
     <g:render template="classifyForm" model="[dataset:dataset, subsets:subsets]"/>
   </div>
   <div id="resultsDiv">
-    %{--<g:render template="result" model="[cm: cm,
-                              Rtrain: Rtrain,
-                              Rtest: Rtest,
-                              trainImages: trainImages,
-                              testImages: testImages]" />--}%
-    <g:render template="resultPlot" model="[error:session['tr']==null&&session['dr']==null, compounds:compounds]"/>
+    <g:render template="combinedResult" model="[cm: cm, Rtrain: Rtrain, Rtest: Rtest,
+                                                trainImages: trainImages, testImages: testImages,
+                                                compounds:compounds,
+                                                error:error]"/>
   </div>
 </body>
 </html>
