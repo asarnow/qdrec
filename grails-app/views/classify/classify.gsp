@@ -12,7 +12,9 @@
   <title>PhenomeTrainer: Classifier</title>
   <meta name="layout" content="main" />
   <r:require modules="jquery-validate"/>
+  <g:javascript src="dygraph-combined.js"/>
   <g:javascript>
+    var g;
 
     function updateSubset(data,elem) {
         if (data) {
