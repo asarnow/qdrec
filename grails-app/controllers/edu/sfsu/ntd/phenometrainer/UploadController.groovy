@@ -17,13 +17,13 @@ class UploadController {
   def createDataset() {
     def dataset = adminService.initDataset(params.datasetName, params.datasetDir, params.visible, params.segmentation)
     session['datasetID'] = dataset.id
-    redirect(action: 'define')
+    redirect(controller: 'upload', action: 'define')
   }
 
   def load() {
-    def dataset = Dataset.get(params.datasetID)
+    def dataset = Dataset.findByToken(params.token) ?: Dataset.get(params.datasetID)
     session['datasetID'] = dataset?.id
-    redirect(action: 'define')
+    redirect(controller: 'upload', action: 'define')
   }
 
   def define() {
