@@ -61,22 +61,18 @@ grails.project.dependency.resolution = {
         runtime ":hibernate:$grailsVersion"
         runtime ":jquery:1.8.3"
         runtime ":resources:1.1.6"
-
         compile ":jquery-ui:1.8.24"
         compile: ":jquery-validation:1.9"
 //        compile ":spring-security-core:1.2.7.3"
-
 //        runtime ":ajax-uploader:1.1"
-      compile ":uploadr:latest.integration"
+        compile ":uploadr:latest.integration"
         // Uncomment these (or add new ones) to enable additional resources capabilities
         //runtime ":zipped-resources:1.0"
         //runtime ":cached-resources:1.0"
         //runtime ":yui-minify-resources:0.1.5"
-
         build ":tomcat:$grailsVersion"
-
         runtime ":database-migration:1.3.2"
-
         compile ':cache:1.0.1'
+        compile ":google-analytics:2.1.1"
     }
 }
