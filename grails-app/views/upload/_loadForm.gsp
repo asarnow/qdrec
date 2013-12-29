@@ -6,7 +6,7 @@
 <div id='datasetFormDiv'>
   <g:form name='datasetForm' action="load">
     <label for="datasetID">Select project from list:</label>
-    <g:select name="datasetID" from="${Dataset.findWhere(visible:true)}" optionValue="description" optionKey="id" noSelection="${[0L:'none']}"/>
+    <g:select name="datasetID" from="${Dataset.where{visible:true}.list()}" optionValue="description" optionKey="id" noSelection="${[0L:'none']}"/>
     <h4>OR</h4>
     <label for="token">Enter project token:</label>
     <g:textField name="token"/>
