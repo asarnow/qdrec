@@ -59,6 +59,8 @@ grails.exceptionresolver.params.exclude = ['password']
 // configure auto-caching of queries by default (if false you can cache individual queries with 'cache: true')
 grails.hibernate.cache.queries = false
 
+google.analytics.webPropertyID = 'UA-21010059-4'
+
 environments {
     development {
         grails.logging.jul.usebridge = true
@@ -99,12 +101,12 @@ environments {
     production {
         grails.logging.jul.usebridge = false
 //        grails.app.context = "/qdrec"
-        grails.serverURL = "http://haddock4.sfsu.edu"
+//        grails.serverURL = "http://haddock4.sfsu.edu"
 //        grails.plugins.springsecurity.successHandler.defaultTargetUrl = "/qdrec"
 //        grails.plugins.springsecurity.logout.afterLogoutUrl = "/qdrec"
         PhenomeTrainer {
-          dataDir = "/home/dev/qdrec-data"
-          svmsFile = "/home/dev/qdrec-data/svms.mat"
+          dataDir = "/home/dev/qdrec2-data"
+          svmsFile = "/home/dev/qdrec2-data/svms.mat"
         }
 
         // log4j configuration
@@ -113,7 +115,7 @@ environments {
             //
             appenders {
             //    console name:'stdout', layout:pattern(conversionPattern: '%c{2} %m%n')
-              file name: 'file', file:'/home/dev/tomcat6/logs/qdrec.log'
+              file name: 'file', file:'/home/dev/tomcat6/logs/qdrec2.log'
             }
             root {
               error 'file'
