@@ -552,6 +552,7 @@ img.parasiteImage {
 
 #classifyDiv {
     margin-top: 0.5em;
+    margin-bottom: 1.0em;
 }
 
 #trainingDiv {
@@ -562,9 +563,26 @@ img.parasiteImage {
     padding-top: 0.5em;
 }
 
+#plotDiv {
+    float: left;
+    margin-bottom: 1.0em;
+}
+
 #plotDiv form p {
     float: left;
     width: auto;
+}
+
+#numericalResult {
+}
+
+#plot {
+    float: left;
+}
+
+div.dygraphDiv {
+    height: 512px;
+    width: 512px;
 }
 
 .confusionMatrix {
@@ -597,4 +615,17 @@ img.parasiteImage {
 
 .confusionMatrix td.emptycell {
     border: none;
+}
+
+.hideshow {
+    color: #41383C;
+    text-decoration: none;
+}
+
+.hideshow:hover {
+    color: #87757e;
+}
+
+#curves {
+    margin-bottom: 0.5em;
 }
