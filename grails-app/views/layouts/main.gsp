@@ -13,6 +13,7 @@
 		<link rel="stylesheet" href="${resource(dir: 'css', file: 'main.css')}" type="text/css">
     <g:layoutHead/>
     <r:layoutResources />
+    <ga:trackPageview />
 	</head>
 	<body>
     <div id="topbar">
@@ -33,10 +34,10 @@
           <li>
             <a href="${createLink(controller: 'page', action: 'about')}">About</a>
             <a href="${createLink(controller: 'page', action: 'help')}">Instructions</a>
-            <a href="${createLink(controller: 'upload', action: 'index')}">Projects</a>
-            <a href="${createLink(controller: 'upload', action: 'define')}">Define</a>
-            <a href="${createLink(controller: 'train', action: 'index')}">Train</a>
-            <a href="${createLink(controller: 'classify', action: 'index')}">Classify</a>
+            <a href="${createLink(controller: 'upload', action: 'index')}">Load Project</a>
+            <a href="${createLink(controller: 'upload', action: 'define')}">Define Subsets</a>
+            <a href="${createLink(controller: 'train', action: 'index')}">Train Classifier</a>
+            <a href="${createLink(controller: 'classify', action: 'index')}">Run Classifier</a>
           </li>
         </ul>
       </div>
