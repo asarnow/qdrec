@@ -14,21 +14,49 @@
 </head>
 <body>
   <div class="help">
-    <h2>QDREC Usage Instructions</h2>
+    <h1>QDREC Usage Instructions</h1>
     <p>
       Please carefully peruse the following instructions before using QDREC. Failure to follow these instructions
       precisely will lead to errors. Some example data for use with QDREC is provided below.
     </p>
-    <h2>Upload Data</h2>
+    <h2>Load Project</h2>
+    <h3>Existing projects</h3>
     <p>
-      Two sets of files must be uploaded to create a distinct data set in QDREC, namely
-      parasite images and segmented parasite images. An archive containing example images with comply with the requirements
-      enumerated below may be downloaded <a href="${resource(dir: 'download', file: 'QDREC_Example_Data.zip')}">here</a>.
+      An existing project may be loaded by selecting its name from the drop-down menu and
+      clicking <button class="button">Load project</button>.
+      A project can also be loaded directly by entering its 6-character token string into the "project token" field and
+      clicking <button class="button">Load project</button>.
+      Clicking <button class="button">Check</button> will test to see if the supplied token corresponds to an existing project.
+      Please use the check feature before using a token to load a project.
+    </p>
+    <h3>New projects</h3>
+    <p>
+      A new project can be created by pressing the "create new project" radio button. This will switch the page to the
+      project creation form.
     </p>
     <p>
-      The data set must also be given a unique, descriptive name of at least 4 characters in length.
+      At least one set of files must be uploaded to create a project in QDREC, namely
+      parasite images. Archives containing example images which comply with the requirements
+      enumerated below may be downloaded <a href="${createLink(action: 'download')}">here</a>.
     </p>
-    Both sets of images must conform strictly to the following requirements:
+    <p>
+      Segmentation may be performed automatically with either the "Proposed" method using phase congruency edge detection
+      for separating touching parasites, or the "Canny" method which uses Canny edge detection.
+      These options are both present in the "Segmentation" drop-down menu.
+      Alternatively, previously computed segmentations (such as those provided with the example images) may be provided by selecting
+      "Upload" from the "Segmentation" drop-down. In this case, an additional file upload dialog will appear.
+    </p>
+    <p>
+      The project must also be given a unique, descriptive name of at least 4 characters in length.
+    </p>
+    <p>
+      By default, "public project" is checked, indicating that the project will appear in the list of existing projects.
+      To prevent this, uncheck the box. After project creation, a 6-character text token will be supplied. This token
+      must be saved in order to re-load private projects in the future.
+    </p>
+    <p>
+      Both sets of images must conform strictly to the following requirements:
+    </p>
     <h3>Parasite images</h3>
     <ul>
       <li>Must follow the file name convention defined below</li>
@@ -134,7 +162,7 @@
     </table>
     <h2>Define Subsets</h2>
     <p>
-      Subsets are defined by selected multiple images from a data set,
+      Subsets are defined by selecting multiple images from a project,
       providing a descriptive name of at least 5 characters in length and clicking <button class="button">Define</button>.
     </p>
     <p>
@@ -150,10 +178,10 @@
       Newly defined or updated subsets will be immediately reflected in the list of subsets.
       It is recommended to create at least two subsets, one for training and one for testing.
     </p>
-    <h2>Manual Annotation</h2>
+    <h2>Train Classifier</h2>
     <p>
-      The first step in training is to select the appropriate data set and subset from the menus at the top of the training
-      interface. Once selected, click <button class="button">Switch</button> to switch to chosen set of images.
+      The first step in training is to select the appropriate subset from the menu at the top of the training
+      interface. Once selected, click <button class="button">Switch</button> to switch to the chosen set of images.
     </p>
     <p>
       No training is required to use the existing classifier. Also note that if separate subsets for training and testing
@@ -183,20 +211,41 @@
       The Trainer will remember your progress, so if at any time you would like a break from training, just log out.
       When you log in again, you will be able to pick up with the image where you left off.
     </p>
-    <h2>Classification</h2>
+    <h2>Run Classifier</h2>
     <p>
-      First, select the appropriate data set from the drop-down list of available data sets.
-    </p>
-    <p>
-      If the existing classifier is to be used, simply select a subset from the second drop-down list, and click
+      If the existing classifier is to be used, simply select a subset from the first drop-down list, and click
       <button class="button">Classify</button>.
     </p>
     <p>
       If a new classifier should be trained, check the "Train SVM" box. Three new fields will appear. The first is an
       additional drop-down menu for selection of the subset for training. This should be a different set than that used for
-      testing. The other two fields (labeled "RBF Sigma" and "Soft-margin box constraint," respectively) are parameters within
+      testing. The other two fields (labeled "RBF Sigma" and "Soft-margin box constraint," respectively) are parameters used
       by the SVM classifier. For details, refer to the <a href="${createLink(action: 'about')}">publication</a>. It should
       be fine to leave the parameters set to their default values.
+    </p>
+    <p>
+      When classification is complete, the results will be available in two forms.
+    </p>
+    <h3>Plot Results</h3>
+    <p>
+      First, a simple plotting interface will appear under the "Plot Results" heading. Click this heading to hide and show the plotting interface.
+    </p>
+    <p>
+      A particular drug compound can be chosen from the drop-down menu. The available response curves for either time- or dose-response
+      series will then appear in the "curves" select box. Select one or more of these curves and click <button class="button">Plot</button>
+      in order to display an interactive response plot of these response curves. The "abcissa dimension" radio buttons are used to select whether
+      exposure time or drug concentration will appear on the x-axis of the plot. If "time" is selected, then the available time-response curves will
+      each correspond to a particular concentration; conversely if "concentration" is selected, the available dose-response curves will correspond to
+      particular exposure times.
+    </p>
+    <h3>Tabular Results</h3>
+    <p>
+      Second, the results will be shown in tabular form, under the "Tabular Results" heading. Click this heading to hide and show
+      the tabular results.
+    </p>
+    <p>
+      The tabular results include single-image response values for the test set. If training was performed,
+      then the cross-validated response values and classification confusion matrix will also be shown.
     </p>
   </div>
 </body>
