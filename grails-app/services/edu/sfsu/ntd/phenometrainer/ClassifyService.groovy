@@ -18,11 +18,11 @@ class ClassifyService {
 
     boolean[] G = findTrainingVector(training)
 
-    def vids_test = testing.imageSubsets.image.name
-    def vids_train = training.imageSubsets.image.name
+    def vids_test = testing.imageSubsets.image
+    def vids_train = training.imageSubsets.image
 
-    def vids_test_cell = list2cell( vids_test )
-    def vids_train_cell = list2cell( vids_train )
+    def vids_test_cell = list2cell( vids_test.name )
+    def vids_train_cell = list2cell( vids_train.name )
 
     def datasetDir = grailsApplication.config.PhenomeTrainer.dataDir + File.separator + dataset.token
 
@@ -60,7 +60,7 @@ class ClassifyService {
 
     def result = [:]
     result.Rtest = (double[][])((MWArray)(R[0])).toArray()
-    result.testImages = vids.name
+    result.testImages = vids
 
     R.each {MWArray.disposeArray(it)}
 
