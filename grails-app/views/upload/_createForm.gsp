@@ -26,7 +26,7 @@
           maxSize="${2**20 * 50}" />
       </div>
 
-      <h4 style="display: inline;"><label for="segmentation">Segmentation</label></h4>
+      <h4 class="inline"><label for="segmentation">Segmentation</label></h4>
       %{--<g:checkBox name="uploadSegmented" checked="${false}" onchange="\$('#segUploadrDiv').toggle(this.checked)"/>--}%
       <g:select name="segmentation" from="['Upload','Proposed','Canny']" value="Proposed"
                 onchange="\$('#segUploadrDiv').toggle(this.value=='Upload');"/>
@@ -45,7 +45,8 @@
           maxSize="${2**20 * 50}" />
       </div>
       <br />
-      <g:submitButton name="datasetSubmit" value="Create" class="button" />
+      <g:submitButton name="datasetSubmit" value="Create" class="button" onclick="
+                  if (\$('#datasetForm').valid()){ \$('#uploadDiv').hide(); \$('#spinner').show(); }"/>
     </g:form>
 </div>
 
