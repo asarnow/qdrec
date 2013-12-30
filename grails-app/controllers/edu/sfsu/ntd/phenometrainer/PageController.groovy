@@ -17,6 +17,14 @@ class PageController {
       render(view:'help')
     }
 
+    def home() {
+      render(view: 'home')
+    }
+
+    def download() {
+      render(view: 'download')
+    }
+
     def unsupported() {
       render(view:'unsupported')
     }
