@@ -63,3 +63,4 @@ out/*
 trunk/web/target
 trunk/web/target/*
 app-data/*
+.idea/*
