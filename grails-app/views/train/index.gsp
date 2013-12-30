@@ -16,7 +16,7 @@
 </head>
 <body>
   <div id="main">
-
+    <h1>Training Annotation</h1>
     <div id="trainDiv">
       <g:render template="trainUI" model="['dataset': dataset, 'subsets': dataset.subsets,
               'imageSubset': imageSubset, 'subset':subset, 'image':image, 'control':control, parasites: parasites]"/>
