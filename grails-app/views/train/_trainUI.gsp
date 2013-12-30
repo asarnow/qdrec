@@ -1,4 +1,4 @@
-<%@ page import="edu.sfsu.ntd.phenometrainer.TrainState" %>
+  <%@ page import="edu.sfsu.ntd.phenometrainer.TrainState" %>
 <g:javascript>
   var parasites;
   var theCanvas;
@@ -84,7 +84,8 @@
 
 </g:javascript>
 <div>
-  <h4>Subset "${subset.description}" selected from dataset "${dataset.description}"</h4>
+  <h3>Selected project: ${dataset.description}</h3>
+  <h4>Subset: ${subset.description}</h4>
   <g:form>
     <g:hiddenField name="datasetID" value="${dataset.id}" />
     <g:hiddenField name="imageSubsetID" value="${imageSubset.id}"/>
