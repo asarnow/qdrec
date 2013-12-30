@@ -47,10 +47,14 @@
   </g:javascript>
 </head>
 <body>
+  <h1>Classification and Response Calculation</h1>
   <div id="classifyDiv">
     <g:render template="classifyForm" model="[dataset:dataset, subsets:subsets]"/>
   </div>
   <div id="resultsDiv">
+  </div>
+  <div id="spinner" style="display: none">
+    <img src="${resource(dir: 'images', file: 'ajax-loader.gif')}" alt="Loading..."/>
   </div>
 </body>
 </html>
