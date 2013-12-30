@@ -8,7 +8,16 @@ h1, h2, h3, h4, h5, h6 {
 	line-height: 1.1;
 }
 
+.inline {
+    display: inline;
+}
+
 /* BASE LAYOUT */
+
+/* apply a natural box layout model to all elements */
+*, *:before, *:after {
+  -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box;
+ }
 
 html {
 	background-color: #ffffff;
@@ -50,13 +59,6 @@ a:hover, a:active {
 	outline: none; /* prevents outline in webkit on active links but retains it for tab focus */
 }
 
-h1 {
-	color: #48802c;
-	font-weight: normal;
-	font-size: 1.25em;
-	margin: 0.8em 0 0.3em 0;
-}
-
 ul {
 	padding: 0;
 }
@@ -66,7 +68,6 @@ img {
 }
 
 p {
-    width: 50%;
     padding-bottom: 0.5em;
 }
 
@@ -86,14 +87,43 @@ p {
     border: 1px solid #333333; /* without border, IE won't fill bgcolor. One of IE styling issues. */
     text-align: left;
     width: auto;
-    height: 85px;
+    height: 87px;
     /*background-image: url("../images/schistosoma.png");
     background-repeat: no-repeat;
     background-position: 60% 0  ;
     background-size: contain;
     background-clip: border-box;
-    overflow: visible;
     z-index: 1;*/
+    /*overflow: visible;*/
+}
+
+#leftbar {
+    width: 85%;
+    float: left;
+}
+
+#rightbar {
+    background-color: inherit;
+    width: 15%;
+    float: right;
+    text-align: right;
+}
+
+#rightbar ul.nav {
+    margin-top: 0.25em;
+}
+
+#rightbar ul.nav li {
+    margin-right: 0.25em;
+    float: none;
+}
+
+#rightbar a {
+    margin: 0;
+}
+
+#title {
+    clear: left;
 }
 
 #title h1 {
@@ -136,12 +166,15 @@ p {
 
 .content {
     margin-left: 5px;
+    margin-right: 5px;
+    margin-top: 0.5em;
 }
 
 .content h1 {
-	border-bottom: 1px solid #CCCCCC;
-	margin: 0.8em 1em 0.3em;
-	padding: 0 0.25em;
+    display: block;
+    font-size: 1.5em;
+    font-weight: bold;
+    margin-bottom: 0.5em;
 }
 
 .scaffold-list h1 {
@@ -164,7 +197,7 @@ p {
 
 /* NAVIGATION MENU */
 
-.nav {
+div.nav {
     /*clear: left;*/
     /*display: block;*/
 	background-color: inherit;
@@ -174,7 +207,7 @@ p {
     padding-bottom: 0;
 }
 
-.nav ul {
+ul.nav {
     /*float: left;*/
     /*background-color: inherit;*/
     /*padding-top: 0.75em;*/
@@ -184,11 +217,11 @@ p {
     /*z-index: 0;*/
 }
 
-.nav li {
+ul.nav li {
 	display: block;
 	float: left;
 	list-style-type: none;
-	margin-right: 0.5em;
+	margin-right: 1.0em;
 	padding-right: 0;
 }
 
@@ -196,7 +229,6 @@ p {
     color: white;
 	text-decoration: none;
     font-weight: bold;
-    margin-right: 1em;
 }
 
 .nav a:link {
@@ -340,10 +372,51 @@ a.logout:active {
     height: 12px;
 }
 
+/* HOME */
+
+div.homeleft {
+    width: 50%;
+    float: left;
+    padding-right: 0.75em;
+}
+
+.homeleft p {
+    text-align: justify;
+}
+
+div.homeright {
+    width: 50%;
+    float: left;
+    padding-left: 0.75em;
+}
+
+.requirement {
+    margin-top: 1.0em;
+    margin-left: 1.0em;
+}
+
+/* DOWNLOAD */
+
+ul.downloads {
+    list-style-type: disc;
+    list-style-position: inside;
+    width: 50%;
+}
+
+ul.downloads li {
+    text-align: left;
+    text-indent: 1em;
+    margin-bottom: 0.5em;
+}
+
+ul.downloads li p {
+    text-indent: 0;
+    padding-left: 2em;
+}
+
 /* HELP */
 
 div.help {
-    margin-left: 0.5em;
     width: 75%;
 }
 
@@ -398,7 +471,8 @@ div.help {
 
 div.about {
     float: left;
-    width: 48%;
+    width: 50%;
+    padding-right: 0.75em;
 }
 
 .about h2 {
@@ -407,16 +481,15 @@ div.about {
 }
 
 .about p {
-    width: 100%;
+    /*width: 100%;*/
     text-align: justify;
-    
-    padding-left: 0.5em;
+    /*padding-left: 0.5em;*/
 }
 
 div.authors {
     float: left;
-    margin-left: 2em;
-    width: 48%;
+    padding-left: 0.75em;
+    width: 50%;
 }
 
 .authors h2 {
@@ -425,7 +498,7 @@ div.authors {
 }
 
 .authors p {
-    width: 100%;
+    /*width: 100%;*/
     text-align: left;
 }
 
@@ -441,7 +514,6 @@ div.authors {
 /* TRAINER */
 
 #main {
-    margin-top: 0.5em;
 }
 
 #main h4 {
@@ -518,6 +590,7 @@ img.parasiteImage {
 
 #imageUploadrDiv {
     /*float:left;*/
+    margin-top: 0.5em;
 }
 
 #segUploadrDiv {
@@ -531,7 +604,6 @@ img.parasiteImage {
 /* SUBSET DEFINITION */
 
 #datasetDiv {
-    margin-top: 0.5em;
 }
 
 #datasetID {
@@ -551,7 +623,6 @@ img.parasiteImage {
 /* CLASSIFICATION */
 
 #classifyDiv {
-    margin-top: 0.5em;
     margin-bottom: 1.0em;
 }
 
