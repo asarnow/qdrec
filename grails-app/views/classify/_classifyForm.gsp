@@ -2,7 +2,7 @@
         class="validatedForm"
         before="if (\$('#classifyForm').valid()){"
         after="}">
-  <h3><label for="datasetID">Classify in project: ${dataset.description}</label></h3>
+  <h3><label for="datasetID">Selected project: ${dataset.description}</label></h3>
   <g:hiddenField name="datasetID" value="${dataset.id}"/>
   <br />
   <label for="trainSVM">Train SVM</label>
@@ -21,6 +21,7 @@
     <label for="testingID">Select testing set:</label>
     <g:select name="testingID" from="${subsets}" optionKey="id" optionValue="description"/>
     <g:submitToRemote name="classifySubmit" class="button" value="Classify"
-      url="[controller: 'classify', action: 'classify']" update="resultsDiv"/>
+      url="[controller: 'classify', action: 'classify']" update="resultsDiv"
+      onLoading="\$('#resultsDiv').hide();\$('#spinner').show()" onComplete="\$('#spinner').hide();\$('#resultsDiv').show()"/>
   </div>
 </g:form>
