@@ -30,6 +30,7 @@
   </g:javascript>
 </head>
 <body>
+  <h1>Project Selection</h1>
   <div id="metaUploadDiv">
     <g:form controller="upload" action="project" method="GET">
       <g:radioGroup name="load"
@@ -52,6 +53,9 @@
   </div>
   <div id="statusDiv">
     ${message}
+  </div>
+  <div id="spinner" style="display: none">
+    <img src="${resource(dir: 'images', file: 'ajax-loader.gif')}" alt="Loading..."/>
   </div>
 </body>
 </html>
