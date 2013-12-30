@@ -26,25 +26,28 @@ class ClassifyController {
 
   def classify(){
     if (params.trainSVM) {
+      def testing = Subset.get(params.testingID)
+//      def training = Subset.get(params.trainingID)
       def result = classifyService.trainAndClassify(params.datasetID,params.testingID,params.trainingID,params.sigma,params.boxConstraint)
-      session['dr'] = classifyService.doseResponse(Image.where({name in result.testImages}).list(), result.Rtest)
-      session['tr'] = classifyService.timeResponse(Image.where({name in result.testImages}).list(), result.Rtest)
+      session['dr'] = classifyService.doseResponse(SubsetImage.findAllBySubset(testing).image, result.Rtest)
+      session['tr'] = classifyService.timeResponse(SubsetImage.findAllBySubset(testing).image, result.Rtest)
       def compounds = (session['dr'] as Map).keySet() as List
       render(template: 'combinedResult',
               model: [cm: result.cm as double[][],
                       Rtrain: result.Rtrain as double[][],
                       Rtest: result.Rtest as double[][],
-                      trainImages: result.trainImages as List,
-                      testImages:result.testImages as List],
+                      trainImages: (result.trainImages as List<Image>)?.name,
+                      testImages: (result.testImages as List<Image>)?.name,
                       compounds:compounds,
-                      error:session['tr']==null||session['dr']==null)
+                      error:session['tr']==null||session['dr']==null])
     } else {
+      def subset = Subset.get(params.testingID)
       def result = classifyService.classifyOnly(params.datasetID,params.testingID)
-      session['dr'] = classifyService.doseResponse(Image.where({name in result.testImages}).list(), result.Rtest)
-      session['tr'] = classifyService.timeResponse(Image.where({name in result.testImages}).list(), result.Rtest)
+      session['dr'] = classifyService.doseResponse(SubsetImage.findAllBySubset(subset).image, result.Rtest)
+      session['tr'] = classifyService.timeResponse(SubsetImage.findAllBySubset(subset).image, result.Rtest)
       def compounds = (session['dr'] as Map).keySet() as List
       render(template: 'combinedResult', model: [Rtest: result.Rtest as double[][],
-                                                 testImages: result.testImages as List,
+                                                 testImages: (result.testImages as List<Image>)?.name,
                                                  compounds: compounds,
                                                  error:session['tr']==null||session['dr']==null])
     }
