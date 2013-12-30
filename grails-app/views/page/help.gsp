@@ -231,12 +231,11 @@
       First, a simple plotting interface will appear under the "Plot Results" heading. Click this heading to hide and show the plotting interface.
     </p>
     <p>
-      A particular drug compound can be chosen from the drop-down menu. The available response curves for either time- or dose-response
-      series will then appear in the "curves" select box. Select one or more of these curves and click <button class="button">Plot</button>
-      in order to display an interactive response plot of these response curves. The "abcissa dimension" radio buttons are used to select whether
+      A particular drug compound can be chosen from the drop-down menu.
+      The "abcissa dimension" radio buttons are used to select whether
       exposure time or drug concentration will appear on the x-axis of the plot. If "time" is selected, then the available time-response curves will
       each correspond to a particular concentration; conversely if "concentration" is selected, the available dose-response curves will correspond to
-      particular exposure times.
+      particular exposure times. Click <button class="button">Plot</button> in order to display an interactive response plot.
     </p>
     <h3>Tabular Results</h3>
     <p>

@@ -635,7 +635,6 @@ img.parasiteImage {
 }
 
 #plotDiv {
-    float: left;
     margin-bottom: 1.0em;
 }
 
@@ -647,13 +646,13 @@ img.parasiteImage {
 #numericalResult {
 }
 
-#plot {
+div.dygraphDiv {
     float: left;
 }
 
-div.dygraphDiv {
-    height: 512px;
-    width: 512px;
+.dygraph-legend {
+    float: left;
+    width: auto;
 }
 
 .confusionMatrix {

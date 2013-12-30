@@ -56,12 +56,12 @@ class ClassifyController {
   def testClassify() {
     trainService.saveCurrentImageState(session["parasites"])
     session['datasetID'] = Dataset.first().id
-    def dataset = Dataset.get(session['datasetID'])
+    def dataset1 = Dataset.get(session['datasetID'])
 
-    if (!dataset) {
+    if (!dataset1) {
       redirect(controller: 'upload', action: 'index', params: [message: "Incorrect project or no project selected."])
       return
-    } else if (dataset.subsets?.size() < 1) { // true if list is null OR size is 0
+    } else if (dataset1.subsets?.size() < 1) { // true if list is null OR size is 0
       redirect(controller: 'upload', action: 'define', params: [message: "At least one subset must be defined."])
       return
     }
@@ -96,8 +96,8 @@ class ClassifyController {
                       "072913-NIC-1-4-b",
                       "072913-NIC-10-4-b"]
 
-    session['dr'] = classifyService.doseResponse(Image.where({name in testImages}).list(), Rtest)
-    session['tr'] = classifyService.timeResponse(Image.where({name in testImages}).list(), Rtest)
+    session['dr'] = classifyService.doseResponse(Image.where({name in testImages && dataset==dataset1}).list(), Rtest)
+    session['tr'] = classifyService.timeResponse(Image.where({name in testImages && dataset==dataset1}).list(), Rtest)
 
     def compounds = (session['dr'] as Map).keySet() as List
 
@@ -107,8 +107,8 @@ class ClassifyController {
                           Rtest: Rtest as double[][],
                           trainImages: trainImages as List,
                           testImages: testImages as List,
-                          dataset: dataset,
-                          subsets: dataset.subsets,
+                          dataset: dataset1,
+                          subsets: dataset1.subsets,
                           compounds:compounds,
                           error:session['tr']==null||session['dr']==null])
   }
@@ -121,10 +121,10 @@ class ClassifyController {
     def curves = [] as Set
     if (params.xdim=='time') {
       def dr = session['dr'][params.compound] as Map<Double,Map<Integer,Map>>;
-      dr.keySet().each {curves.add(it)}
+      dr.keySet().each {curves.add(it + ' &micro;M')}
     } else if (params.xdim=='conc') {
       def tr = session['tr'][params.compound] as Map<Integer,Map<Double,Map>>;
-      tr.keySet().each {curves.add(it)}
+      tr.keySet().each {curves.add(it + ' time units')}
     }
     render(template: 'curves', model: [curves:(curves as List).sort()])
   }
@@ -177,12 +177,12 @@ class ClassifyController {
   }
 
   def csvdata() {
-    def curves = params.curves as List
     def compound = params.compound
     double[][] rmat
     def labels = []
     if (params.xdim=='time') {
       def grp = session['tr'][compound] as Map<Integer,Map<Double,Map>>;
+      def curves = ((session['dr'][compound] as Map<Double,Map<Integer,Map>>).keySet() as List).sort()
       labels.add('Exposure')
       curves.each {labels.add(it + ' &micro;M')}
       def x = (grp.keySet() as List).toArray() as int[]
@@ -199,6 +199,7 @@ class ClassifyController {
       }
     } else {
       def grp = session['dr'][compound] as Map<Double,Map<Integer,Map>>;
+      def curves = ((session['tr'][compound] as Map<Integer,Map<Double,Map>>).keySet() as List).sort()
       labels.add('Log Concentration')
       curves.each {labels.add(it + ' time units')}
       def x = (grp.keySet() as List).toArray() as double[]
