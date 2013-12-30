@@ -50,12 +50,12 @@
   </g:javascript>
 </head>
 <body>
+  <h1>Subset Definition</h1>
   <div id="datasetDiv">
     <g:render template="dataset" model="[dataset: dataset]"/>
   </div>
   <div id="statusDiv">
-
+    ${message}
   </div>
-
 </body>
 </html>
