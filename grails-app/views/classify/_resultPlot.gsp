@@ -10,11 +10,12 @@
           errorBars: true,
           sigma: 1.0,
           legend: 'always',
-          valueRange: [-0.05,1.05],
+          valueRange: [-0.05,1.2],
           title: \$('#compound').val(),
           ylabel: 'Fraction Degenerate',
           xlabel: \$('[name=xdim]:checked').val()=='time' ? 'Exposure Time' : 'Log Concentration (&micro;M)'
         });">
+      <label for="compound">Select compound:</label>
       <g:select name="compound" from="${compounds}" noSelection="${['':'-']}"
                 onchange="${remoteFunction(action: 'curves', update: 'curves',
                       params: '\'xdim=\'+$(\'[name=xdim]:checked\').val()+\'&compound=\'+this.value', method: 'GET')}"/>
