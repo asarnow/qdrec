@@ -8,8 +8,7 @@
 --%>
 
 <div id="manageDiv">
-  %{--<h3>Define subsets for ${dataset.description}</h3>--}%
-  <h3>Define subsets for project: ${dataset.description}</h3>
+  <h3>Selected project: ${dataset.description}</h3>
   <g:if test="${dataset.visible}">
     The token <i>${dataset.token}</i> may be used to load this project directly.
   </g:if>
