@@ -17,27 +17,38 @@
 	</head>
 	<body>
     <div id="topbar">
-      <div id="title">
-        %{--<sec:ifLoggedIn>
-          <a class="logout" href="${createLink(controller: 'logout')}">Logout</a>
-        </sec:ifLoggedIn>
-        <sec:ifNotLoggedIn>
-          <a class="logout" href="${createLink(controller: 'login')}">Login</a>
-        </sec:ifNotLoggedIn>--}%
-        <a href="${createLink(controller: 'page', action: 'about')}"><img src="${resource(dir: 'images', file: 'schistosoma.png')}"/></a>
-        <a href="${createLink(controller: 'page', action: 'about')}"><h1>QDREC</h1></a>
-        <a href="${createLink(controller: 'page', action: 'about')}"><h2>Quantal Dose Response Calculator</h2></a>
-        </a>
+      <div id="leftbar">
+        <div id="title">
+          %{--<sec:ifLoggedIn>
+            <a class="logout" href="${createLink(controller: 'logout')}">Logout</a>
+          </sec:ifLoggedIn>
+          <sec:ifNotLoggedIn>
+            <a class="logout" href="${createLink(controller: 'login')}">Login</a>
+          </sec:ifNotLoggedIn>--}%
+          <a href="${createLink(controller: 'page', action: 'about')}"><img src="${resource(dir: 'images', file: 'schistosoma.png')}"/></a>
+          <a href="${createLink(controller: 'page', action: 'about')}"><h1>QDREC</h1></a>
+          <a href="${createLink(controller: 'page', action: 'about')}"><h2>Quantal Dose Response Calculator</h2></a>
+        </div>
+        <div class="nav">
+          <ul class="nav">
+            <li><a href="${createLink(controller: 'page', action: 'home')}">Home</a></li>
+            <li><a href="${createLink(controller: 'upload', action: 'index')}">Load Project</a></li>
+            <li><a href="${createLink(controller: 'upload', action: 'define')}">Define Subsets</a></li>
+            <li><a href="${createLink(controller: 'train', action: 'index')}">Train Classifier</a></li>
+            <li><a href="${createLink(controller: 'classify', action: 'index')}">Run Classifier</a></li>
+          </ul>
+        </div>
       </div>
-      <div class="nav">
-        <ul>
+      <div id="rightbar">
+        <ul class="nav">
+          <li>
+            <a href="${createLink(controller: 'page', action: 'help')}">Help</a>
+          </li>
           <li>
             <a href="${createLink(controller: 'page', action: 'about')}">About</a>
-            <a href="${createLink(controller: 'page', action: 'help')}">Instructions</a>
-            <a href="${createLink(controller: 'upload', action: 'index')}">Load Project</a>
-            <a href="${createLink(controller: 'upload', action: 'define')}">Define Subsets</a>
-            <a href="${createLink(controller: 'train', action: 'index')}">Train Classifier</a>
-            <a href="${createLink(controller: 'classify', action: 'index')}">Run Classifier</a>
+          </li>
+          <li>
+            <a href="${createLink(controller: 'page', action: 'download')}">Download</a>
           </li>
         </ul>
       </div>
