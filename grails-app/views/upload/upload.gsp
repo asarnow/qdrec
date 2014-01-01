@@ -9,7 +9,7 @@
 <%@ page import="edu.sfsu.ntd.phenometrainer.Dataset" contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
-  <title></title>
+  <title>QDREC: Create Project</title>
   <meta name="layout" content="main" />
   <r:require modules="uploadr,jquery-validate"/>
   <g:javascript>
@@ -30,32 +30,30 @@
   </g:javascript>
 </head>
 <body>
-  <h1>Project Selection</h1>
-  <div id="metaUploadDiv">
-    <g:form controller="upload" action="project" method="GET">
-      <g:radioGroup name="load"
-                values="[true,false]"
-                value="${datasetDir==null}"
-                labels="['Load existing project','Create new project']"
-                onchange="submit()">
-        <p>${it.label} ${it.radio}</p>
-      </g:radioGroup>
-    </g:form>
+  <div id="subnav" class="nav">
+    <ul class="nav">
+      <li><a href="${createLink(action: 'index')}">Create Project</a></li>
+      <li><a href="${createLink(action: 'index', params: [load:true])}">Load Project</a></li>
+      <li><a href="${createLink(action: 'review', params: [load:datasetDir==null])}">Review Segmentation</a></li>
+    </ul>
   </div>
   <div class="clearDiv"></div>
-  <div id="uploadDiv">
-    <g:if test="${datasetDir==null}">
-      <g:render template="loadForm"/>
-    </g:if>
-    <g:else>
-      <g:render template="createForm" model="[datasetDir: datasetDir]"/>
-    </g:else>
-  </div>
-  <div id="statusDiv">
-    ${message}
-  </div>
-  <div id="spinner" style="display: none">
-    <img src="${resource(dir: 'images', file: 'ajax-loader.gif')}" alt="Loading..."/>
+  <div class="content">
+    <div class="clearDiv"></div>
+    <div id="uploadDiv">
+      <g:if test="${datasetDir==null}">
+        <g:render template="loadForm" model="[dataset:dataset]"/>
+      </g:if>
+      <g:else>
+        <g:render template="createForm" model="[datasetDir: datasetDir]"/>
+      </g:else>
+    </div>
+    <div id="statusDiv">
+      ${message}
+    </div>
+    <div id="spinner" style="display: none">
+      <img src="${resource(dir: 'images', file: 'ajax-loader.gif')}" alt="Loading..."/>
+    </div>
   </div>
 </body>
 </html>
