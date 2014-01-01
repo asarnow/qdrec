@@ -18,6 +18,16 @@
   <r:require modules="jquery-validate"/>
   <g:javascript>
 
+    function updateSelect(data,select) {
+      if (data) {
+        var rselect = $(select);
+        rselect.empty();
+        $.each(data, function (k, v) {
+          rselect.append($("<option></option>").val(v.id).text(v.name));
+        });
+      }
+    }
+
     function assocButtons() {
       $('#invertButton').click(function(){
         invertSelection($('#imageList'));
@@ -50,12 +60,23 @@
   </g:javascript>
 </head>
 <body>
-  <h1>Subset Definition</h1>
-  <div id="datasetDiv">
-    <g:render template="dataset" model="[dataset: dataset]"/>
+  <div id="subnav" class="nav">
+    <ul class="nav">
+
+    </ul>
   </div>
-  <div id="statusDiv">
-    ${message}
+  <div class="clearDiv"></div>
+  <div class="content">
+    <h2>Subset Definition</h2>
+    <p>
+      Projects must be divided into subsets so that different images may be used for training and testing.
+    </p>
+    <div id="datasetDiv">
+      <g:render template="dataset" model="[dataset: dataset]"/>
+    </div>
+    <div id="statusDiv">
+      ${message}
+    </div>
   </div>
 </body>
 </html>
