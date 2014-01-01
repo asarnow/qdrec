@@ -28,7 +28,6 @@
 
     });
   </g:javascript>
-  <r:layoutResources/>
 </head>
 <body>
   <div id="subnav" class="nav">
@@ -40,44 +39,43 @@
   </div>
   <div class="clearDiv"></div>
   <div class="content">
-    <div id="imageUploadrDiv">
-      <h4>Upload images</h4>
-      <uploadr:add name="imageUploadr"
-              path="${imgDir}"
-                direction="up"
-                maxVisible="8"
-                unsupported="${createLink(plugin: 'uploadr', controller: 'project', action: 'warning')}"
-                rating="false"
-                voting="false"
-                colorPicker="false"
-                allowedExtensions="png"
-                noSound="true"
-                maxSize="${2**20 * 50}" />
-    </div>
-    <div id="segUploadrDiv" hidden>
-      <h4>Upload segmented images</h4>
-      <uploadr:add name="segUploadr"
-          path="${segDir}"
-          direction="up"
-          maxVisible="8"
-          unsupported="${createLink(plugin: 'uploadr', controller: 'project', action: 'warning')}"
-          rating="false"
-          voting="false"
-          colorPicker="false"
-          allowedExtensions="png"
-          noSound="true"
-          maxSize="${2**20 * 50}" />
-    </div>
-    <div class="clearDiv"></div>
     <div id="uploadDiv">
       <g:if test="${datasetDir==null}">
         <g:render template="loadForm" model="[dataset:dataset]"/>
       </g:if>
       <g:else>
         <g:render template="createForm" model="[datasetDir: datasetDir]"/>
+        <div class="clearDiv"></div>
+        <div id="imageUploadrDiv">
+          <h4>Upload images</h4>
+          <uploadr:add name="imageUploadr"
+                  path="${imgDir}"
+                    direction="up"
+                    maxVisible="8"
+                    unsupported="${createLink(plugin: 'uploadr', controller: 'project', action: 'warning')}"
+                    rating="false"
+                    voting="false"
+                    colorPicker="false"
+                    allowedExtensions="png"
+                    noSound="true"
+                    maxSize="${2**20 * 50}" />
+        </div>
+        <div id="segUploadrDiv" hidden>
+          <h4>Upload segmented images</h4>
+          <uploadr:add name="segUploadr"
+              path="${segDir}"
+              direction="up"
+              maxVisible="8"
+              unsupported="${createLink(plugin: 'uploadr', controller: 'project', action: 'warning')}"
+              rating="false"
+              voting="false"
+              colorPicker="false"
+              allowedExtensions="png"
+              noSound="true"
+              maxSize="${2**20 * 50}" />
+        </div>
+        <button type=button class="button" onclick="$('#datasetSubmit').click()">Create Project</button>
       </g:else>
-      <div class="clearDiv"></div>
-      <button type=button class="button" onclick="$('#datasetSubmit').click()">Create Project</button>
     </div>
     <div id="statusDiv">
       ${message}
