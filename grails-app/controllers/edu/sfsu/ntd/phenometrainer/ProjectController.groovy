@@ -16,10 +16,10 @@ class ProjectController {
       def dataset = Dataset.get(session['datasetID'])
       render(view: 'upload', model: [message: params.message, dataset: dataset])
     } else {
-//      def datasetDir = '/home/da/local/sandbox/qdrec'
       def datasetDir = Files.createTempDirectory('qdrec').toFile().path
       def imgDir = datasetDir + File.separator + 'img'
       def segDir = datasetDir + File.separator + 'bw'
+      session['uploadr'] = null
       render(view: 'upload', model: [datasetDir: datasetDir, imgDir: imgDir, segDir: segDir, message: params.message])
     }
   }
