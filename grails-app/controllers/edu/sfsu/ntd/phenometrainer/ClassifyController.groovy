@@ -16,10 +16,10 @@ class ClassifyController {
     def dataset = Dataset.get(session['datasetID'])
 
     if (!dataset) {
-      redirect(controller: 'upload', action: 'index', params: [message: "Incorrect project or no project selected."])
+      redirect(controller: 'project', action: 'index', params: [message: "Incorrect project or no project selected."])
       return
     } else if (dataset.subsets?.size() < 1) { // true if list is null OR size is 0
-      redirect(controller: 'upload', action: 'define', params: [message: "At least one subset must be defined."])
+      redirect(controller: 'project', action: 'define', params: [message: "At least one subset must be defined."])
       return
     }
 
@@ -73,10 +73,10 @@ class ClassifyController {
     def dataset1 = Dataset.get(session['datasetID'])
 
     if (!dataset1) {
-      redirect(controller: 'upload', action: 'index', params: [message: "Incorrect project or no project selected."])
+      redirect(controller: 'project', action: 'index', params: [message: "Incorrect project or no project selected."])
       return
     } else if (dataset1.subsets?.size() < 1) { // true if list is null OR size is 0
-      redirect(controller: 'upload', action: 'define', params: [message: "At least one subset must be defined."])
+      redirect(controller: 'project', action: 'define', params: [message: "At least one subset must be defined."])
       return
     }
 
