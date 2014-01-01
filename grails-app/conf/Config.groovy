@@ -76,10 +76,10 @@ environments {
           //
           appenders {
           //    console name:'stdout', layout:pattern(conversionPattern: '%c{2} %m%n')
-            file name: 'file', file:'/tmp/qdrec.log'
+            rollingFile name: 'file', file:'/tmp/qdrec.log', maxFileSize: 50 * 2**20
           }
           root {
-            debug 'stout', 'file'
+            info 'stout', 'file'
             additivity = true
           }
 
