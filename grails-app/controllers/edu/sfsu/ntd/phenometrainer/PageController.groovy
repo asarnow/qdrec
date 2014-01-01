@@ -25,6 +25,10 @@ class PageController {
       render(view: 'download')
     }
 
+    def tutorial() {
+      render(view: 'tutorial')
+    }
+
     def unsupported() {
       render(view:'unsupported')
     }
