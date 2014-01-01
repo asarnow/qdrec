@@ -51,14 +51,22 @@
   </g:javascript>
 </head>
 <body>
-  <div id="classifyDiv">
-    <g:render template="classifyForm" model="[dataset:dataset, subsets:subsets]"/>
+  <div id="subnav" class="nav">
+    <ul class="nav">
+
+    </ul>
   </div>
-  <div id="resultsDiv">
-    <g:render template="combinedResult" model="[cm: cm, Rtrain: Rtrain, Rtest: Rtest,
-                                                trainImages: trainImages, testImages: testImages,
-                                                compounds:compounds,
-                                                error:error]"/>
+  <div class="clearDiv"></div>
+  <div class="content">
+    <div id="classifyDiv">
+      <g:render template="classifyForm" model="[dataset:dataset, subsets:subsets]"/>
+    </div>
+    <div id="resultsDiv">
+      <g:render template="combinedResult" model="[cm: cm, Rtrain: Rtrain, Rtest: Rtest,
+                                                  trainImages: trainImages, testImages: testImages,
+                                                  compounds:compounds,
+                                                  error:error]"/>
+    </div>
   </div>
 </body>
 </html>

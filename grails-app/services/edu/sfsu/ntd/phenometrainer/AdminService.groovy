@@ -25,7 +25,7 @@ class AdminService {
     }
   }*/
 
-  def initDataset(name, String datasetDir, visible, seg) {
+  def initDataset(name, String datasetDir, visible, String seg) {
     def dataset = new Dataset()
     dataset.description = name
     dataset.visible = visible=='on'
@@ -33,8 +33,8 @@ class AdminService {
     dataset = dataset.save()
 
     def segmentation = 0
-    if (seg=='Proposed') segmentation = 1
-    if (seg=='Canny') segmentation = 2
+    if (seg.startsWith('Asa')) segmentation = 1
+    if (seg.startsWith('Can')) segmentation = 2
 
     if (segmentation > 0) {
       def dir = new File(datasetDir + File.separator + 'bw')
@@ -57,10 +57,28 @@ class AdminService {
     return dataset.save(flush: true)
   }
 
-  def defineSubset(subsetName, datasetID, images) {
+  def defineSubset(subsetName, datasetID, imageIDs) {
+    def message = ''
+    def images = []
+    imageIDs.each {imageID -> images.add(Image.get(imageID))}
+
+    def nocontrol = []
+    def newims = []
+    for (def im : images) {
+      if (im.control==null) {
+        nocontrol.add(im)
+      } else if (!images.contains(im.control)) {
+        newims.add(im.control)
+      }
+    }
+    if (nocontrol.size() > 0) {
+      return [nocontrol:nocontrol, message:message]
+    }
+    message = newims.size() > 0 ? 'Missing controls added to subset' : 'Subset defined successfully'
+    images.addAll(newims)
+
     def dataset = Dataset.get(datasetID)
     def subset = Subset.findByDescriptionAndDataset(subsetName,dataset)
-
     if (subset==null) {
       subset = new Subset()
       dataset.addToSubsets(subset)
@@ -69,15 +87,15 @@ class AdminService {
       subset.imageSubsets.clear()
     }
 
-    images.each { imageID ->
-      def image = Image.get(imageID)
+    images.each { image ->
       def imageSubset = new SubsetImage()
       subset.addToImageSubsets(imageSubset)
       imageSubset.image = image
     }
     subset.size = subset.imageSubsets.size()
     subset = subset.save(flush:true)
-    return dataset.save(flush: true)
+    dataset.save(flush: true)
+    return [nocontrol:nocontrol, message:message]
   }
 
   def initImage(String datadir, Dataset dataset) {

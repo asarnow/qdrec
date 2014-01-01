@@ -30,12 +30,15 @@ class TrainController {
       def parasites = []
       session["parasites"].each {k,v -> parasites.add(v) }
 
+      boolean done = trainService.doneTraining(subsetImage.subset)
+
       render( view: 'index', model: [ dataset: image.dataset,
                                       subsets: dataset.subsets,
                                       imageSubset: subsetImage,
                                       subset: subsetImage.subset,
                                       image: image,
                                       control: image.control,
+                                      done: done,
                                       parasites: parasites as JSON] )
     }
 
@@ -84,8 +87,8 @@ class TrainController {
       sp.subsetImage = subset.imageSubsets.first()
       sp.save(flush: true)
     }
-
-    forward(action: 'selectImage', params: [switchTo: sp.subsetImage.id])
+    boolean done = trainService.doneTraining(sp.subset)
+    forward(action: 'selectImage', params: [switchTo: sp.subsetImage.id, done:done])
   }
 
   def nextImage() {
@@ -94,7 +97,7 @@ class TrainController {
     def idx = imageSubset.position
     idx = idx==imageSubset.subset.size-1 ? 0 : idx+1
     def nextImageSubset = SubsetImage.findBySubsetAndPosition(imageSubset.subset, idx)
-    forward(action: 'selectImage', params: [switchTo: nextImageSubset.id])
+    forward(action: 'selectImage', params: [switchTo: nextImageSubset.id, done:params.done])
   }
 
   def prevImage() {
@@ -103,7 +106,7 @@ class TrainController {
     def idx = imageSubset.position
     idx = idx==0 ? imageSubset.subset.size-1 : idx-1
     def prevImageSubset = SubsetImage.findBySubsetAndPosition(imageSubset.subset, idx)
-    forward(action: 'selectImage', params: [switchTo: prevImageSubset.id])
+    forward(action: 'selectImage', params: [switchTo: prevImageSubset.id, done:params.done])
   }
 
   def selectImage() {
@@ -119,12 +122,18 @@ class TrainController {
     def parasites = []
     session["parasites"].each {k,v -> parasites.add(v) }
 
+    boolean done = params.done
+    if (imageSubset.position == imageSubset.subset.size || imageSubset.position == 0) {
+      done = trainService.doneTraining(imageSubset.subset)
+    }
+
     render(template: 'trainUI', model: [dataset: imageSubset.subset.dataset,
                                         subsets: imageSubset.subset.dataset.subsets,
                                         subset: imageSubset.subset,
                                         imageSubset: imageSubset,
                                         image: image,
                                         control: image.control,
+                                        done: done,
                                         parasites: parasites as JSON])
   }
 

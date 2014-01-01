@@ -122,4 +122,17 @@ class TrainService {
 
     }
 
+    def doneTraining(Subset subset) {
+      def trv = 0
+      def np = 0
+      subset.imageSubsets.image.each { i ->
+        i.parasites.each { Parasite p ->
+          np += 1
+          def pts = ParasiteTrainState.findByParasite(p)
+          if (pts!=null) trv+=1
+        }
+      }
+      return trv == np
+    }
+
 }

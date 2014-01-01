@@ -44,13 +44,19 @@ class ClassifyService {
     return result
   }
 
-  def classifyOnly(datasetID,testingID) {
+  def classifyOnly(datasetID,testingID,useSVM) {
     def dataset = Dataset.get(datasetID)
     def testing = Subset.get(testingID)
     def vids = testing.imageSubsets.image
     def vids_cell = list2cell( vids.name )
     def datasetDir = grailsApplication.config.PhenomeTrainer.dataDir + File.separator + dataset.token
-    def svmsFile = grailsApplication.config.PhenomeTrainer.svmsFile
+    def svmsFile
+
+    if (useSVM=='new') {
+      svmsFile = datasetDir + File.separator + 'svms.mat'
+    } else {
+      svmsFile = grailsApplication.config.PhenomeTrainer.svmsFile
+    }
 
     PhenomJ phenomJ = new PhenomJ()
 
@@ -122,4 +128,32 @@ class ClassifyService {
     return sigma
   }
 
+  def trainOnly(datasetID,trainingID,String sigmaS,String boxConstraint) {
+    def dataset = Dataset.get(datasetID)
+    def training = Subset.get(trainingID)
+    double sigma = Double.valueOf(sigmaS)
+    double C = Double.valueOf(boxConstraint)
+
+    boolean[] G = findTrainingVector(training)
+
+    def vids_train = training.imageSubsets.image
+    def vids_train_cell = list2cell( vids_train.name )
+
+    def datasetDir = grailsApplication.config.PhenomeTrainer.dataDir + File.separator + dataset.token
+    String svmsFile = datasetDir + File.separator + 'svms.mat'
+
+    PhenomJ phenomJ = new PhenomJ();
+    Object[] R = phenomJ.trainOnly(2,vids_train_cell,G,datasetDir,C,sigma,svmsFile)
+
+    MWArray.disposeArray(vids_train_cell)
+
+    def result = [:]
+    result.cm = (double[][])((MWArray)(R[0])).toArray()
+    result.Rtrain = (double[][])((MWArray)(R[1])).toArray()
+    result.trainImages = vids_train
+
+    R.each {MWArray.disposeArray(it)}
+
+    return result
+  }
 }

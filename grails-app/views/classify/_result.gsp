@@ -1,3 +1,4 @@
+<h3>${message}</h3>
 <div id="numericalResult" hidden>
   <g:if test="${cm!=null}">
     <div id="confusionMatrixDiv" class="confusionMatrix">
@@ -55,7 +56,7 @@
         <tbody>
           <g:each in="${(0..<trainImages.size())}" var="i">
             <tr>
-              <td>${testImages[i]}</td>
+              <td>${trainImages[i]}</td>
               <td>${Rtrain[i][0].round(2)}</td>
               <td>${Rtrain[i][1]}</td>
             </tr>

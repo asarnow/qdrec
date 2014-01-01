@@ -12,6 +12,12 @@
 </g:else>--}%
 <b>Display: </b>
 <g:each in="${0..<curves.size()}">
-  <label for="${it}">${curves[it]}</label>
-  <g:checkBox name="${it}" onclick="g.setVisibility(this.id,this.checked)" checked="${true}"/>
+  <label for="${xdim + it}">${curves[it]}</label>
+  <g:if test="${xdim=='time'}">
+    <g:checkBox name="${xdim + it}" onclick="g2.setVisibility(${it},this.checked)" checked="${true}"/>
+  </g:if>
+  <g:else>
+    <g:checkBox name="${xdim + it}" onclick="g.setVisibility(${it},this.checked)" checked="${true}"/>
+  </g:else>
+
 </g:each>

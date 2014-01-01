@@ -83,7 +83,7 @@ p {
     padding-left: 0;
     padding-bottom: 0;
     background-color: #333333;
-    margin: 5px 5px 0px 5px;
+    margin: 5px 5px 0 5px;
     border: 1px solid #333333; /* without border, IE won't fill bgcolor. One of IE styling issues. */
     text-align: left;
     width: auto;
@@ -98,24 +98,33 @@ p {
 }
 
 #leftbar {
-    width: 85%;
+    width: 75%;
     float: left;
 }
 
 #rightbar {
     background-color: inherit;
-    width: 15%;
+    width: 25%;
+    height: 100%;
     float: right;
     text-align: right;
 }
 
 #rightbar ul.nav {
     margin-top: 0.25em;
+    position: relative;
+    height: inherit;
 }
 
 #rightbar ul.nav li {
     margin-right: 0.25em;
     float: none;
+}
+
+#rightbar ul.nav li.bottom {
+    position: absolute;
+    right: 0;
+    bottom: 0.5em;
 }
 
 #rightbar a {
@@ -195,6 +204,10 @@ p {
 	color: #255b17;
 }
 
+.loading {
+    background: url('../images/ajax-loader.gif') no-repeat center center;
+}
+
 /* NAVIGATION MENU */
 
 div.nav {
@@ -271,6 +284,15 @@ a.logout:hover {
 
 a.logout:active {
     color: darkred;
+}
+
+/* SUB-NAVIGATION MENU */
+
+#subnav {
+    padding-top: 0.25em;
+    background-color: #333333;
+    margin: 0 5px 0 5px;
+    border: 1px solid #333333; /* without border, IE won't fill bgcolor. One of IE styling issues. */
 }
 
 /* ACTION BUTTONS */
@@ -529,6 +551,7 @@ div.authors {
 }
 
 #imageNavigation {
+    margin-left: 0.5em;
     margin-bottom: 0.5em;
 }
 
@@ -550,6 +573,7 @@ div.authors {
 
 #currentImage h4.right {
     float: right;
+    margin-right: 1em;
 }
 
 img#currentImg {
@@ -577,12 +601,21 @@ img.parasiteImage {
     /*height: 520px;*/
 }
 
-/* UPLOAD */
-
-#metaUploadDiv p {
+#subsetForm {
     float: left;
-    width: auto;
+    margin-right: 0.5em;
 }
+
+#subsetID {
+    float: left;
+    margin-right: 0.5em;
+}
+
+.doneAlert {
+    background-color: #00ff00;
+}
+
+/* UPLOAD */
 
 #uploadDiv {
     margin-top: 0.5em;
@@ -601,6 +634,34 @@ img.parasiteImage {
     /*clear: both;*/
 }
 
+#projectInfo {
+    margin-top: 1.0em;
+    margin-left: 1.0em;
+}
+
+#projectInfo table {
+    border: 2px solid #333333;
+}
+
+#projectInfo td {
+    border: 1px solid #777777;
+    text-align: center;
+    padding-top: 0.2em;
+    padding-bottom: 0.2em;
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+}
+
+h3.project {
+    display: inline;
+    margin-right: 1.5em;
+}
+
+h4.subset {
+    float: left;
+    margin-right: 0.25em;
+}
+
 /* SUBSET DEFINITION */
 
 #datasetDiv {
@@ -616,8 +677,12 @@ img.parasiteImage {
 }
 
 #subsetDiv {
-    /*float: left;*/
+    float: left;
     margin-top: 5px;
+}
+
+.privateAlert {
+    background-color: #ffff00;
 }
 
 /* CLASSIFICATION */
@@ -627,14 +692,20 @@ img.parasiteImage {
 }
 
 #trainingDiv {
-    padding: 0.5em;
+    padding-top: 0;
 }
 
 #testingDiv {
     padding-top: 0.5em;
 }
 
+/*#testingDiv p {
+        float: left;
+        width: auto;
+    }*/
+
 #plotDiv {
+    margin-top: 1.0em;
     margin-bottom: 1.0em;
 }
 
@@ -644,6 +715,7 @@ img.parasiteImage {
 }
 
 #numericalResult {
+    margin-bottom: 0.5em;
 }
 
 div.dygraphDiv {
@@ -653,6 +725,11 @@ div.dygraphDiv {
 .dygraph-legend {
     float: left;
     width: auto;
+}
+
+.dygraphOuter {
+    width: 650px;
+    float: left;
 }
 
 .confusionMatrix {
@@ -696,6 +773,6 @@ div.dygraphDiv {
     color: #87757e;
 }
 
-#curves {
+.curves {
     margin-bottom: 0.5em;
 }

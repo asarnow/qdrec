@@ -1,11 +1,11 @@
-  <%@ page import="edu.sfsu.ntd.phenometrainer.TrainState" %>
+  <%@ page import="edu.sfsu.ntd.phenometrainer.Subset; edu.sfsu.ntd.phenometrainer.TrainState" %>
 <g:javascript>
   var parasites;
   var theCanvas;
   var context;
   var image;
   var imageID;
-  var controlSrc, controlW, controlH;
+  var controlSrc, controlW, controlH, controlName;
 
   function refreshVars() {
     theCanvas = $("#parasiteImageCanvas").get(0);
@@ -79,27 +79,41 @@
       controlImg.attr('src',controlSrc);
       controlImg.css('width',controlW);
       controlImg.css('height',controlH);
+      $('#controlName').text(controlName);
     }
   }
 
+  function showLoading() {
+    theCanvas.width = theCanvas.width;
+    %{--$('#currentImage').children('h4').text('');--}%
+    %{--var img = $('#currentImg');--}%
+    %{--img.attr('onload','');--}%
+    %{--img.width(100);--}%
+    %{--img.height(100);--}%
+    %{--img.attr('src','${resource(dir: 'images', file: 'ajax-loader.gif')}');--}%
+    %{--img.show();--}%
+    var cimg = $('#currentImage');
+    var control = $('#control');
+    cimg.children('h4').text('');
+    cimg.addClass('loading');
+    cimg.width(control.width());
+    cimg.height(control.height());
+  }
+
 </g:javascript>
-<div>
-  <h3>Selected project: ${dataset.description}</h3>
-  <h4>Subset: ${subset.description}</h4>
-  <g:form>
-    <g:hiddenField name="datasetID" value="${dataset.id}" />
-    <g:hiddenField name="imageSubsetID" value="${imageSubset.id}"/>
-    <label for="subset">Subset:</label>
-    <g:select name="subsetID" id="subset" from="${subsets}" optionValue="description" optionKey="id" value="${subset.id}"/>
-    <g:submitToRemote value="Switch" action="switchSubset" class="button" update="trainDiv"/>
-  </g:form>
+<div id="subsetForm">
+  <h4 class="subset">Subset:</h4>
+  <g:select name="subsetID" id="subset" from="${subsets}" optionValue="description" optionKey="id" value="${subset.id}" noSelection="[0L:'Select Subset']"
+      onchange="${remoteFunction(action: 'switchSubset',
+              params: '\'datasetID='+ (dataset.id as String) + '&imageSubsetID='+ (imageSubset.id as String) + '&subsetID=\'+this.value',
+              update: 'trainDiv', onComplete: 'updateControl()', onLoading: 'showLoading()')}"/>
 </div>
 <div id="imageNavigation">
-  <g:remoteLink action="prevImage" params="[imageSubsetID: imageSubset.id]" update="trainDiv" onComplete="updateControl();">
+  <g:remoteLink action="prevImage" params="[imageSubsetID: imageSubset.id, done: done]" update="trainDiv" onComplete="updateControl();" onLoading="showLoading()">
                 %{--onSuccess="${remoteFunction(action: "imageParasites", params: [imageID: image.id], onSuccess: "setParasites(data);")}">--}%
     <button class="button" type="button">Prev</button>
   </g:remoteLink>
-  <g:remoteLink action="nextImage" params="[imageSubsetID: imageSubset.id]" update="trainDiv" onComplete="updateControl();">
+  <g:remoteLink action="nextImage" params="[imageSubsetID: imageSubset.id, done: done]" update="trainDiv" onComplete="updateControl();" onLoading="showLoading()">
                 %{--onSuccess="${remoteFunction(action: "imageParasites", params: [imageID: image.id], onSuccess: "setParasites(data);")}">--}%
     <button class="button" type="button">Next</button>
   </g:remoteLink>
@@ -109,10 +123,14 @@
   <g:remoteLink action="resetParasites" onSuccess="updateParasites(data);">
       <button class="button" type="button">Reset all</button>
   </g:remoteLink>
+  <g:if test="${done}">
+    <span class="doneAlert">This subset has been completely trained. It may still be updated.</span>
+  </g:if>
   <script>
     parasites = ${parasites};
     imageID = ${image.id};
     controlSrc = "${createLink(action: 'image', params: [imageID: control.id])}";
+    controlName = "${control.name}";
     controlW = ${control.width * control.displayScale};
     controlH = ${control.height * control.displayScale};
   </script>

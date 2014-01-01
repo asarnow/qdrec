@@ -15,6 +15,7 @@
   <g:javascript src="dygraph-combined.js"/>
   <g:javascript>
     var g;
+    var g2;
 
     function updateSubset(data,elem) {
         if (data) {
@@ -31,30 +32,26 @@
       $('#trainSVM').change(function(){
         $('#trainingDiv').toggle(this.checked);
       });
-      $('.validatedForm').validate({
-        rules: {
-          sigma: {
-            number: true,
-            required: true
-          },
-          boxConstraint: {
-            number: true,
-            required: true
-          }
-        }
-      });
     });
   </g:javascript>
 </head>
 <body>
-  <h1>Classification and Response Calculation</h1>
-  <div id="classifyDiv">
-    <g:render template="classifyForm" model="[dataset:dataset, subsets:subsets]"/>
+  <div id="subnav" class="nav">
+    <ul class="nav">
+
+    </ul>
   </div>
-  <div id="resultsDiv">
-  </div>
-  <div id="spinner" style="display: none">
-    <img src="${resource(dir: 'images', file: 'ajax-loader.gif')}" alt="Loading..."/>
+  <div class="clearDiv"></div>
+  <div class="content">
+    <h1>Classification and Response Calculation</h1>
+    <div id="classifyDiv">
+      <g:render template="classifyForm" model="[dataset:dataset, subsets:subsets, svmsFileExists: svmsFileExists]"/>
+    </div>
+    <div id="resultsDiv">
+    </div>
+    <div id="spinner" style="display: none">
+      <img src="${resource(dir: 'images', file: 'ajax-loader.gif')}" alt="Loading..."/>
+    </div>
   </div>
 </body>
 </html>

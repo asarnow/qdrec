@@ -17,22 +17,27 @@
   <meta name="layout" content="main" />
 </head>
 <body>
-  <h1>Example Project Data</h1>
-  <ul class="downloads">
-    <li>
-      <a href="${resource(dir: 'download', file: 'Niclosamide.zip')}">Niclosamide example data</a>
-      <p>
-        Contains two replicate dose-response series for 4 days of exposure to Niclosamide (5 images and 1 control image each, 12 images total).
-        Segmented images are included.
-      </p>
-    </li>
-    <li>
-      <a href="${resource(dir: 'download', file: 'Mevastatin.zip')}">Mevastatin example data</a>
-      <p>
-        Contains dose- and time-response series for Mevastatin, including controls, with two time-points replicated across concentrations (30 images total).
-        Segmented images are included.
-      </p>
-    </li>
-  </ul>
+  <div class="content">
+    <h2>Example Project Data</h2>
+    <p>
+      Sample screening data can be used to create new projects (as long as a unique project name is used).
+    </p>
+    <ul class="downloads">
+      <li>
+        <a href="${resource(dir: 'download', file: 'Niclosamide.zip')}">Niclosamide example data</a>
+        <p>
+          Contains two replicate dose-response series for 4 days of exposure to Niclosamide (5 images and 1 control image each, 12 images total).
+          Segmented images are included.
+        </p>
+      </li>
+      <li>
+        <a href="${resource(dir: 'download', file: 'Mevastatin.zip')}">Mevastatin example data</a>
+        <p>
+          Contains dose- and time-response series for Mevastatin, including controls, with two time-points replicated across concentrations (30 images total).
+          Segmented images are included.
+        </p>
+      </li>
+    </ul>
+  </div>
 </body>
 </html>

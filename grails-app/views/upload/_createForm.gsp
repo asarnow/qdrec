@@ -1,3 +1,7 @@
+<h2>Create Project</h2>
+<p>
+  A project containing parasite images and the corresponding segmentations must be created or loaded.
+</p>
 <div id="datasetFormDiv">
     <g:form name="datasetForm"
                   url="[controller: 'upload', action: 'createDataset']"
@@ -27,8 +31,7 @@
       </div>
 
       <h4 class="inline"><label for="segmentation">Segmentation</label></h4>
-      %{--<g:checkBox name="uploadSegmented" checked="${false}" onchange="\$('#segUploadrDiv').toggle(this.checked)"/>--}%
-      <g:select name="segmentation" from="['Upload','Proposed','Canny']" value="Proposed"
+      <g:select name="segmentation" from="['Upload','Asarnow-Singh','Canny']" value="Asarnow-Singh"
                 onchange="\$('#segUploadrDiv').toggle(this.value=='Upload');"/>
 
       <div id="segUploadrDiv" hidden>
@@ -45,7 +48,7 @@
           maxSize="${2**20 * 50}" />
       </div>
       <br />
-      <g:submitButton name="datasetSubmit" value="Create" class="button" onclick="
+      <g:submitButton name="datasetSubmit" value="Create Project" class="button" onclick="
                   if (\$('#datasetForm').valid()){ \$('#uploadDiv').hide(); \$('#spinner').show(); }"/>
     </g:form>
 </div>
