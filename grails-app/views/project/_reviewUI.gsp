@@ -58,13 +58,22 @@
     draw(parasites, context, image);
   }
 
+    function showLoading() {
+    theCanvas.width = theCanvas.width;
+    var cimg = $('#currentImage');
+    var control = $('#control');
+    cimg.children('h4').text('');
+    cimg.addClass('loading');
+    cimg.width(control.width());
+    cimg.height(control.height());
+  }
 </g:javascript>
 <div id="imageNavigation">
-  <g:remoteLink action="prevImage" params="[imageID: image.id]" update="reviewDiv">
+  <g:remoteLink action="prevImage" params="[imageID: image.id]" update="reviewDiv" onLoading="showLoading()">
                 %{--onSuccess="${remoteFunction(action: "imageParasites", params: [imageID: image.id], onSuccess: "setParasites(data);")}">--}%
     <button class="button" type="button">Prev</button>
   </g:remoteLink>
-  <g:remoteLink action="nextImage" params="[imageID: image.id]" update="reviewDiv">
+  <g:remoteLink action="nextImage" params="[imageID: image.id]" update="reviewDiv" onLoading="showLoading()">
                 %{--onSuccess="${remoteFunction(action: "imageParasites", params: [imageID: image.id], onSuccess: "setParasites(data);")}">--}%
     <button class="button" type="button">Next</button>
   </g:remoteLink>
