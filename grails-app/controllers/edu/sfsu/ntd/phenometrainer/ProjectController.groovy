@@ -1,11 +1,10 @@
 package edu.sfsu.ntd.phenometrainer
-
 import grails.converters.JSON
 import grails.util.Holders
 
 import java.nio.file.Files
 
-class UploadController {
+class ProjectController {
 
   def adminService
   def grailsApplication = Holders.getGrailsApplication()
@@ -17,8 +16,11 @@ class UploadController {
       def dataset = Dataset.get(session['datasetID'])
       render(view: 'upload', model: [message: params.message, dataset: dataset])
     } else {
-      def datasetDir = Files.createTempDirectory('qdrec').toAbsolutePath().toString()
-      render(view: 'upload', model: [datasetDir: datasetDir, message: params.message])
+//      def datasetDir = '/home/da/local/sandbox/qdrec'
+      def datasetDir = Files.createTempDirectory('qdrec').toFile().path
+      def imgDir = datasetDir + File.separator + 'img'
+      def segDir = datasetDir + File.separator + 'bw'
+      render(view: 'upload', model: [datasetDir: datasetDir, imgDir: imgDir, segDir: segDir, message: params.message])
     }
   }
 
@@ -26,9 +28,9 @@ class UploadController {
     def dataset = adminService.initDataset(params.datasetName, params.datasetDir, params.visible, params.segmentation)
     session['datasetID'] = dataset.id
     if (params.segmentation=='Upload') {
-      redirect(controller: 'upload', action: 'define')
+      redirect(controller: 'project', action: 'define')
     } else {
-      redirect(controller: 'upload', action: 'review')
+      redirect(controller: 'project', action: 'review')
     }
   }
 

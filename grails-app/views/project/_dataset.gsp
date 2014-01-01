@@ -16,7 +16,7 @@
     <span class="privateAlert">This is a private project. The token <i>${dataset.token}</i> is required to load this project.</span>
   </g:else>
   <div class="clearDiv"></div>
-  <g:formRemote name="subsetForm" url="[controller: 'upload', action: 'createSubset']"
+  <g:formRemote name="subsetForm" url="[controller: 'project', action: 'createSubset']"
                 update="manageDiv"
                 class="validatedForm"
                 onSuccess="assocButtons()"
@@ -40,7 +40,7 @@
   <g:if test="${nocontrol?.size()>0}">
     <p>Some images are missing a control. Please manually add controls for these images and try again.</p>
     <g:select name="nocontrol" from="${nocontrol}" optionKey="id" optionValue="name" value="${nocontrol.first()}"
-              onchange="${remoteFunction(controller: 'upload', action: 'allimages', onSuccess: "updateSelect(data,'#controls')")}"
+              onchange="${remoteFunction(controller: 'project', action: 'allimages', onSuccess: "updateSelect(data,'#controls')")}"
               noSelection="['':'Select Image']"/>
     <g:select name="controls" from="[]" optionValue="name" optionKey="id" noSelection="['':'Select Control']"/>
     <button class="button" type="button" onclick="${remoteFunction(action: 'addcontrol',
