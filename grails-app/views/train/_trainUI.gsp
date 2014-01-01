@@ -85,13 +85,6 @@
 
   function showLoading() {
     theCanvas.width = theCanvas.width;
-    %{--$('#currentImage').children('h4').text('');--}%
-    %{--var img = $('#currentImg');--}%
-    %{--img.attr('onload','');--}%
-    %{--img.width(100);--}%
-    %{--img.height(100);--}%
-    %{--img.attr('src','${resource(dir: 'images', file: 'ajax-loader.gif')}');--}%
-    %{--img.show();--}%
     var cimg = $('#currentImage');
     var control = $('#control');
     cimg.children('h4').text('');
