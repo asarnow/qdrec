@@ -32,8 +32,8 @@
         <div class="nav">
           <ul class="nav">
             <li><a href="${createLink(controller: 'page', action: 'home')}">Home</a></li>
-            <li><a href="${createLink(controller: 'upload', action: 'index', params: [load:session['datasetID']!=null])}">Create Project</a></li>
-            <li><a href="${createLink(controller: 'upload', action: 'define')}">Define Subsets</a></li>
+            <li><a href="${createLink(controller: 'project', action: 'index', params: [load:session['datasetID']!=null])}">Create Project</a></li>
+            <li><a href="${createLink(controller: 'project', action: 'define')}">Define Subsets</a></li>
             <li><a href="${createLink(controller: 'train', action: 'index')}">Create New Classifier</a></li>
             <li><a href="${createLink(controller: 'classify', action: 'index')}">Run Classifier</a></li>
           </ul>
