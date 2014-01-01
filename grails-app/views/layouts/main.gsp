@@ -25,16 +25,16 @@
           <sec:ifNotLoggedIn>
             <a class="logout" href="${createLink(controller: 'login')}">Login</a>
           </sec:ifNotLoggedIn>--}%
-          <a href="${createLink(controller: 'page', action: 'about')}"><img src="${resource(dir: 'images', file: 'schistosoma.png')}"/></a>
-          <a href="${createLink(controller: 'page', action: 'about')}"><h1>QDREC</h1></a>
-          <a href="${createLink(controller: 'page', action: 'about')}"><h2>Quantal Dose Response Calculator</h2></a>
+          <a href="${createLink(controller: 'page', action: 'home')}"><img src="${resource(dir: 'images', file: 'schistosoma.png')}"/></a>
+          <a href="${createLink(controller: 'page', action: 'home')}"><h1>QDREC</h1></a>
+          <a href="${createLink(controller: 'page', action: 'home')}"><h2>Quantal Dose Response Calculator</h2></a>
         </div>
         <div class="nav">
           <ul class="nav">
             <li><a href="${createLink(controller: 'page', action: 'home')}">Home</a></li>
-            <li><a href="${createLink(controller: 'upload', action: 'index')}">Load Project</a></li>
+            <li><a href="${createLink(controller: 'upload', action: 'index', params: [load:session['datasetID']!=null])}">Create Project</a></li>
             <li><a href="${createLink(controller: 'upload', action: 'define')}">Define Subsets</a></li>
-            <li><a href="${createLink(controller: 'train', action: 'index')}">Train Classifier</a></li>
+            <li><a href="${createLink(controller: 'train', action: 'index')}">Create New Classifier</a></li>
             <li><a href="${createLink(controller: 'classify', action: 'index')}">Run Classifier</a></li>
           </ul>
         </div>
@@ -44,19 +44,20 @@
           <li>
             <a href="${createLink(controller: 'page', action: 'help')}">Help</a>
           </li>
+          %{--<li>
+            <a href="${createLink(controller: 'page', action: 'tutorial')}">Tutorial</a>
+          </li>--}%
           <li>
-            <a href="${createLink(controller: 'page', action: 'about')}">About</a>
+            <a href="${createLink(controller: 'page', action: 'download')}">Sample Screening Data</a>
           </li>
-          <li>
-            <a href="${createLink(controller: 'page', action: 'download')}">Download</a>
+          <li class="bottom">
+            <a href="${createLink(controller: 'page', action: 'about')}">About</a>
           </li>
         </ul>
       </div>
     </div>
     <div class="clearDiv"></div>
-    <div class="content">
-		  <g:layoutBody/>
-    </div>
+    <g:layoutBody/>
 		<div class="footer" role="contentinfo"></div>
 		%{--<g:javascript library="application"/>--}%
 		<r:layoutResources />
