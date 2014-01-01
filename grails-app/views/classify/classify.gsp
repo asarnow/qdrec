@@ -27,6 +27,15 @@
         }
       }
 
+    function updateCurves() {
+        ${remoteFunction(action: 'curves', update: 'curves2',
+                     params: '\'xdim=time\'+\'&compound=\'+$(\'#compound\').val()', method: 'GET')}
+
+        ${remoteFunction(action: 'curves', update: 'curves1',
+                     params: '\'xdim=conc\'+\'&compound=\'+$(\'#compound\').val()', method: 'GET')}
+
+    }
+
     $(document).ready(function(){
       $('#trainingDiv').hide();
       $('#trainSVM').change(function(){

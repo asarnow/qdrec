@@ -1,16 +1,6 @@
 %{--
   - Copyright (c) 2013 Daniel Asarnow
   --}%
-<g:javascript>
-  function updateCurves() {
-    ${remoteFunction(action: 'curves', update: 'curves2',
-                     params: '\'xdim=time\'+\'&compound=\'+$(\'#compound\').val()', method: 'GET')}
-
-    ${remoteFunction(action: 'curves', update: 'curves1',
-                     params: '\'xdim=conc\'+\'&compound=\'+$(\'#compound\').val()', method: 'GET')}
-
-  }
-</g:javascript>
 <div id="plotDiv">
   <h4>Plot Results</h4>
   <g:if test="${!error}">
