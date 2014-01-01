@@ -13,7 +13,7 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
-  <title>QDREC Home</title>
+  <title>QDREC: Home</title>
   <meta name="layout" content="main" />
 </head>
 <body>
@@ -36,8 +36,8 @@
         Get started with QDREC's example projects.
       </p>
       <p>
-        The <a href="${createLink(controller: 'upload', action: 'load', params: [token:'tpiwsb'])}">Niclosamide</a> project demonstrates training and testing for a small
-        set of 12 images, and the <a href="${createLink(controller: 'upload', action: 'load', params: [token:'iwarhr'])}">Mevastatin</a> project demonstrates construction of time and dose-response curves for
+        The <a href="${createLink(controller: 'project', action: 'load', params: [token:'tpiwsb'])}">Niclosamide</a> project demonstrates training and testing for a small
+        set of 12 images, and the <a href="${createLink(controller: 'project', action: 'load', params: [token:'iwarhr'])}">Mevastatin</a> project demonstrates construction of time and dose-response curves for
         replicated experiments.
       </p>
       <p>

@@ -9,7 +9,7 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
-  <title>QDREC Review Segmentation</title>
+  <title>QDREC: Review Segmentation</title>
   <meta name="layout" content="main"/>
   <r:require modules="jquery"/>
 </head>

@@ -13,7 +13,7 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
-  <title>QDREC Downloads</title>
+  <title>QDREC: Downloads</title>
   <meta name="layout" content="main" />
 </head>
 <body>

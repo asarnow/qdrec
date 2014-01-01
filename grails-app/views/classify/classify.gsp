@@ -9,7 +9,7 @@
 <%@ page import="edu.sfsu.ntd.phenometrainer.Dataset" contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
-  <title>PhenomeTrainer: Classifier</title>
+  <title>QDREC: Run Classifier</title>
   <meta name="layout" content="main" />
   <r:require modules="jquery-validate"/>
   <g:javascript src="dygraph-combined.js"/>
