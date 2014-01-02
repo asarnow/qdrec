@@ -25,12 +25,18 @@ class ProjectController {
   }
 
   def createDataset() {
-    def dataset = adminService.initDataset(params.datasetName, params.datasetDir, params.visible, params.segmentation)
-    session['datasetID'] = dataset.id
-    if (params.segmentation=='Upload') {
-      redirect(controller: 'project', action: 'define')
+    def verdict = adminService.validateDataset(params.datasetName, params.datasetDir, params.visible, params.segmentation)
+    if (verdict==null) {
+      def dataset = adminService.initDataset(params.datasetName, params.datasetDir, params.visible, params.segmentation)
+      session['datasetID'] = dataset.id
+      /*if (params.segmentation=='Upload') {
+        redirect(controller: 'project', action: 'define')
+      } else {
+        redirect(controller: 'project', action: 'review')
+      }*/
+      render createLink(action: 'index', params: [load:true])
     } else {
-      redirect(controller: 'project', action: 'review')
+      render verdict
     }
   }
 

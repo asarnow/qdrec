@@ -228,7 +228,9 @@
       </p>
       <p>
         The Trainer will remember your progress, so if at any time you would like a break from training, just exit the system.
-        When you return and load the project, you will be able to pick up with training where you left off.
+        When you return and load the project, you will be able to pick up with training where you left off. You may also
+        explicitly save annotations for the current image by clicking <button class="button">Save</button>, for example
+        if you plan on immediately closing the browser window completely.
       </p>
       <h3>Train Classifier</h3>
       <p>

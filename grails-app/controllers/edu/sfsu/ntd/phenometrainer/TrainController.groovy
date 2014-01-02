@@ -123,7 +123,7 @@ class TrainController {
     session["parasites"].each {k,v -> parasites.add(v) }
 
     boolean done = params.done == 'true'
-    if (imageSubset.position == imageSubset.subset.size || imageSubset.position == 0) {
+    if (imageSubset.position == (imageSubset.subset.size-1) || imageSubset.position == 0) {
       done = trainService.doneTraining(imageSubset.subset)
     }
 
@@ -161,6 +161,12 @@ class TrainController {
   def resetParasites() {
     def parasites = trainService.resetParasites(session["parasites"])
     render parasites as JSON
+  }
+
+  def saveParasites() {
+    trainService.saveCurrentImageState(session["parasites"])
+    def p = session["parasites"] as Map
+    render p.values() as JSON
   }
 
 }

@@ -1,6 +1,7 @@
 package edu.sfsu.ntd.phenometrainer
 import ar.com.hjg.pngj.PngReader
 import au.com.bytecode.opencsv.CSVReader
+import com.mathworks.toolbox.javabuilder.MWException
 import grails.util.Holders
 import groovy.sql.Sql
 import org.apache.commons.io.FileUtils
@@ -30,6 +31,13 @@ class AdminService {
     dataset.description = name
     dataset.visible = visible=='on'
     dataset.token = RandomStringUtils.random(6, ('a'..'z').join().toCharArray())
+
+    def dest = new File(grailsApplication.config.PhenomeTrainer.dataDir + File.separator + dataset.token)
+    while (dest.exists()) {
+      dataset.token = RandomStringUtils.random(6, ('a'..'z').join().toCharArray())
+      dest = new File(grailsApplication.config.PhenomeTrainer.dataDir + File.separator + dataset.token)
+    }
+
     dataset = dataset.save()
 
     def segmentation = 0
@@ -41,15 +49,19 @@ class AdminService {
       if (!dir.exists()) dir.mkdir()
     }
 
-    PhenomJ phenomJ = new PhenomJ()
-    phenomJ.imageDatabase(datasetDir,segmentation)
-
+    try {
+      PhenomJ phenomJ = new PhenomJ()
+      phenomJ.imageDatabase(datasetDir,segmentation)
+    } catch (MWException e) {
+      log.error(e)
+      dataset.delete()
+      return null
+    }
     dataset = initImage(datasetDir, dataset)
     assocControls(dataset)
     initParasite(dataset)
 
     def src = new File(datasetDir)
-    def dest = new File(grailsApplication.config.PhenomeTrainer.dataDir + File.separator + dataset.token)
 
     FileUtils.copyDirectory(src,dest)
     FileUtils.deleteDirectory(src)
@@ -241,6 +253,31 @@ class AdminService {
 
   def findDatasetDir(dataset) {
     return grailsApplication.config.PhenomeTrainer.dataDir + File.separator + dataset.token
+  }
+
+  def validateDataset(String datasetName, String datasetDir, String visible, String seg) {
+    def segmentation = 0
+    if (seg.startsWith('Asa')) segmentation = 1
+    if (seg.startsWith('Can')) segmentation = 2
+
+    def imgDir = new File(datasetDir + File.separator + 'img')
+    def segDir = new File(datasetDir + File.separator + 'bw')
+
+    def imgFiles = imgDir.listFiles(new PngFilter())
+    def segFiles = segDir.listFiles(new PngFilter())
+
+    if (segmentation==0) {
+      if (imgFiles?.length != segFiles?.length) return 'Number of uploaded files must match. Double check uploaded files.'
+    }
+    if (imgFiles?.length < 2) return 'At least two image files must be provided.'
+
+    return null
+  }
+
+  class PngFilter implements FilenameFilter {
+  	public boolean accept(File f, String filename) {
+  		return filename.endsWith("png")
+  	}
   }
 
 }

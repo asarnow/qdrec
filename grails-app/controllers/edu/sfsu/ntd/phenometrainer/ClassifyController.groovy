@@ -201,24 +201,33 @@ class ClassifyController {
     def curves = ((session['dr'][compound] as Map<Double,Map<Integer,Map>>).keySet() as List).sort()
     labels.add('Exposure')
     curves.each {labels.add(it + ' &micro;M')}
-    def x = (grp.keySet() as List).toArray() as int[]
+    def x = (grp.keySet() as List).sort().toArray() as int[]
     rmat = new double[x.size()][1 + 2*curves.size()];
     x.eachWithIndex { double entry, int i -> rmat[i][0] = entry }
     for (int i=0; i<x.size(); i++) {
       for (int j=1; j<rmat[0].length; j+=2) {
         def c = grp[x[i] as Integer]
         def t = curves[(j-1)/2 as int] as Double
-        def r = c[t].r
-        rmat[i][j] = classifyService.mean(r)
-        rmat[i][j+1] = classifyService.std(r)
+        if (c[t]==null) {
+          rmat[i][j] = Double.NaN
+          rmat[i][j+1] = Double.NaN
+        } else {
+          def r = c[t].r
+          rmat[i][j] = classifyService.mean(r)
+          rmat[i][j+1] = classifyService.std(r)
+        }
       }
     }
 
     def csv = new StringBuilder()
     csv.append(labels.join(',') + '\n')
+    def extrapt = (rmat[0][0]-0.5) + (',NaN' * (rmat[0].length-1)) + '\n'
+    csv.append(extrapt)
     for (int i=0; i<rmat.length; i++) {
       csv.append((rmat[i] as List).join(',') + '\n')
     }
+    extrapt = (rmat[rmat.length-1][0]+0.5) + (',NaN' * (rmat[0].length-1)) + '\n'
+    csv.append(extrapt)
 
     double[][] rmat2
     def labels2 = []
@@ -226,24 +235,33 @@ class ClassifyController {
     def curves2 = ((session['tr'][compound] as Map<Integer,Map<Double,Map>>).keySet() as List).sort()
     labels2.add('Log Concentration')
     curves2.each {labels2.add(it + ' time units')}
-    def x2 = (grp2.keySet() as List).toArray() as double[]
+    def x2 = (grp2.keySet() as List).sort().toArray() as double[]
     rmat2 = new double[x2.size()][1 + 2*curves2.size()]
     x2.eachWithIndex { double entry, int i -> rmat2[i][0] = Math.log10(entry) }
     for (int i=0; i<x2.size(); i++) {
       for (int j=1; j<rmat2[0].length; j+=2) {
         def c = grp2[x2[i]]
         def t = curves2[(j-1)/2 as int] as Integer
-        def r = c[t].r
-        rmat2[i][j] = classifyService.mean(r)
-        rmat2[i][j+1] = classifyService.std(r)
+        if (c[t]==null) {
+          rmat2[i][j] = Double.NaN
+          rmat2[i][j+1] = Double.NaN
+        } else {
+          def r = c[t].r
+          rmat2[i][j] = classifyService.mean(r)
+          rmat2[i][j+1] = classifyService.std(r)
+        }
       }
     }
 
     def csv2 = new StringBuilder()
     csv2.append(labels2.join(',') + '\n')
+    extrapt = (rmat2[0][0]-0.5) + (',NaN' * (rmat2[0].length-1)) + '\n'
+    csv2.append(extrapt)
     for (int i=0; i<rmat2.length; i++) {
       csv2.append((rmat2[i] as List).join(',') + '\n')
     }
+    extrapt = (rmat2[rmat2.length-1][0]+0.5) + (',NaN' * (rmat2[0].length-1)) + '\n'
+    csv2.append(extrapt)
 
     def result = [csv1: csv, csv2: csv2]
 

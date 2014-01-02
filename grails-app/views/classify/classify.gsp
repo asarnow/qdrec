@@ -36,6 +36,11 @@
 
     }
 
+    function destroyPlots() {
+        if (typeof g !== 'undefined') g.destroy();
+        if (typeof g2 !== 'undefined') g2.destroy();
+    }
+
     $(document).ready(function(){
       $('#trainingDiv').hide();
       $('#trainSVM').change(function(){

@@ -16,7 +16,8 @@
           valueRange: [-0.05,1.05],
           title: \$('#compound').val(),
           ylabel: 'Fraction Degenerate',
-          xlabel: 'Log Concentration (&micro;M)'
+          xlabel: 'Log Concentration (&micro;M)',
+          connectSeparatedPoints: false
         });
 
         \$('#dygraphArea2').addClass('dygraphDiv');
@@ -29,7 +30,8 @@
           valueRange: [-0.05,1.05],
           title: \$('#compound').val(),
           ylabel: 'Fraction Degenerate',
-          xlabel: 'Exposure Time'
+          xlabel: 'Exposure Time',
+          connectSeparatedPoints: false
         });
         "
                   onComplete="updateCurves()">
@@ -51,7 +53,7 @@
       %{--<div id="curves">
         <g:render template="curves"/>
       </div>--}%
-      <g:submitButton class="button" name="plotSubmit" value="Plot" onclick="if (typeof g !== 'undefined') g.destroy()"/>
+      <g:submitButton class="button" name="plotSubmit" value="Plot" onclick="destroyPlots()"/>
     </g:formRemote>
     <div class="dygraphOuter">
       <div id="dygraphArea"></div>

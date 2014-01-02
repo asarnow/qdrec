@@ -116,6 +116,10 @@
   <g:remoteLink action="resetParasites" onSuccess="updateParasites(data);">
       <button class="button" type="button">Reset all</button>
   </g:remoteLink>
+  <g:remoteLink action="saveParasites" onSuccess="updateParasites(data);\$('#saveMessage').text('Saved')">
+    <button class="button" type="button">Save</button>
+  </g:remoteLink>
+  <span id="saveMessage"></span>
   <g:if test="${done}">
     <span class="doneAlert">This subset has been completely trained. It may still be updated.</span>
   </g:if>
