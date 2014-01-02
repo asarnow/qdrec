@@ -58,6 +58,10 @@
   <div class="clearDiv"></div>
   <div class="content">
     <h1>Classification and Response Calculation</h1>
+    <p>
+      Select a subset and a classifier to use in calculating phenotypic responses. The existing classifier has be found
+      to be highly accurate.
+    </p>
     <div id="classifyDiv">
       <g:render template="classifyForm" model="[dataset:dataset, subsets:subsets, svmsFileExists: svmsFileExists]"/>
     </div>

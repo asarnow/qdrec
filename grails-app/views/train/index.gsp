@@ -29,7 +29,7 @@
     <div id="main">
       <h2>Training Annotation</h2>
       <p>
-        Training the classifier requires manual annotation of parasites as 'normal' (<span style="color:#0000ff">blue</span>) or 'degenerate' (<span style="color:#ff0000">red</span>).
+        Training the classifier requires manual annotation of parasites as 'normal' (<span style="color:#0000ff">blue</span>) or 'degenerate' (<span style="color:#ff0000">red</span>). Click a parasite to toggle its annotation.
       </p>
       <h3 class="project">Project: ${dataset.description}</h3>
       <g:if test="${!dataset.visible}">
