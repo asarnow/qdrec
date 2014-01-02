@@ -81,11 +81,13 @@ class AdminService {
         nocontrol.add(im)
       } else if (!images.contains(im.control)) {
         newims.add(im.control)
+        if (im.control.control == null) nocontrol.add(im)
       }
     }
     if (nocontrol.size() > 0) {
       return [nocontrol:nocontrol, message:message]
     }
+
     message = newims.size() > 0 ? 'Missing controls added to subset' : 'Subset defined successfully'
     images.addAll(newims)
 
