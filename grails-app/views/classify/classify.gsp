@@ -41,6 +41,15 @@
         if (typeof g2 !== 'undefined') g2.destroy();
     }
 
+    function svmSelection(classifierType) {
+        var classifier = $('input[name="useSVM"]:checked').val();
+        if (classifier === "new") {
+            $('#svmMessage').html("Will use new <b>" + classifierType + "</b> classifier.")
+        } else {
+            $('#svmMessage').html("Will use existing <b>SVM (RBF)</b> classifier.")
+        }
+    }
+
     $(document).ready(function(){
       $('#trainingDiv').hide();
       $('#trainSVM').change(function(){
@@ -63,7 +72,7 @@
       to be highly accurate.
     </p>
     <div id="classifyDiv">
-      <g:render template="classifyForm" model="[dataset:dataset, subsets:subsets, svmsFileExists: svmsFileExists]"/>
+      <g:render template="classifyForm" model="[dataset:dataset, subsets:subsets, svmsFileExists: svmsFileExists, classifierType: classifierType]"/>
     </div>
     <div id="resultsDiv">
     </div>

@@ -8,13 +8,15 @@ import phenomj.PhenomJ
 class ClassifyService {
   def grailsApplication = Holders.getGrailsApplication()
 
-  def trainAndClassify(datasetID,testingID,trainingID,String sigmaS,String boxConstraint) {
+/*  def trainAndClassify(datasetID,testingID,trainingID,String sigmaS,String boxConstraint) {
 
     def dataset = Dataset.get(datasetID)
     def testing = Subset.get(testingID)
     def training = Subset.get(trainingID)
     double sigma = Double.valueOf(sigmaS)
     double C = Double.valueOf(boxConstraint)
+
+    def classifier = 0; // 0 for RBF, 1 for linaer, 2 for NB
 
     boolean[] G = findTrainingVector(training)
 
@@ -27,7 +29,7 @@ class ClassifyService {
     def datasetDir = grailsApplication.config.PhenomeTrainer.dataDir + File.separator + dataset.token
 
     PhenomJ phenomJ = new PhenomJ();
-    Object[] R = phenomJ.trainAndClassify(3,vids_train_cell,vids_test_cell,G,datasetDir,C,sigma)
+    Object[] R = phenomJ.trainAndClassify(3,vids_train_cell,vids_test_cell,datasetDir,classifier,G,C,sigma)
 
     MWArray.disposeArray(vids_test_cell)
     MWArray.disposeArray(vids_train_cell)
@@ -42,7 +44,7 @@ class ClassifyService {
     R.each {MWArray.disposeArray(it)}
 
     return result
-  }
+  }*/
 
   def classifyOnly(datasetID,testingID,useSVM) {
     def dataset = Dataset.get(datasetID)
@@ -128,11 +130,12 @@ class ClassifyService {
     return sigma
   }
 
-  def trainOnly(datasetID,trainingID,String sigmaS,String boxConstraint) {
+  def trainOnly(datasetID,trainingID,String sigmaS,String boxConstraint, String classifierType) {
     def dataset = Dataset.get(datasetID)
     def training = Subset.get(trainingID)
     double sigma = Double.valueOf(sigmaS)
     double C = Double.valueOf(boxConstraint)
+    int classifier = Integer.valueOf(classifierType)
 
     boolean[] G = findTrainingVector(training)
 
@@ -143,7 +146,7 @@ class ClassifyService {
     String svmsFile = datasetDir + File.separator + 'svms.mat'
 
     PhenomJ phenomJ = new PhenomJ();
-    Object[] R = phenomJ.trainOnly(2,vids_train_cell,G,datasetDir,C,sigma,svmsFile)
+    Object[] R = phenomJ.trainOnly(2,vids_train_cell,datasetDir,classifier,svmsFile,G,C,sigma)
 
     MWArray.disposeArray(vids_train_cell)
 
@@ -155,5 +158,10 @@ class ClassifyService {
     R.each {MWArray.disposeArray(it)}
 
     return result
+  }
+
+  def classifierType(String svmsFile) {
+    PhenomJ phenomJ = new PhenomJ()
+    return phenomJ.classifierType(1,svmsFile)[0]
   }
 }

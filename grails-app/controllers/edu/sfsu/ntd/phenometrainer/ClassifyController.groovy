@@ -25,9 +25,10 @@ class ClassifyController {
 
     def datasetDir = grailsApplication.config.PhenomeTrainer.dataDir + File.separator + dataset.token
     def svmsFileExists = new File(datasetDir + File.separator + 'svms.mat').exists()
+    def classifierType = svmsFileExists ? classifyService.classifierType(datasetDir + File.separator + 'svms.mat') : ""
 
     def subsets = dataset.subsets
-    render(view: 'classify', model: [dataset:dataset, subsets:subsets, svmsFileExists: svmsFileExists])
+    render(view: 'classify', model: [dataset:dataset, subsets:subsets, svmsFileExists: svmsFileExists, classifierType: classifierType])
   }
 
   def classify(){
@@ -47,7 +48,8 @@ class ClassifyController {
     def dataset = Dataset.get(session['datasetID'])
     def datasetDir = grailsApplication.config.PhenomeTrainer.dataDir + File.separator + dataset.token
     def svmsFileExists = new File(datasetDir + File.separator + 'svms.mat').exists()
-    render(view: 'trainClassifier', model: [dataset: dataset, subsets: dataset?.subsets, svmsFileExists: svmsFileExists])
+    def classifierType = svmsFileExists ? classifyService.classifierType(datasetDir + File.separator + 'svms.mat') : ""
+    render(view: 'trainClassifier', model: [dataset: dataset, subsets: dataset?.subsets, svmsFileExists: svmsFileExists, classifierType: classifierType])
   }
 
   def trainSVM() {
@@ -55,7 +57,7 @@ class ClassifyController {
     def result = null
     def message
     if (trainService.doneTraining(subset)) {
-      result = classifyService.trainOnly(params.datasetID,params.trainingID,params.sigma,params.boxConstraint)
+      result = classifyService.trainOnly(params.datasetID,params.trainingID,params.sigma,params.boxConstraint,params.classifier)
       message = 'Training completed successfully.'
     } else {
       message = 'Subset is not completely annotated.'
@@ -303,6 +305,12 @@ class ClassifyController {
     response.setContentType('text/csv')
     response.setHeader("Content-disposition", "filename=${fname}")
     response.outputStream << csv.toString().bytes
+  }
+
+  def trainingVec() {
+    def training = Subset.get(params.subsetID)
+    boolean[] G = classifyService.findTrainingVector(training)
+    render G as JSON
   }
 
 }

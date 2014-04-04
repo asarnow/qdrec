@@ -30,6 +30,24 @@
               }
             }
           });
+
+    $('input[name="classifier"]').change(function(){
+        var classifier = $('input[name="classifier"]:checked').val();
+            if (classifier == 0) {
+              $('input[name="sigma"]').val("6.9414");
+              $('label[for="sigma"]').text("Sigma")
+              $('input[name="boxConstraint"]').val("3.2789");
+              $('#parameterDiv').show();
+            } else if (classifier == 1) {
+              $('input[name="sigma"]').val("0.0498");
+              $('label[for="sigma"]').text("KKT violation level")
+              $('input[name="boxConstraint"]').val("0.0183");
+              $('#parameterDiv').show();
+            } else if (classifier == 2) {
+              $('#parameterDiv').hide();
+            }
+      });
+
     });
   </g:javascript>
 </head>
@@ -62,13 +80,23 @@
       <label for="trainingID">Select training set:</label>
       <g:select name="trainingID" from="${subsets}" optionKey="id" optionValue="description"/>
       <br />
-      <label for="sigma">RBF Sigma:</label>
-      <g:textField name="sigma" value="6.9414" />
+
+      <label>Select classifier:</label>
+      <g:radioGroup labels="['SVM (RBF)','SVM (Linear)','Naive Bayes']" name="classifier" values="[0,1,2]" value="0">
+        ${it.label} ${it.radio}
+      </g:radioGroup>
       <br />
-      <label for="boxConstraint">Soft-margin box constraint:</label>
-      <g:textField name="boxConstraint" value="3.2789"/>
+
+      <div id="parameterDiv">
+        <label for="sigma">RBF Sigma:</label>
+        <g:textField name="sigma" value="6.9414" />
+        <br />
+        <label for="boxConstraint">Soft-margin box constraint:</label>
+        <g:textField name="boxConstraint" value="3.2789"/>
+      </div>
+
       <g:if test="${svmsFileExists}">
-        <p>A classifier already exists for this project and will be replaced.</p>
+        <p>A <b>${classifierType}</b> classifier already exists for this project and will be replaced.</p>
         <g:submitToRemote name="classifySubmit" class="button" value="Replace Classifier"
                 url="[controller: 'classify', action: 'trainSVM']" update="resultsDiv"
                 onLoading="\$('#resultsDiv').hide();\$('#spinner').show()" onComplete="\$('#spinner').hide();\$('#resultsDiv').show();\$('#numericalResult').show()"/>
