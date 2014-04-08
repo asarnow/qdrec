@@ -56,11 +56,13 @@ class ClassifyController {
     def subset = Subset.get(params.trainingID)
     def result = null
     def message
-    if (trainService.doneTraining(subset)) {
+    if (!trainService.doneTraining(subset)) {
+      message = 'Subset is not completely annotated.'
+    } else if (params.classifier == '2' && classifyService.distinctControls(subset).size() < 2) {
+      message = 'Naive Bayes classifier requires training set with at least 2 controls.'
+    } else {
       result = classifyService.trainOnly(params.datasetID,params.trainingID,params.sigma,params.boxConstraint,params.classifier)
       message = 'Training completed successfully.'
-    } else {
-      message = 'Subset is not completely annotated.'
     }
     render(template: 'result',
            model: [cm: result?.cm as double[][],

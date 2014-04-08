@@ -164,4 +164,9 @@ class ClassifyService {
     PhenomJ phenomJ = new PhenomJ()
     return phenomJ.classifierType(1,svmsFile)[0]
   }
+
+  def distinctControls(Subset subset) {
+    return subset.imageSubsets.image.control as Set
+  }
+
 }
