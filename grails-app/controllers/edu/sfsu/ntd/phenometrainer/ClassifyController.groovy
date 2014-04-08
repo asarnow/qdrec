@@ -1,5 +1,6 @@
 package edu.sfsu.ntd.phenometrainer
 
+import com.mathworks.toolbox.javabuilder.MWException
 import com.mathworks.toolbox.javabuilder.MWNumericArray
 import grails.converters.JSON
 import grails.util.Holders
@@ -59,10 +60,15 @@ class ClassifyController {
     if (!trainService.doneTraining(subset)) {
       message = 'Subset is not completely annotated.'
     } else if (params.classifier == '2' && classifyService.distinctControls(subset).size() < 2) {
-      message = 'Naive Bayes classifier requires training set with at least 2 controls.'
+      message = 'Naive Bayes classifier requires training set using at least 2 controls.'
     } else {
-      result = classifyService.trainOnly(params.datasetID,params.trainingID,params.sigma,params.boxConstraint,params.classifier)
-      message = 'Training completed successfully.'
+      try {
+        result = classifyService.trainOnly(params.datasetID,params.trainingID,params.sigma,params.boxConstraint,params.classifier)
+        message = 'Training completed successfully.'
+      } catch (MWException e) {
+        log.error(e)
+        message = 'Error during training.'
+      }
     }
     render(template: 'result',
            model: [cm: result?.cm as double[][],
