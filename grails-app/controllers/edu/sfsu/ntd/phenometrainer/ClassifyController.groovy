@@ -1,5 +1,6 @@
 package edu.sfsu.ntd.phenometrainer
 
+import com.mathworks.toolbox.javabuilder.MWException
 import com.mathworks.toolbox.javabuilder.MWNumericArray
 import grails.converters.JSON
 import grails.util.Holders
@@ -25,9 +26,10 @@ class ClassifyController {
 
     def datasetDir = grailsApplication.config.PhenomeTrainer.dataDir + File.separator + dataset.token
     def svmsFileExists = new File(datasetDir + File.separator + 'svms.mat').exists()
+    def classifierType = svmsFileExists ? classifyService.classifierType(datasetDir + File.separator + 'svms.mat') : ""
 
     def subsets = dataset.subsets
-    render(view: 'classify', model: [dataset:dataset, subsets:subsets, svmsFileExists: svmsFileExists])
+    render(view: 'classify', model: [dataset:dataset, subsets:subsets, svmsFileExists: svmsFileExists, classifierType: classifierType])
   }
 
   def classify(){
@@ -47,18 +49,26 @@ class ClassifyController {
     def dataset = Dataset.get(session['datasetID'])
     def datasetDir = grailsApplication.config.PhenomeTrainer.dataDir + File.separator + dataset.token
     def svmsFileExists = new File(datasetDir + File.separator + 'svms.mat').exists()
-    render(view: 'trainClassifier', model: [dataset: dataset, subsets: dataset?.subsets, svmsFileExists: svmsFileExists])
+    def classifierType = svmsFileExists ? classifyService.classifierType(datasetDir + File.separator + 'svms.mat') : ""
+    render(view: 'trainClassifier', model: [dataset: dataset, subsets: dataset?.subsets, svmsFileExists: svmsFileExists, classifierType: classifierType])
   }
 
   def trainSVM() {
     def subset = Subset.get(params.trainingID)
     def result = null
     def message
-    if (trainService.doneTraining(subset)) {
-      result = classifyService.trainOnly(params.datasetID,params.trainingID,params.sigma,params.boxConstraint)
-      message = 'Training completed successfully.'
-    } else {
+    if (!trainService.doneTraining(subset)) {
       message = 'Subset is not completely annotated.'
+    } else if (params.classifier == '2' && classifyService.distinctControls(subset).size() < 2) {
+      message = 'Naive Bayes classifier requires training set using at least 2 controls.'
+    } else {
+      try {
+        result = classifyService.trainOnly(params.datasetID,params.trainingID,params.sigma,params.boxConstraint,params.classifier)
+        message = 'Training completed successfully.'
+      } catch (MWException e) {
+        log.error(e)
+        message = 'Error during training.'
+      }
     }
     render(template: 'result',
            model: [cm: result?.cm as double[][],
@@ -303,6 +313,12 @@ class ClassifyController {
     response.setContentType('text/csv')
     response.setHeader("Content-disposition", "filename=${fname}")
     response.outputStream << csv.toString().bytes
+  }
+
+  def trainingVec() {
+    def training = Subset.get(params.subsetID)
+    boolean[] G = classifyService.findTrainingVector(training)
+    render G as JSON
   }
 
 }

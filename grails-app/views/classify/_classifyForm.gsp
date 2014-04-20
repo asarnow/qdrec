@@ -17,15 +17,17 @@
       <g:radioGroup name="useSVM"
                 values="['existing','new']"
                 value="new"
-                labels="['Existing','Trained']">
+                labels="['Existing','Trained']"
+                onchange="svmSelection('${classifierType}');">
         <p style="float: left;">${it.label} ${it.radio}</p>
       </g:radioGroup>
       <div class="clearDiv"></div>
+      <p id="svmMessage">Will use new <b>${classifierType}</b> classifier.</p>
     </g:if>
     <g:else>
       <g:hiddenField name="useSVM" value="existing"/>
       <p>
-        No new classifier trained. Will use existing classifier.
+        No new classifier trained. Will use existing <b>SVM (RBF)</b> classifier.
       </p>
     </g:else>
     <g:submitToRemote name="classifySubmit" class="button" value="Classify"

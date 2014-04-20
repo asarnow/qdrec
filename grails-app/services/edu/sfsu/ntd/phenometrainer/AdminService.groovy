@@ -43,6 +43,7 @@ class AdminService {
     def segmentation = 0
     if (seg.startsWith('Asa')) segmentation = 1
     if (seg.startsWith('Can')) segmentation = 2
+    if (seg.startsWith('Wat')) segmentation = 3
 
     if (segmentation > 0) {
       def dir = new File(datasetDir + File.separator + 'bw')

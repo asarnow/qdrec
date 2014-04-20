@@ -28,7 +28,7 @@
       <g:checkBox name="visible" checked="${true}"/>
       <br />
       <h4 class="inline"><label for="segmentation">Segmentation</label></h4>
-      <g:select name="segmentation" from="['Upload','Asarnow-Singh','Canny']" value="Asarnow-Singh"
+      <g:select name="segmentation" from="['Upload','Asarnow-Singh','Canny','Watershed']" value="Asarnow-Singh"
                 onchange="\$('#segUploadrDiv').toggle(this.value=='Upload');"/>
 
 
