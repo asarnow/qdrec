@@ -20,7 +20,7 @@
       <div id="leftbar">
         <div id="toplogo">
               <a href="http://tintin.sfsu.edu"><img src="${resource(dir: 'images', file: 'sfsu.png')}"/></a>
-              <a href="http://tintin.sfsu.edu"><h1>Biocomputing and Media Resarch</h1></a>
+              <a href="http://tintin.sfsu.edu"><h1>Biocomputing and Media Resarch Lab</h1></a>
               <div class="clearDiv"></div>
         </div>
         <div id="title">
