@@ -102,7 +102,7 @@ environments {
     production {
         grails.logging.jul.usebridge = false
 //        grails.app.context = "/qdrec"
-        grails.serverURL = "http://haddock4.sfsu.edu"
+        grails.serverURL = "http://haddock4.sfsu.edu/qdrec"
         grails.plugins.springsecurity.successHandler.defaultTargetUrl = "/qdrec"
 //        grails.plugins.springsecurity.logout.afterLogoutUrl = "/qdrec"
         PhenomeTrainer {
