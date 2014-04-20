@@ -9,10 +9,13 @@
 <%@ page import="edu.sfsu.ntd.phenometrainer.Dataset" contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
-  <title>PhenomeTrainer: Classifier</title>
+  <title>QDREC: Run Classifier</title>
   <meta name="layout" content="main" />
   <r:require modules="jquery-validate"/>
+  <g:javascript src="dygraph-combined.js"/>
   <g:javascript>
+    var g;
+    var g2;
 
     function updateSubset(data,elem) {
         if (data) {
@@ -24,31 +27,58 @@
         }
       }
 
+    function updateCurves() {
+        ${remoteFunction(action: 'curves', update: 'curves2',
+                     params: '\'xdim=time\'+\'&compound=\'+$(\'#compound\').val()', method: 'GET')}
+
+        ${remoteFunction(action: 'curves', update: 'curves1',
+                     params: '\'xdim=conc\'+\'&compound=\'+$(\'#compound\').val()', method: 'GET')}
+
+    }
+
+    function destroyPlots() {
+        if (typeof g !== 'undefined') g.destroy();
+        if (typeof g2 !== 'undefined') g2.destroy();
+    }
+
+    function svmSelection(classifierType) {
+        var classifier = $('input[name="useSVM"]:checked').val();
+        if (classifier === "new") {
+            $('#svmMessage').html("Will use new <b>" + classifierType + "</b> classifier.")
+        } else {
+            $('#svmMessage').html("Will use existing <b>SVM (RBF)</b> classifier.")
+        }
+    }
+
     $(document).ready(function(){
       $('#trainingDiv').hide();
       $('#trainSVM').change(function(){
         $('#trainingDiv').toggle(this.checked);
       });
-      $('.validatedForm').validate({
-        rules: {
-          sigma: {
-            number: true,
-            required: true
-          },
-          boxConstraint: {
-            number: true,
-            required: true
-          }
-        }
-      });
     });
   </g:javascript>
 </head>
 <body>
-  <div id="classifyDiv">
-    <g:render template="classifyForm" model="[datasets:Dataset.findAll(), datasetID:datasetID, subsets:subsets]"/>
+  <div id="subnav" class="nav">
+    <ul class="nav">
+
+    </ul>
   </div>
-  <div id="resultsDiv">
+  <div class="clearDiv"></div>
+  <div class="content">
+    <h1>Classification and Response Calculation</h1>
+    <p>
+      Select a subset and a classifier to use in calculating phenotypic responses. The existing classifier has be found
+      to be highly accurate.
+    </p>
+    <div id="classifyDiv">
+      <g:render template="classifyForm" model="[dataset:dataset, subsets:subsets, svmsFileExists: svmsFileExists, classifierType: classifierType]"/>
+    </div>
+    <div id="resultsDiv">
+    </div>
+    <div id="spinner" style="display: none">
+      <img src="${resource(dir: 'images', file: 'ajax-loader.gif')}" alt="Loading..."/>
+    </div>
   </div>
 </body>
 </html>

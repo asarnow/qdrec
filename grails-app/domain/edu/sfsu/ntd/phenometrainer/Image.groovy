@@ -16,7 +16,7 @@ class Image {
   Integer height
   double displayScale
   Date date
-  Integer cdId
+  Compound compound
   double conc
   Integer day
   char series
@@ -26,6 +26,7 @@ class Image {
   static constraints = {
     control nullable: true
     dataset unique: 'name'
+    compound nullable: true
 //    position nullable: true
 //    imageData unique: true
 //    cdId nullable: true

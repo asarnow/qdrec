@@ -8,7 +8,16 @@ h1, h2, h3, h4, h5, h6 {
 	line-height: 1.1;
 }
 
+.inline {
+    display: inline;
+}
+
 /* BASE LAYOUT */
+
+/* apply a natural box layout model to all elements */
+*, *:before, *:after {
+  -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box;
+ }
 
 html {
 	background-color: #ffffff;
@@ -50,13 +59,6 @@ a:hover, a:active {
 	outline: none; /* prevents outline in webkit on active links but retains it for tab focus */
 }
 
-h1 {
-	color: #48802c;
-	font-weight: normal;
-	font-size: 1.25em;
-	margin: 0.8em 0 0.3em 0;
-}
-
 ul {
 	padding: 0;
 }
@@ -66,7 +68,6 @@ img {
 }
 
 p {
-    width: 50%;
     padding-bottom: 0.5em;
 }
 
@@ -76,24 +77,85 @@ p {
 
 /* GENERAL */
 
+#toplogo {
+    /*margin: 5px 5px 0;*/
+    padding-bottom: 2px;
+    text-align: left;
+    width: auto;
+}
+
+#toplogo a {
+    color: white;
+    text-decoration: none;
+}
+
+#toplogo h1 {
+    font-size: 14pt;
+   	font-weight: bold;
+   	color: white;
+    float: left;
+    padding-top: 5px;
+}
+
+#toplogo img {
+    float: left;
+    width: 100px;
+}
+
 #topbar {
-    padding-top: 0;
-    padding-right: 0;
-    padding-left: 0;
-    padding-bottom: 0;
+    padding: 0;
     background-color: #333333;
-    margin: 5px 5px 0px 5px;
+    margin: 0 5px;
     border: 1px solid #333333; /* without border, IE won't fill bgcolor. One of IE styling issues. */
     text-align: left;
     width: auto;
-    height: 85px;
+    /*height: 87px;*/
+    height: 119px;
     /*background-image: url("../images/schistosoma.png");
     background-repeat: no-repeat;
     background-position: 60% 0  ;
     background-size: contain;
     background-clip: border-box;
-    overflow: visible;
     z-index: 1;*/
+    /*overflow: visible;*/
+}
+
+#leftbar {
+    width: 75%;
+    float: left;
+}
+
+#rightbar {
+    background-color: inherit;
+    width: 25%;
+    height: 100%;
+    float: right;
+    text-align: right;
+}
+
+#rightbar ul.nav {
+    margin-top: 0.25em;
+    position: relative;
+    height: inherit;
+}
+
+#rightbar ul.nav li {
+    margin-right: 0.25em;
+    float: none;
+}
+
+#rightbar ul.nav li.bottom {
+    position: absolute;
+    right: 0;
+    bottom: 0.5em;
+}
+
+#rightbar a {
+    margin: 0;
+}
+
+#title {
+    clear: left;
 }
 
 #title h1 {
@@ -136,12 +198,15 @@ p {
 
 .content {
     margin-left: 5px;
+    margin-right: 5px;
+    margin-top: 0.5em;
 }
 
 .content h1 {
-	border-bottom: 1px solid #CCCCCC;
-	margin: 0.8em 1em 0.3em;
-	padding: 0 0.25em;
+    display: block;
+    font-size: 1.5em;
+    font-weight: bold;
+    margin-bottom: 0.5em;
 }
 
 .scaffold-list h1 {
@@ -162,9 +227,13 @@ p {
 	color: #255b17;
 }
 
+.loading {
+    background: url('../images/ajax-loader.gif') no-repeat center center;
+}
+
 /* NAVIGATION MENU */
 
-.nav {
+div.nav {
     /*clear: left;*/
     /*display: block;*/
 	background-color: inherit;
@@ -174,7 +243,7 @@ p {
     padding-bottom: 0;
 }
 
-.nav ul {
+ul.nav {
     /*float: left;*/
     /*background-color: inherit;*/
     /*padding-top: 0.75em;*/
@@ -184,11 +253,11 @@ p {
     /*z-index: 0;*/
 }
 
-.nav li {
+ul.nav li {
 	display: block;
 	float: left;
 	list-style-type: none;
-	margin-right: 0.5em;
+	margin-right: 1.0em;
 	padding-right: 0;
 }
 
@@ -196,7 +265,6 @@ p {
     color: white;
 	text-decoration: none;
     font-weight: bold;
-    margin-right: 1em;
 }
 
 .nav a:link {
@@ -239,6 +307,15 @@ a.logout:hover {
 
 a.logout:active {
     color: darkred;
+}
+
+/* SUB-NAVIGATION MENU */
+
+#subnav {
+    padding-top: 0.25em;
+    background-color: #333333;
+    margin: 0 5px 0 5px;
+    border: 1px solid #333333; /* without border, IE won't fill bgcolor. One of IE styling issues. */
 }
 
 /* ACTION BUTTONS */
@@ -340,10 +417,51 @@ a.logout:active {
     height: 12px;
 }
 
+/* HOME */
+
+div.homeleft {
+    width: 50%;
+    float: left;
+    padding-right: 0.75em;
+}
+
+.homeleft p {
+    text-align: justify;
+}
+
+div.homeright {
+    width: 50%;
+    float: left;
+    padding-left: 0.75em;
+}
+
+.requirement {
+    margin-top: 1.0em;
+    margin-left: 1.0em;
+}
+
+/* DOWNLOAD */
+
+ul.downloads {
+    list-style-type: disc;
+    list-style-position: inside;
+    width: 50%;
+}
+
+ul.downloads li {
+    text-align: left;
+    text-indent: 1em;
+    margin-bottom: 0.5em;
+}
+
+ul.downloads li p {
+    text-indent: 0;
+    padding-left: 2em;
+}
+
 /* HELP */
 
 div.help {
-    margin-left: 0.5em;
     width: 75%;
 }
 
@@ -398,7 +516,8 @@ div.help {
 
 div.about {
     float: left;
-    width: 48%;
+    width: 50%;
+    padding-right: 0.75em;
 }
 
 .about h2 {
@@ -407,16 +526,15 @@ div.about {
 }
 
 .about p {
-    width: 100%;
+    /*width: 100%;*/
     text-align: justify;
-    
-    padding-left: 0.5em;
+    /*padding-left: 0.5em;*/
 }
 
 div.authors {
     float: left;
-    margin-left: 2em;
-    width: 48%;
+    padding-left: 0.75em;
+    width: 50%;
 }
 
 .authors h2 {
@@ -425,7 +543,7 @@ div.authors {
 }
 
 .authors p {
-    width: 100%;
+    /*width: 100%;*/
     text-align: left;
 }
 
@@ -441,7 +559,6 @@ div.authors {
 /* TRAINER */
 
 #main {
-    margin-top: 0.5em;
 }
 
 #main h4 {
@@ -457,6 +574,7 @@ div.authors {
 }
 
 #imageNavigation {
+    margin-left: 0.5em;
     margin-bottom: 0.5em;
 }
 
@@ -478,6 +596,7 @@ div.authors {
 
 #currentImage h4.right {
     float: right;
+    margin-right: 1em;
 }
 
 img#currentImg {
@@ -505,6 +624,20 @@ img.parasiteImage {
     /*height: 520px;*/
 }
 
+#subsetForm {
+    float: left;
+    margin-right: 0.5em;
+}
+
+#subsetID {
+    float: left;
+    margin-right: 0.5em;
+}
+
+.doneAlert {
+    background-color: #00ff00;
+}
+
 /* UPLOAD */
 
 #uploadDiv {
@@ -512,20 +645,49 @@ img.parasiteImage {
 }
 
 #imageUploadrDiv {
-    float:left;
+    /*float:left;*/
+    margin-top: 0.5em;
 }
+
 #segUploadrDiv {
-    float: left;
+    /*float: left;*/
 }
 
 #datasetFormDiv {
-    clear: both;
+    /*clear: both;*/
+}
+
+#projectInfo {
+    margin-top: 1.0em;
+    margin-left: 1.0em;
+}
+
+#projectInfo table {
+    border: 2px solid #333333;
+}
+
+#projectInfo td {
+    border: 1px solid #777777;
+    text-align: center;
+    padding-top: 0.2em;
+    padding-bottom: 0.2em;
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+}
+
+h3.project {
+    display: inline;
+    margin-right: 1.5em;
+}
+
+h4.subset {
+    float: left;
+    margin-right: 0.25em;
 }
 
 /* SUBSET DEFINITION */
 
 #datasetDiv {
-    margin-top: 0.5em;
 }
 
 #datasetID {
@@ -538,22 +700,59 @@ img.parasiteImage {
 }
 
 #subsetDiv {
-    /*float: left;*/
+    float: left;
     margin-top: 5px;
+}
+
+.privateAlert {
+    background-color: #ffff00;
 }
 
 /* CLASSIFICATION */
 
 #classifyDiv {
-    margin-top: 0.5em;
+    margin-bottom: 1.0em;
 }
 
 #trainingDiv {
-    padding: 0.5em;
+    padding-top: 0;
 }
 
 #testingDiv {
     padding-top: 0.5em;
+}
+
+/*#testingDiv p {
+        float: left;
+        width: auto;
+    }*/
+
+#plotDiv {
+    margin-top: 1.0em;
+    margin-bottom: 1.0em;
+}
+
+#plotDiv form p {
+    float: left;
+    width: auto;
+}
+
+#numericalResult {
+    margin-bottom: 0.5em;
+}
+
+div.dygraphDiv {
+    float: left;
+}
+
+.dygraph-legend {
+    float: left;
+    width: auto;
+}
+
+.dygraphOuter {
+    width: 650px;
+    float: left;
 }
 
 .confusionMatrix {
@@ -586,4 +785,17 @@ img.parasiteImage {
 
 .confusionMatrix td.emptycell {
     border: none;
+}
+
+.hideshow {
+    color: #41383C;
+    text-decoration: none;
+}
+
+.hideshow:hover {
+    color: #87757e;
+}
+
+.curves {
+    margin-bottom: 0.5em;
 }

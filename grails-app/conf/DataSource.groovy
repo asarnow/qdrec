@@ -33,8 +33,8 @@ environments {
         dataSource {
             username = "root"
             password = ""
-            dbCreate = "validate"
-            url = "jdbc:mysql://localhost/phenome_trainer2?useUnicode=yes&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull"
+            dbCreate = "update"
+            url = "jdbc:mysql://localhost/phenome_trainer3?useUnicode=yes&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull"
             pooled = true
             properties {
                maxActive = -1

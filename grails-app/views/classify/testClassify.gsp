@@ -10,13 +10,15 @@
   To change this template use File | Settings | File Templates.
 --%>
 
-<%@ page import="edu.sfsu.ntd.phenometrainer.Dataset" contentType="text/html;charset=UTF-8" %>
+<%@ page import="edu.sfsu.ntd.phenometrainer.Compound; edu.sfsu.ntd.phenometrainer.Dataset" contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
   <title>PhenomeTrainer: Classifier</title>
   <meta name="layout" content="main" />
   <r:require modules="jquery-validate"/>
+  <g:javascript src="dygraph-combined.js"/>
   <g:javascript>
+    var g;
 
     function updateSubset(data,elem) {
         if (data) {
@@ -49,15 +51,22 @@
   </g:javascript>
 </head>
 <body>
-  <div id="classifyDiv">
-    <g:render template="classifyForm" model="[datasets:Dataset.findAll(), datasetID:datasetID, subsets:subsets]"/>
+  <div id="subnav" class="nav">
+    <ul class="nav">
+
+    </ul>
   </div>
-  <div id="resultsDiv">
-    <g:render template="result" model="[cm: cm,
-                              Rtrain: Rtrain,
-                              Rtest: Rtest,
-                              trainImages: trainImages,
-                              testImages: testImages]" />
+  <div class="clearDiv"></div>
+  <div class="content">
+    <div id="classifyDiv">
+      <g:render template="classifyForm" model="[dataset:dataset, subsets:subsets]"/>
+    </div>
+    <div id="resultsDiv">
+      <g:render template="combinedResult" model="[cm: cm, Rtrain: Rtrain, Rtest: Rtest,
+                                                  trainImages: trainImages, testImages: testImages,
+                                                  compounds:compounds,
+                                                  error:error]"/>
+    </div>
   </div>
 </body>
 </html>

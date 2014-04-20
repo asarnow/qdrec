@@ -8,7 +8,7 @@ import phenomj.PhenomJ
 class ClassifyService {
   def grailsApplication = Holders.getGrailsApplication()
 
-  def trainAndClassify(datasetID,user,testingID,trainingID,String sigmaS,String boxConstraint) {
+/*  def trainAndClassify(datasetID,testingID,trainingID,String sigmaS,String boxConstraint) {
 
     def dataset = Dataset.get(datasetID)
     def testing = Subset.get(testingID)
@@ -16,41 +16,49 @@ class ClassifyService {
     double sigma = Double.valueOf(sigmaS)
     double C = Double.valueOf(boxConstraint)
 
-    boolean[] G = findTrainingVector(user,training)
+    def classifier = 0; // 0 for RBF, 1 for linaer, 2 for NB
 
-    def vids_test = testing.imageSubsets.image.name
-    def vids_train = training.imageSubsets.image.name
+    boolean[] G = findTrainingVector(training)
 
-    def vids_test_cell = list2cell( vids_test )
-    def vids_train_cell = list2cell( vids_train )
+    def vids_test = testing.imageSubsets.image
+    def vids_train = training.imageSubsets.image
 
-    def datasetDir = grailsApplication.config.PhenomeTrainer.dataDir + File.separator + dataset.id
+    def vids_test_cell = list2cell( vids_test.name )
+    def vids_train_cell = list2cell( vids_train.name )
+
+    def datasetDir = grailsApplication.config.PhenomeTrainer.dataDir + File.separator + dataset.token
 
     PhenomJ phenomJ = new PhenomJ();
-    Object[] R = phenomJ.trainAndClassify(3,vids_train_cell,vids_test_cell,G,datasetDir,C,sigma)
+    Object[] R = phenomJ.trainAndClassify(3,vids_train_cell,vids_test_cell,datasetDir,classifier,G,C,sigma)
 
     MWArray.disposeArray(vids_test_cell)
     MWArray.disposeArray(vids_train_cell)
 
-    def results = [:]
-    results.cm = (double[][])((MWArray)(R[0])).toArray()
-    results.Rtest = (double[][])((MWArray)(R[1])).toArray()
-    results.Rtrain = (double[][])((MWArray)(R[2])).toArray()
-    results.testImages = vids_test
-    results.trainImages = vids_train
+    def result = [:]
+    result.cm = (double[][])((MWArray)(R[0])).toArray()
+    result.Rtest = (double[][])((MWArray)(R[1])).toArray()
+    result.Rtrain = (double[][])((MWArray)(R[2])).toArray()
+    result.testImages = vids_test
+    result.trainImages = vids_train
 
     R.each {MWArray.disposeArray(it)}
 
-    return results
-  }
+    return result
+  }*/
 
-  def classifyOnly(datasetID,testingID) {
+  def classifyOnly(datasetID,testingID,useSVM) {
     def dataset = Dataset.get(datasetID)
     def testing = Subset.get(testingID)
-    def vids = testing.imageSubsets.image.name
-    def vids_cell = list2cell( vids )
-    def datasetDir = grailsApplication.config.PhenomeTrainer.dataDir + File.separator + dataset.id
-    def svmsFile = grailsApplication.config.PhenomeTrainer.svmsFile
+    def vids = testing.imageSubsets.image
+    def vids_cell = list2cell( vids.name )
+    def datasetDir = grailsApplication.config.PhenomeTrainer.dataDir + File.separator + dataset.token
+    def svmsFile
+
+    if (useSVM=='new') {
+      svmsFile = datasetDir + File.separator + 'svms.mat'
+    } else {
+      svmsFile = grailsApplication.config.PhenomeTrainer.svmsFile
+    }
 
     PhenomJ phenomJ = new PhenomJ()
 
@@ -67,11 +75,11 @@ class ClassifyService {
     return result
   }
 
-  def findTrainingVector(Users user,Subset subset) {
+  def findTrainingVector(Subset subset) {
     List<Boolean> trv = []
     subset.imageSubsets.image.sort{a,b->a.id<=>b.id}.each { i ->
       i.parasites.sort{a,b->a.id<=>b.id}.each { Parasite p ->
-        def pts = ParasiteTrainState.findByParasiteAndTrainer(p,user)
+        def pts = ParasiteTrainState.findByParasite(p)
         trv.add(pts.trainState == TrainState.DEGENERATE)
       }
     }
@@ -86,6 +94,79 @@ class ClassifyService {
       cell.set(i+1,new MWCharArray(l[i]))
     }
     return cell
+  }
+
+  def doseResponse(List<Image> vids, double[][] R) {
+    def v = []
+    vids.eachWithIndex { Image it, int i ->
+      v.add([name:it.name, compound:it.compound?.name?:'control', conc:it.conc, day:it.day, r:R[i][0]])
+    }
+    def groups = v.groupBy([{it.compound}, {it.conc}, {it.day}])
+    return groups
+  }
+
+  def timeResponse(List<Image> vids, double[][] R) {
+    def v = []
+    vids.eachWithIndex { Image it, int i ->
+      v.add([name:it.name, compound:it.compound?.name?:'control', conc:it.conc, day:it.day, r:R[i][0]])
+    }
+    def groups = v.groupBy([{it.compound}, {it.day}, {it.conc}])
+    return groups
+  }
+
+  def mean(list) {
+    def mu = 0
+    list.each(){mu+=it}
+    mu /= list.size()
+    return mu
+  }
+
+  def std(list) {
+    def mu = mean(list)
+    def sigma = 0
+    list.each(){sigma+=(mu-it)**2}
+    sigma /= list.size()
+    sigma = Math.sqrt(sigma)
+    return sigma
+  }
+
+  def trainOnly(datasetID,trainingID,String sigmaS,String boxConstraint, String classifierType) {
+    def dataset = Dataset.get(datasetID)
+    def training = Subset.get(trainingID)
+    double sigma = Double.valueOf(sigmaS)
+    double C = Double.valueOf(boxConstraint)
+    int classifier = Integer.valueOf(classifierType)
+
+    boolean[] G = findTrainingVector(training)
+
+    def vids_train = training.imageSubsets.image
+    def vids_train_cell = list2cell( vids_train.name )
+
+    def datasetDir = grailsApplication.config.PhenomeTrainer.dataDir + File.separator + dataset.token
+    String svmsFile = datasetDir + File.separator + 'svms.mat'
+
+    PhenomJ phenomJ = new PhenomJ();
+    Object[] R = phenomJ.trainOnly(2,vids_train_cell,datasetDir,classifier,svmsFile,G,C,sigma)
+
+    MWArray.disposeArray(vids_train_cell)
+
+    def result = [:]
+    result.cm = (double[][])((MWArray)(R[0])).toArray()
+    result.Rtrain = (double[][])((MWArray)(R[1])).toArray()
+    result.trainImages = vids_train
+
+    R.each {MWArray.disposeArray(it)}
+
+    return result
+  }
+
+  def classifierType(String svmsFile) {
+    PhenomJ phenomJ = new PhenomJ()
+    return phenomJ.classifierType(1,svmsFile)[0]
+  }
+
+  def distinctControls(Subset subset) {
+    return subset.imageSubsets.image.control as Set
   }
 
 }

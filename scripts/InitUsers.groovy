@@ -3,10 +3,8 @@
  */
 
 import edu.sfsu.ntd.phenometrainer.Image
-import edu.sfsu.ntd.phenometrainer.Role
+
 import edu.sfsu.ntd.phenometrainer.SubsetImage
-import edu.sfsu.ntd.phenometrainer.UserRole
-import edu.sfsu.ntd.phenometrainer.Users
 
 /**
  *

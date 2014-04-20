@@ -7,51 +7,48 @@
 --%>
 
 <%@ page import="edu.sfsu.ntd.phenometrainer.Dataset; edu.sfsu.ntd.phenometrainer.TrainState; edu.sfsu.ntd.phenometrainer.ParasiteTrainState" contentType="text/html;charset=UTF-8" %>
-<g:javascript>
-  function updateSubset(data) {
-    if (data) {
-      var rselect = $("#subset");
-      rselect.empty();
-      $.each(data, function (k, v) {
-        rselect.append($("<option></option>").val(v.id).text(v.description));
-      });
-    }
-  }
-</g:javascript>
 <html>
 <head>
-  <title>PhenomeTrainer: Training</title>
+  <title>QDREC: Annotate Data</title>
   <meta name="layout" content="main" />
-  <g:javascript library="jquery" />
-  <r:layoutResources/>
+  <r:require modules="jquery"/>
 </head>
 <body>
-  <div id="main">
-    <div>
-      <h4>Subset "${subset.description}" selected from dataset "${dataset.description}"</h4>
-      <g:form>
-        <label for="datasetID">Dataset:</label>
-        <g:select name="datasetID" from="${datasets}" optionValue="description" optionKey="id" value="${dataset.id}"
-                  onchange="${remoteFunction(controller: "train", action: "subsets",
-                          params: '\'datasetID=\' + this.value', onSuccess: "updateSubset(data)")}"/>
-        <label for="subset">Subset:</label>
-        <g:select name="subsetID" id="subset" from="${subsets}" optionValue="description" optionKey="id" value="${subset.id}"/>
-        <g:actionSubmit value="Switch" action="switchDataset" class="button" />
-      </g:form>
+  <div id="subnav" class="nav">
+    <ul class="nav">
+      <li>
+        <a href="${createLink(action: 'index')}">Annotate Data</a>
+      </li>
+      <li>
+        <a href="${createLink(controller: 'classify', action: 'trainClassifier')}">Train Classifier</a>
+      </li>
+    </ul>
+  </div>
+  <div class="clearDiv"></div>
+  <div class="content">
+    <div id="main">
+      <h2>Training Annotation</h2>
+      <p>
+        Training the classifier requires manual annotation of parasites as 'normal' (<span style="color:#0000ff">blue</span>) or 'degenerate' (<span style="color:#ff0000">red</span>). Click a parasite to toggle its annotation.
+      </p>
+      <h3 class="project">Project: ${dataset.description}</h3>
+      <g:if test="${!dataset.visible}">
+        <span class="privateAlert">This is a private project. The token <i>${dataset.token}</i> is required to load this project.</span>
+      </g:if>
+      <div id="trainDiv">
+        <g:render template="trainUI" model="['dataset': dataset, 'subsets': dataset.subsets,
+                'imageSubset': imageSubset, 'subset':subset, 'image':image, 'control':control, done: done, parasites: parasites]"/>
+      </div>
+
+      <div id="control" class="parasiteImage">
+        %{--<canvas id="controlImageCanvas"></canvas>--}%
+        <h4 id="controlName">${control.name}</h4>
+        <img id="controlImg" class="parasiteImage" src="${createLink(action: 'image', params: [imageID: control.id])}" width="${control.width*control.displayScale}" height="${control.height*control.displayScale}" />
+      </div>
+
+      <div class="clearDiv"></div>
+
     </div>
-
-    <div id="trainDiv">
-      <g:render template="trainUI" model="['imageSubset': imageSubset, 'subset':subset, 'image':image, 'control':control, parasites: parasites]"/>
-    </div>
-
-    <div id="control" class="parasiteImage">
-      %{--<canvas id="controlImageCanvas"></canvas>--}%
-      <h4>${control.name}</h4>
-      <img id="controlImg" class="parasiteImage" src="${createLink(action: 'image', params: [imageID: control.id])}" width="${control.width*control.displayScale}" height="${control.height*control.displayScale}" />
-    </div>
-
-    <div class="clearDiv"></div>
-
   </div>
 </body>
 </html>

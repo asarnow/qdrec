@@ -1,9 +1,7 @@
 package edu.sfsu.ntd.phenometrainer
 import grails.converters.JSON
 import grails.util.Holders
-import org.springframework.security.access.annotation.Secured
 
-@Secured(['ROLE_USER'])
 class TrainController {
 
     def grailsApplication = Holders.getGrailsApplication()
@@ -11,17 +9,20 @@ class TrainController {
     def trainService
 
     def index() {
-      def user = (Users)springSecurityService.getCurrentUser()
+      def dataset = Dataset.get(session['datasetID'])
 
-//      def numTrained = user.trainedParasites.size()
+      if (!dataset) {
+        redirect(controller: 'project', action: 'index', params: [message: "Incorrect project or no project selected."])
+        return
+      } else if (dataset.subsets?.size() < 1) { // true if list is null OR size is 0
+        redirect(controller: 'project', action: 'define', params: [message: "At least one subset must be defined."])
+        return
+      }
 
-      def imageSubset = user.lastImageSubset ?: Subset.last().imageSubsets.first()
+      def subset = dataset.lastSubset ?: dataset.subsets.first()
+      def subsetImage = SubsetPosition.findBySubset(subset)?.subsetImage ?: subset.imageSubsets.first()
 
-      user.lastImageSubset = imageSubset
-      user = user.save(flush: true)
-
-      def image = imageSubset.image
-      def dataset = image.dataset
+      def image = subsetImage.image
 
       session["parasites"] = [:]
       image.parasites.each {it -> session["parasites"][it.id] = trainService.dom2web(it,image.displayScale)}
@@ -29,13 +30,15 @@ class TrainController {
       def parasites = []
       session["parasites"].each {k,v -> parasites.add(v) }
 
-      render( view: 'index', model: [ datasets: Dataset.findAll(),
-                                      dataset: image.dataset,
+      boolean done = trainService.doneTraining(subsetImage.subset)
+
+      render( view: 'index', model: [ dataset: image.dataset,
                                       subsets: dataset.subsets,
-                                      imageSubset: imageSubset,
-                                      subset: imageSubset.subset,
+                                      imageSubset: subsetImage,
+                                      subset: subsetImage.subset,
                                       image: image,
                                       control: image.control,
+                                      done: done,
                                       parasites: parasites as JSON] )
     }
 
@@ -65,11 +68,27 @@ class TrainController {
     render parasites as JSON
   }
 
-  def switchDataset() {
+  def switchSubset() {
     trainService.saveCurrentImageState(session["parasites"])
-    def subset = Subset.get(params.subsetID)
-    trainService.saveCurrentUserSubsetPosition(subset)
-    redirect(action: 'index')
+
+    def dataset = Dataset.get(params.datasetID) // current dataset
+    def subsetImage = SubsetImage.get(params.imageSubsetID) // current subsetImage
+
+    trainService.saveCurrentSubsetPosition(subsetImage)
+
+    def subset = Subset.get(params.subsetID) // new subset
+    dataset.lastSubset = subset
+    dataset.save(flush: true)
+
+    def sp = SubsetPosition.findBySubset(subset)
+    if (!sp) {
+      sp = new SubsetPosition()
+      sp.subset = subset
+      sp.subsetImage = subset.imageSubsets.first()
+      sp.save(flush: true)
+    }
+    boolean done = trainService.doneTraining(sp.subset)
+    forward(action: 'selectImage', params: [switchTo: sp.subsetImage.id, done:done])
   }
 
   def nextImage() {
@@ -78,7 +97,7 @@ class TrainController {
     def idx = imageSubset.position
     idx = idx==imageSubset.subset.size-1 ? 0 : idx+1
     def nextImageSubset = SubsetImage.findBySubsetAndPosition(imageSubset.subset, idx)
-    forward(action: 'selectImage', params: [switchTo: nextImageSubset.id])
+    forward(action: 'selectImage', params: [switchTo: nextImageSubset.id, done:params.done])
   }
 
   def prevImage() {
@@ -87,16 +106,15 @@ class TrainController {
     def idx = imageSubset.position
     idx = idx==0 ? imageSubset.subset.size-1 : idx-1
     def prevImageSubset = SubsetImage.findBySubsetAndPosition(imageSubset.subset, idx)
-    forward(action: 'selectImage', params: [switchTo: prevImageSubset.id])
+    forward(action: 'selectImage', params: [switchTo: prevImageSubset.id, done:params.done])
   }
 
   def selectImage() {
     def imageSubset = SubsetImage.get(params.switchTo)
     def image = imageSubset.image
-//    Subset subset = imageSubset.subset
-    def user = (Users)springSecurityService.getCurrentUser()
-    user.lastImageSubset = imageSubset
-    user.save(flush: true)
+
+    trainService.saveCurrentSubsetPosition(imageSubset)
+
     session["parasites"] = null
     session["parasites"] = [:]
     image.parasites.each {it -> session["parasites"][it.id] = trainService.dom2web(it,image.displayScale)}
@@ -104,17 +122,25 @@ class TrainController {
     def parasites = []
     session["parasites"].each {k,v -> parasites.add(v) }
 
-    render(template: 'trainUI', model: [imageSubset: imageSubset,
+    boolean done = params.done == 'true'
+    if (imageSubset.position == (imageSubset.subset.size-1) || imageSubset.position == 0) {
+      done = trainService.doneTraining(imageSubset.subset)
+    }
+
+    render(template: 'trainUI', model: [dataset: imageSubset.subset.dataset,
+                                        subsets: imageSubset.subset.dataset.subsets,
                                         subset: imageSubset.subset,
+                                        imageSubset: imageSubset,
                                         image: image,
                                         control: image.control,
+                                        done: done,
                                         parasites: parasites as JSON])
   }
 
   def image() {
 //    def stream = (Image.get(params.imageID).imageData as List)[0].stream
     def image = Image.get(params.imageID)
-    def imagef = grailsApplication.config.PhenomeTrainer.dataDir + File.separator + image.dataset.id + File.separator + 'img' + File.separator + image.name + '.png'
+    def imagef = grailsApplication.config.PhenomeTrainer.dataDir + File.separator + image.dataset.token + File.separator + 'img' + File.separator + image.name + '.png'
     def stream = new BufferedInputStream(new FileInputStream(imagef)).getBytes()
     response.contentLength = stream.length
     response.contentType = 'image/png'
@@ -135,6 +161,12 @@ class TrainController {
   def resetParasites() {
     def parasites = trainService.resetParasites(session["parasites"])
     render parasites as JSON
+  }
+
+  def saveParasites() {
+    trainService.saveCurrentImageState(session["parasites"])
+    def p = session["parasites"] as Map
+    render p.values() as JSON
   }
 
 }

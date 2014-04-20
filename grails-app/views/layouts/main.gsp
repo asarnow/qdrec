@@ -13,38 +13,56 @@
 		<link rel="stylesheet" href="${resource(dir: 'css', file: 'main.css')}" type="text/css">
     <g:layoutHead/>
     <r:layoutResources />
+    <ga:trackPageview />
 	</head>
 	<body>
     <div id="topbar">
-      <div id="title">
-        <sec:ifLoggedIn>
-          <a class="logout" href="${createLink(controller: 'logout')}">Logout</a>
-        </sec:ifLoggedIn>
-        <sec:ifNotLoggedIn>
-          <a class="logout" href="${createLink(controller: 'login')}">Login</a>
-        </sec:ifNotLoggedIn>
-        <a href="${createLink(controller: 'page', action: 'about')}"><img src="${resource(dir: 'images', file: 'schistosoma.png')}"/></a>
-        <a href="${createLink(controller: 'page', action: 'about')}"><h1>QDREC</h1></a>
-        <a href="${createLink(controller: 'page', action: 'about')}"><h2>Quantal Dose Response Calculator</h2></a>
-        </a>
+      <div id="leftbar">
+        <div id="toplogo">
+              <a href="http://tintin.sfsu.edu"><img src="${resource(dir: 'images', file: 'sfsu.png')}"/></a>
+              <a href="http://tintin.sfsu.edu"><h1>Biocomputing and Media Resarch</h1></a>
+              <div class="clearDiv"></div>
+        </div>
+        <div id="title">
+          %{--<sec:ifLoggedIn>
+            <a class="logout" href="${createLink(controller: 'logout')}">Logout</a>
+          </sec:ifLoggedIn>
+          <sec:ifNotLoggedIn>
+            <a class="logout" href="${createLink(controller: 'login')}">Login</a>
+          </sec:ifNotLoggedIn>--}%
+          <a href="${createLink(controller: 'page', action: 'home')}"><img src="${resource(dir: 'images', file: 'schistosoma.png')}"/></a>
+          <a href="${createLink(controller: 'page', action: 'home')}"><h1>QDREC</h1></a>
+          <a href="${createLink(controller: 'page', action: 'home')}"><h2>Quantal Dose Response Calculator</h2></a>
+        </div>
+        <div class="nav">
+          <ul class="nav">
+            <li><a href="${createLink(controller: 'page', action: 'home')}">Home</a></li>
+            <li><a href="${createLink(controller: 'project', action: 'index', params: [load:session['datasetID']!=null])}">Create Project</a></li>
+            <li><a href="${createLink(controller: 'project', action: 'define')}">Define Subsets</a></li>
+            <li><a href="${createLink(controller: 'train', action: 'index')}">Create New Classifier</a></li>
+            <li><a href="${createLink(controller: 'classify', action: 'index')}">Run Classifier</a></li>
+          </ul>
+        </div>
       </div>
-      <div class="nav">
-        <ul>
+      <div id="rightbar">
+        <ul class="nav">
           <li>
+            <a href="${createLink(controller: 'page', action: 'help')}">Help</a>
+          </li>
+          %{--<li>
+            <a href="${createLink(controller: 'page', action: 'tutorial')}">Tutorial</a>
+          </li>--}%
+          <li>
+            <a href="${createLink(controller: 'page', action: 'download')}">Sample Screening Data</a>
+          </li>
+          <li class="bottom">
             <a href="${createLink(controller: 'page', action: 'about')}">About</a>
-            <a href="${createLink(controller: 'page', action: 'help')}">Instructions</a>
-            <a href="${createLink(controller: 'upload', action: 'index')}">Upload</a>
-            <a href="${createLink(controller: 'upload', action: 'define')}">Define</a>
-            <a href="${createLink(controller: 'train', action: 'index')}">Train</a>
-            <a href="${createLink(controller: 'classify', action: 'index')}">Classify</a>
           </li>
         </ul>
       </div>
     </div>
     <div class="clearDiv"></div>
-    <div class="content">
-		  <g:layoutBody/>
-    </div>
+    <g:layoutBody/>
 		<div class="footer" role="contentinfo"></div>
 		%{--<g:javascript library="application"/>--}%
 		<r:layoutResources />

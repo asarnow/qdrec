@@ -1,6 +1,3 @@
-import edu.sfsu.ntd.phenometrainer.BootStrapService
-import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
-
 // locations to search for config files that get merged into the main config;
 // config files can be ConfigSlurper scripts, Java properties files, or classes
 // in the classpath in ConfigSlurper format
@@ -62,6 +59,8 @@ grails.exceptionresolver.params.exclude = ['password']
 // configure auto-caching of queries by default (if false you can cache individual queries with 'cache: true')
 grails.hibernate.cache.queries = false
 
+google.analytics.webPropertyID = 'UA-21010059-4'
+
 environments {
     development {
         grails.logging.jul.usebridge = true
@@ -77,10 +76,10 @@ environments {
           //
           appenders {
           //    console name:'stdout', layout:pattern(conversionPattern: '%c{2} %m%n')
-            file name: 'file', file:'/tmp/qdrec.log'
+            rollingFile name: 'file', file:'/tmp/qdrec.log', maxFileSize: 50 * 2**20
           }
           root {
-            debug 'stout', 'file'
+            info 'stout', 'file'
             additivity = true
           }
 
@@ -102,12 +101,12 @@ environments {
     production {
         grails.logging.jul.usebridge = false
 //        grails.app.context = "/qdrec"
-        grails.serverURL = "http://haddock4.sfsu.edu/qdrec"
-        grails.plugins.springsecurity.successHandler.defaultTargetUrl = "/qdrec"
+//        grails.serverURL = "http://haddock4.sfsu.edu"
+//        grails.plugins.springsecurity.successHandler.defaultTargetUrl = "/qdrec"
 //        grails.plugins.springsecurity.logout.afterLogoutUrl = "/qdrec"
         PhenomeTrainer {
-          dataDir = "/home/dev/qdrec-data"
-          svmsFile = "/home/dev/qdrec-data/svms.mat"
+          dataDir = "/home/dev/qdrec2-data"
+          svmsFile = "/home/dev/qdrec2-data/svms.mat"
         }
 
         // log4j configuration
@@ -116,7 +115,7 @@ environments {
             //
             appenders {
             //    console name:'stdout', layout:pattern(conversionPattern: '%c{2} %m%n')
-              file name: 'file', file:'/home/dev/tomcat6/logs/qdrec.log'
+              file name: 'file', file:'/home/dev/tomcat6/logs/qdrec2.log'
             }
             root {
               error 'file'
@@ -142,9 +141,9 @@ environments {
 }
 
 // Added by the Spring Security Core plugin:
-grails.plugins.springsecurity.userLookup.userDomainClassName = 'edu.sfsu.ntd.phenometrainer.Users'
-grails.plugins.springsecurity.userLookup.authorityJoinClassName = 'edu.sfsu.ntd.phenometrainer.UserRole'
-grails.plugins.springsecurity.authority.className = 'edu.sfsu.ntd.phenometrainer.Role'
+//grails.plugins.springsecurity.userLookup.userDomainClassName = 'edu.sfsu.ntd.phenometrainer.Users'
+//grails.plugins.springsecurity.userLookup.authorityJoinClassName = 'edu.sfsu.ntd.phenometrainer.UserRole'
+//grails.plugins.springsecurity.authority.className = 'edu.sfsu.ntd.phenometrainer.Role'
 /* Added by the Hibernate Spatial Plugin. */
 /*grails.gorm.default.mapping = {
    'user-type'(type:org.hibernatespatial.GeometryUserType, class:com.vividsolutions.jts.geom.Geometry)
