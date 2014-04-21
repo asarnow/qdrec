@@ -39,7 +39,7 @@
     </p>
     <ul class="downloads">
       <li>
-        <a href="${resource(dir: 'download', file: 'Niclosamide.zip')}">Niclosamide example data</a>
+        <a href="http://tintin.sfsu.edu/software/Niclosamide.zip">Niclosamide example data</a>
         <p>
           Contains two replicate dose-response series for 4 days of exposure to Niclosamide (5 images and 1 control image each, 12 images total).
           Intended to demonstrate separate training and testing sets used to create and test a new classifier.
@@ -47,7 +47,7 @@
         </p>
       </li>
       <li>
-        <a href="http://tintin.sfsu.edu/software/Phenotyping%20Schistosomula.pptx">Mevastatin example data</a>
+        <a href="http://tintin.sfsu.edu/software/Mevastatin.zip">Mevastatin example data</a>
         <p>
           Contains dose- and time-response series for Mevastatin, including controls, with two time-points replicated across concentrations (30 images total).
           Intended to demonstrate QDREC with combined time- and dose-response data.
@@ -55,7 +55,7 @@
         </p>
       </li>
       <li>
-        <a href="">Introduction to Phenotyping Schistosomula</a>
+        <a href="http://tintin.sfsu.edu/software/Phenotyping%20Schistosomula.pptx">Introduction to Phenotyping Schistosomula</a>
         <p>
           A brief slideshow companion to the sample data sets, which introduces manual phenotypic screening for schistosomula
           and presents several examples which will aid with the Tutorial for Sample Data.
