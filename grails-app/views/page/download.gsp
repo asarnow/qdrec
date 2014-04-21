@@ -17,18 +17,18 @@
   <meta name="layout" content="main" />
   <r:require modules="jquery" />
   <g:javascript>
-    $(document).ready( function() {
+    /*$(document).ready( function() {
         $('#nicbutton').click(function() {
           $('niclosamideSubsets').toggle();
           $('#mevastatinSubsets').hide();
           $('#niclosamideSubsets').toggle();
 
         });
-/*        $('#mevbutton').click(function() {
+        $('#mevbutton').click(function() {
           $('#niclosamideSubsets').hide();
         $('#mevastatinSubsets').toggle();
-      });*/
-    });
+      });
+    });*/
   </g:javascript>
 </head>
 <body>
@@ -47,7 +47,7 @@
         </p>
       </li>
       <li>
-        <a href="${resource(dir: 'download', file: 'Mevastatin.zip')}">Mevastatin example data</a>
+        <a href="http://tintin.sfsu.edu/software/Phenotyping%20Schistosomula.pptx">Mevastatin example data</a>
         <p>
           Contains dose- and time-response series for Mevastatin, including controls, with two time-points replicated across concentrations (30 images total).
           Intended to demonstrate QDREC with combined time- and dose-response data.
@@ -55,7 +55,7 @@
         </p>
       </li>
       <li>
-        <a href="${resource(dir: 'download', file: 'Phenotyping Schistosomula.pptx')}">Introduction to Phenotyping Schistosomula</a>
+        <a href="">Introduction to Phenotyping Schistosomula</a>
         <p>
           A brief slideshow companion to the sample data sets, which introduces manual phenotypic screening for schistosomula
           and presents several examples which will aid with the Tutorial for Sample Data.
@@ -119,11 +119,11 @@
     </p>
     <p>
       When training a new classifier, project images must be divided into at least two subsets for use in training and testing.
-      The Niclosamide sample data should be divided into the following 'training' and 'testing' sets.
+      The Niclosamide sample data should be divided into the following 'training' and 'testing' sets:
     </p>
-    <p>
+    %{--<p>
       <button type="button" class="button" id="nicbutton">Show Defintions</button>
-    </p>
+    </p>--}%
       <div id="niclosamideSubsets" hidden>
         <h5>Subsets for Niclosamide Sample Data</h5>
         <table>
