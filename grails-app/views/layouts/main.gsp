@@ -53,7 +53,7 @@
             <a href="${createLink(controller: 'page', action: 'tutorial')}">Tutorial</a>
           </li>--}%
           <li>
-            <a href="${createLink(controller: 'page', action: 'download')}">Sample Screening Data</a>
+            <a href="${createLink(controller: 'page', action: 'download')}">Sample Screening Data and Tutorial</a>
           </li>
           <li class="bottom">
             <a href="${createLink(controller: 'page', action: 'about')}">About</a>
