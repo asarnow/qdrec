@@ -234,10 +234,12 @@
       </p>
       <h3>Train Classifier</h3>
       <p>
-        If a new classifier should be trained, navigate to the "Train Classifier" tab. Three fields will appear. The first is a
-        drop-down menu for selection of the subset for training.
-        The other two fields (labeled "RBF Sigma" and "Soft-margin box constraint," respectively) are parameters used
-        by the SVM classifier. For details, see <a href="${createLink(action: 'about')}">here</a>. It should
+        If a new classifier should be trained, navigate to the "Train Classifier" tab.
+      </p>
+      <p>
+        Use the drop-down menu for selection of the subset for training, then use the radio buttons to select the desired
+        classification algorithm. Fields for any required method parameters will appear.
+        For details, see <a href="${createLink(action: 'about')}">here</a>. It should
         be fine to leave the parameters set to their default values.
       </p>
       <p>

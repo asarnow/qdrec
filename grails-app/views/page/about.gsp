@@ -44,28 +44,34 @@
           D.&nbsp;Asarnow and R.&nbsp;Singh,
           "Segmenting the Etiological Agent of Schistosomiasis for High-Content Screening,"
           <i>IEEE Transactions on Medical Imaging</i>, vol. 32, no. 6, pp. 1007-10018, 2013.
+          <a href="http://tintin.sfsu.edu/papers/Asarnow - 2012 - Segmenting the Etiological Agent of Schistosomiasis for High-Content Screening.pdf"><g:img dir="images" file="pdf.gif"/></a>
         </li>
   %{--      <li>
-          D.&nbsp;Asarnow, L.&nbsp;Arreola-Rojo, B.M.&nbsp;Suzuki, C.R.&nbsp;Caffrey and R.&nbsp;Singh,
-          "Automatic Identification of Dose-Response Characteristics
-          in Phenotypic Assays for Complex Macroparasites using
-          Biological Imaging and Supervised Learning,"
-          Under Review 2014.
+          D.&nbsp;Asarnow and R.&nbsp;Singh,
+          "Determination of Quantal Dose-Response Characteristics in Phenotypic Assays using Supervised Classification,"
+          <i>San Francisco State Technical Report</i>.
         </li>--}%
         <li>
-          L.&nbsp;Arreola-Rojo, T.&nbsp;Long, D.&nbsp;Asarnow, B.M.&nbsp;Suzuki, R.&nbsp;Singh and C.R.&nbsp;Caffrey, "Chemical and genetic validation of the statin drug target to treat the helminth disease, schistosomiasis," <i>PLoS ONE</i>, To Appear 2014.
+        L. Rojo-Arreola, T. Long, D. Asarnow, B.M. Suzuki, R. Singh and C.R. Caffrey,
+        "Chemical and genetic validation of the statin drug target for the potential treatment of the helminth disease, schistosomiasis,"
+        <i>PLoS ONE</i>, 9(1): e87594, 2014. (Corresponding author C.R. Caffrey).
+        <a href="http://www.plosone.org/article/info%3Adoi%2F10.1371%2Fjournal.pone.0087594"><g:img dir="images" file="pdf.gif"/></a>
         </li>
         <li>
           R. Singh, "Quantitative High-Content Screening-Based Drug Discovery against Helmintic Diseases", in <i>Parasitic Helminths</i>: Targets, Screens, Drugs, and Vaccines, Ed. C. Caffrey, Wiley-Blackwell, pp. 159-179 2012.
+          <a href="http://www.wiley.com/WileyCDA/WileyTitle/productCd-3527330593.html"><g:img dir="images" file="pdf.gif"/></a>
         </li>
         <li>
           C. Marcellino, J. Gut, K. C. Lim, R. Singh, J. McKerrow, J. Sakanari, "WormAssay: A Novel Computer Application for Whole-Plate Screening of Macroscopic Parasites", <i>PLoS Neglected Tropical Diseases</i>, Vol. 6(1):e1494, 2012 (Corresponding author C. Marcellino).
+          <a href="http://www.plosntds.org/article/info%3Adoi%2F10.1371%2Fjournal.pntd.0001494"><g:img dir="images" file="pdf.gif"/></a>
         </li>
         <li>
           H. Lee*, A. Moody-Davis, U. Saha, B. Suzuki, D. Asarnow, S. Chen, M. Arkin, C. Caffrey, and R. Singh*, "Quantification and Clustering of Phenotypic Screening Data Using Time Series Analysis for Chemotherapy of Schistosomiasis", <i>BMC Genomics</i>, 12 (Suppl 1):S4, 2012 (*H. Lee and R. Singh equal contributors. Corresponding author R. Singh).
+          <a href="http://www.biomedcentral.com/1471-2164/13/S1/S4"><g:img dir="images" file="pdf.gif"/></a>
         </li>
         <li>
           R. Singh, M. Pittas, I. Heskia, F. Xu, J. H. McKerrow, and C. Caffrey, "Automated Image-Based Phenotypic Screening for High-Throughput Drug Discovery", <i>IEEE Symposium on Computer-Based Medical Systems (CBMS)</i>, pp. 1-8, 2009.
+          <a href="http://tintin.sfsu.edu/papers/IEEE-CBMS-2009.pdf"><g:img dir="images" file="pdf.gif"/></a>
         </li>
       </ol>
     </div>
