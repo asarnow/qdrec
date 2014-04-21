@@ -124,7 +124,7 @@
     %{--<p>
       <button type="button" class="button" id="nicbutton">Show Defintions</button>
     </p>--}%
-      <div id="niclosamideSubsets" hidden>
+      <div id="niclosamideSubsets">
         <h5>Subsets for Niclosamide Sample Data</h5>
         <table>
           <thead>
