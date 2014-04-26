@@ -42,15 +42,16 @@
       <ol class="publist">
         <li>
           D.&nbsp;Asarnow and R.&nbsp;Singh,
+          "Determination of Quantal Dose-Response Characteristics in Phenotypic Assays using Supervised Classification,"
+          <i>San Francisco State Technical Report</i>, 2014.
+          <a href="http://cs.sfsu.edu/techreports/14/QDREC.TechReport.14.01.pdf"><g:img dir="images" file="pdf.gif"/></a>
+        </li>
+        <li>
+          D.&nbsp;Asarnow and R.&nbsp;Singh,
           "Segmenting the Etiological Agent of Schistosomiasis for High-Content Screening,"
           <i>IEEE Transactions on Medical Imaging</i>, vol. 32, no. 6, pp. 1007-10018, 2013.
           <a href="http://tintin.sfsu.edu/papers/Asarnow - 2012 - Segmenting the Etiological Agent of Schistosomiasis for High-Content Screening.pdf"><g:img dir="images" file="pdf.gif"/></a>
         </li>
-  %{--      <li>
-          D.&nbsp;Asarnow and R.&nbsp;Singh,
-          "Determination of Quantal Dose-Response Characteristics in Phenotypic Assays using Supervised Classification,"
-          <i>San Francisco State Technical Report</i>.
-        </li>--}%
         <li>
         L. Rojo-Arreola, T. Long, D. Asarnow, B.M. Suzuki, R. Singh and C.R. Caffrey,
         "Chemical and genetic validation of the statin drug target for the potential treatment of the helminth disease, schistosomiasis,"
