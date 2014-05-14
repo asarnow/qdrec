@@ -68,8 +68,8 @@ environments {
         PhenomeTrainer {
 //          dataDir = "/home/da/Documents/IDEAProjects/PhenomeTrainer/app-data"
 //          svmsFile = "/home/da/Documents/IDEAProjects/PhenomeTrainer/app-data/svms.mat"
-            dataDir = "" //TODO good windows paths
-            svmsFile = ""
+            dataDir = "C:\Users\rahul\Local\qdrec\app-data"
+            svmsFile = "C:\Users\rahul\Local\qdrec\app-data\svms.mat"
         }
 
       // log4j configuration
@@ -78,7 +78,8 @@ environments {
           //
           appenders {
           //    console name:'stdout', layout:pattern(conversionPattern: '%c{2} %m%n')
-            rollingFile name: 'file', file:'/tmp/qdrec.log', maxFileSize: 50 * 2**20 //TODO use windows path
+          //    rollingFile name: 'file', file:'/tmp/qdrec.log', maxFileSize: 50 * 2**20
+            rollingFile name: 'file', file:'C:\Users\rahul\Local\qdrec\qdrec.log', maxFileSize: 50 * 2**20
           }
           root {
             info 'stout', 'file'
