@@ -66,8 +66,10 @@ environments {
         grails.logging.jul.usebridge = true
         grails.app.context = "/qdrec"
         PhenomeTrainer {
-          dataDir = "/home/da/Documents/IDEAProjects/PhenomeTrainer/app-data"
-          svmsFile = "/home/da/Documents/IDEAProjects/PhenomeTrainer/app-data/svms.mat"
+//          dataDir = "/home/da/Documents/IDEAProjects/PhenomeTrainer/app-data"
+//          svmsFile = "/home/da/Documents/IDEAProjects/PhenomeTrainer/app-data/svms.mat"
+            dataDir = "" //TODO good windows paths
+            svmsFile = ""
         }
 
       // log4j configuration
@@ -76,7 +78,7 @@ environments {
           //
           appenders {
           //    console name:'stdout', layout:pattern(conversionPattern: '%c{2} %m%n')
-            rollingFile name: 'file', file:'/tmp/qdrec.log', maxFileSize: 50 * 2**20
+            rollingFile name: 'file', file:'/tmp/qdrec.log', maxFileSize: 50 * 2**20 //TODO use windows path
           }
           root {
             info 'stout', 'file'
