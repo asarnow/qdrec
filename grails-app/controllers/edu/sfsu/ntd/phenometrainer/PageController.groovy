@@ -1,8 +1,8 @@
 package edu.sfsu.ntd.phenometrainer
-
-import com.mathworks.toolbox.javabuilder.MWCellArray
-import phenomj.PhenomJ
-
+/**
+ * Controller for static content. Each action (class methods) maps directly to
+ * the URL of some static content - e.g. main page, about page, help pages.
+ */
 class PageController {
 
     def trainService
@@ -33,11 +33,4 @@ class PageController {
       render(view:'unsupported')
     }
 
-    def listfonts() {
-      def phenomj = new PhenomJ()
-      Object[] out = phenomj.listfonts(1)
-      def fonts_cell = (MWCellArray)(out[0])
-      def fonts = fonts_cell.exportCells()
-      render(fonts)
-    }
 }

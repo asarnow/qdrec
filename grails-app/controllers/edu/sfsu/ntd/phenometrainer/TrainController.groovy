@@ -2,12 +2,23 @@ package edu.sfsu.ntd.phenometrainer
 import grails.converters.JSON
 import grails.util.Holders
 
+/**
+ * Handles actions related to annotation of parasites for classifier training.
+ */
 class TrainController {
-
+    // Objects for dependency injection via Spring.
     def grailsApplication = Holders.getGrailsApplication()
     def springSecurityService
     def trainService
 
+  /**
+   * Main action for Create New Classifier / Annotate Data - maps to /train/ or /train/index.
+   * Redirects if no dataset is selected or the appropriate subsets have not been defined.
+   * Sets up control and experiment images for display, loads parasite data from database,
+   * and checks if the subset has been completely trained, before finally rendering the
+   * annotation interface.
+   * @return
+   */
     def index() {
       def dataset = Dataset.get(session['datasetID'])
 
@@ -42,6 +53,10 @@ class TrainController {
                                       parasites: parasites as JSON] )
     }
 
+  /**
+   * RESTful API call delivering the parasites in a specified image using JSON.
+   * @return
+   */
   def imageParasites() {
     def image = Image.get(params.imageID)
     def parasites = []
@@ -49,6 +64,11 @@ class TrainController {
     render parasites as JSON
   }
 
+  /**
+   * RESTful API call which finds a clicked parasite, toggles its annotation state,
+   * and then refreshes the parasites session variable.
+   * @return
+   */
   def parasite() {
     def imageID = params.imageID
     def parasiteX = params.parasiteX
@@ -68,6 +88,14 @@ class TrainController {
     render parasites as JSON
   }
 
+  /**
+   * RESTful API call for selecting a new subset in the annotation interface.
+   * Saves the current annotation state to the database before switching,
+   * as well as the position in the current subset, then tries to return
+   * the user to the last viewed image in the new subset.
+   * Also checks if the new subset has been completely annotated.
+   * @return
+   */
   def switchSubset() {
     trainService.saveCurrentImageState(session["parasites"])
 
@@ -91,6 +119,11 @@ class TrainController {
     forward(action: 'selectImage', params: [switchTo: sp.subsetImage.id, done:done])
   }
 
+  /**
+   * RESTful API call which advances the annotation interface to the next image.
+   * The parasite annotation states are saved before switching images.
+   * @return
+   */
   def nextImage() {
     trainService.saveCurrentImageState(session["parasites"])
     def imageSubset = SubsetImage.get(params.imageSubsetID)
@@ -100,6 +133,11 @@ class TrainController {
     forward(action: 'selectImage', params: [switchTo: nextImageSubset.id, done:params.done])
   }
 
+  /**
+   * RESTful API call which returns the annotation interface to the previous image.
+   * The parasite annotation states are saved before switching images.
+   * @return
+   */
   def prevImage() {
     trainService.saveCurrentImageState(session["parasites"])
     def imageSubset = SubsetImage.get(params.imageSubsetID)
@@ -109,6 +147,15 @@ class TrainController {
     forward(action: 'selectImage', params: [switchTo: prevImageSubset.id, done:params.done])
   }
 
+  /**
+   * RESTful API call which switches the image displayed by the annotation interface.
+   * The user's position in the subset is updated to point to the new image.
+   * The session is updated with the parasites from the new image, and the user is informed if
+   * the subset is now completely annotated.
+   *
+   * THIS METHOD DOES NOT SAVE THE PARASITE ANNOTATION STATES.
+   * @return
+   */
   def selectImage() {
     def imageSubset = SubsetImage.get(params.switchTo)
     def image = imageSubset.image
@@ -137,6 +184,9 @@ class TrainController {
                                         parasites: parasites as JSON])
   }
 
+  /**
+   * RESTful API call which returns the byte stream for an image (PNG format).
+   */
   def image() {
 //    def stream = (Image.get(params.imageID).imageData as List)[0].stream
     def image = Image.get(params.imageID)
@@ -148,21 +198,37 @@ class TrainController {
     response.outputStream.flush()
   }
 
+  /**
+   * RESTful API call returning the subsets in a specified project.
+   * @return
+   */
   def subsets() {
     def dataset = Dataset.get(params.datasetID)
     render dataset?.subsets as JSON
   }
 
+  /**
+   * RESTful API call to toggle the annotation state of all parasites in the current image.
+   * @return
+   */
   def toggleParasites() {
     def parasites = trainService.toggleParasites(session["parasites"])
     render parasites as JSON
   }
 
+  /**
+   * RESTful API call to reset the annotation state (to "NORMAL") of all parasites in the current image.
+   * @return
+   */
   def resetParasites() {
     def parasites = trainService.resetParasites(session["parasites"])
     render parasites as JSON
   }
 
+  /**
+   * RESTful API call to explicitly save the current parasite annotation states.
+   * @return
+   */
   def saveParasites() {
     trainService.saveCurrentImageState(session["parasites"])
     def p = session["parasites"] as Map

@@ -2,10 +2,25 @@ package edu.sfsu.ntd.phenometrainer
 
 import groovy.sql.Sql
 
+/**
+ * Service class providing service methods for annotating parasites via
+ * the QDREC data annotation interface.
+ */
 class TrainService {
-
+    // Objects for dependency injection via Spring.
     def dataSource
 
+  /**
+   * Searches the specified image for a parasite at the given X,Y coordinates
+   * using the MySQL spatial index.
+   * If the specified location lies within the bounding rectangles of multiple parasites,
+   * the smallest parasite is selected. This ensures the user can always select every parasite
+   * in an image, even if they are significantly overlapping.
+   * @param imageID
+   * @param parasiteX
+   * @param parasiteY
+   * @return
+   */
     def findParasiteByLocation(String imageID, String parasiteX, String parasiteY) {
       Image image = Image.get(imageID)
 
@@ -32,6 +47,14 @@ class TrainService {
 
     }
 
+  /**
+   * Converts parasite domain objects to a simpler structure containing only
+   * the fields needed at the web layer. Also adjusts the parasite coordinates
+   * for display scale of the image.
+   * @param p
+   * @param scale
+   * @return
+   */
     def dom2web(Parasite p, double scale) {
       def parasite = [:]
       parasite.id = p.id
@@ -46,38 +69,12 @@ class TrainService {
       return parasite
     }
 
-    /*def findAllUserSubsetTrainStates(userID, subsetID) {
-      def user = Users.get(userID)
-      def subset = Subset.get(subsetID)
-      def lines = []
-      subset.imageSubsets.image.sort{a,b -> a.id <=> b.id}.each { i ->
-        i.parasites.sort{a,b -> a.id<=>b.id}.each { Parasite p ->
-          def pts = ParasiteTrainState.findByParasiteAndTrainer(p,user)
-          lines.add(i.id.toString() + "," + i.name.toUpperCase() + "," + i.control.id.toString() + "," +
-                  p.id.toString() + "," + p.region.toString() + "," + p.getBBString() + "," + pts.trainState.toString())
-        }
-      }
-      return lines
-    }*/
-
-    /*def findAllUserTrainStates(userId) {
-
-      def images = Image.findAll()
-
-      def user = Users.get(userId)
-
-      def lines = []
-
-      images.each { i ->
-        i.parasites.each { Parasite p ->
-          def pts = ParasiteTrainState.findByParasiteAndTrainer(p,user)
-          lines.add(i.id.toString() + "," + i.name.toUpperCase() + "," + i.control.id.toString() + "," +
-                  p.id.toString() + "," + p.region.toString() + "," + p.getBBString() + "," + pts.trainState.toString())
-        }
-      }
-      return lines
-    }*/
-
+  /**
+   * Saves the user's position within the specified subset, so that annotation / training
+   * may be resumed conveniently.
+   * @param subsetImage
+   * @return
+   */
     def saveCurrentSubsetPosition(SubsetImage subsetImage) {
       def subset = subsetImage.subset
       def spd = SubsetPosition.findBySubset(subset)
@@ -89,6 +86,11 @@ class TrainService {
       spd.save(flush: true)
     }
 
+  /**
+   * Saves annotation state for a collection of parasites.
+   * @param parasites
+   * @return
+   */
     def saveCurrentImageState(parasites) {
       parasites.each { k,v ->
         def parasite = Parasite.get(v.id)
@@ -99,6 +101,11 @@ class TrainService {
       }
     }
 
+  /**
+   * Toggles the annotation state of parasites in the 'web' format (see dom2web).
+   * @param sessionParasites
+   * @return
+   */
     def toggleParasites(sessionParasites) {
       def parasites = []
       sessionParasites.each { k,v ->
@@ -112,6 +119,11 @@ class TrainService {
       return parasites
     }
 
+  /**
+   * Resets the annotation state (to 'NORMAL') of parasites in the 'web' format (see dom2web).
+   * @param sessionParasites
+   * @return
+   */
     def resetParasites(sessionParasites) {
       def parasites = []
       sessionParasites.each { k,v ->
@@ -122,6 +134,11 @@ class TrainService {
 
     }
 
+  /**
+   * Determine if the specified subset has been completely annotated.
+   * @param subset
+   * @return
+   */
     def doneTraining(Subset subset) {
       def trv = 0
       def np = 0

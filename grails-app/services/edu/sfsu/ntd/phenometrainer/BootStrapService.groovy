@@ -4,6 +4,11 @@ import au.com.bytecode.opencsv.CSVReader
 import groovy.sql.Sql
 import org.codehaus.groovy.grails.plugins.DomainClassGrailsPlugin
 
+/**
+ * The BootStrapService is suitable for calling initialization functions from Bootstrap.groovy.
+ * QDREC does not currently use this class. Initial projects are added directly through the
+ * project creation page instead of during initialization.
+ */
 class BootStrapService {
 
   def dataSource

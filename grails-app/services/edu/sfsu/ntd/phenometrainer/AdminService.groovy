@@ -8,24 +8,29 @@ import org.apache.commons.io.FileUtils
 import org.apache.commons.lang.RandomStringUtils
 import phenomj.PhenomJ
 
+/**
+ * Service class which provides administrative functions such as creating projects and subsets,
+ * inclusive of segmenting images and populating the database with parasites and their locations.
+ */
 class AdminService {
-
+  // Objects for dependency injection via Spring.
   def grailsApplication = Holders.getGrailsApplication()
   def sessionFactory
   def dataSource
 
-  /*def initUser(name, password, auth) {
-    def role = Role.findByAuthority(auth)
-    def user = new Users(username:name, enabled: true, password: password, dateCreated: new Date(), lastImageSubset: null)
-    user = user.save(failOnError: false)
-    if (user != null) {
-      UserRole.create user, role, true
-      return user
-    } else {
-      return null
-    }
-  }*/
-
+  /**
+   * Calls the PhenomJ MATLAB Builder JA library in order to segment project images
+   * according the specified segmentation method, define the project / dataset
+   * using the specified parameters (name, public / private flag), and
+   * generate the imagedb.csv file listing the images and segmented parasites.
+   * If project creation and initialization is successful, the project's working
+   * directory is moved from the system temp location to the QDREC data directory.
+   * @param name
+   * @param datasetDir
+   * @param visible
+   * @param seg
+   * @return
+   */
   def initDataset(name, String datasetDir, visible, String seg) {
     def dataset = new Dataset()
     dataset.description = name
@@ -70,6 +75,17 @@ class AdminService {
     return dataset.save(flush: true)
   }
 
+  /**
+   * Service method to define a new subset using the supplied parameters
+   * (name, dataset ID and selected image IDs).
+   * Attempts to automatically identify controls if they were not included.
+   * The user is informed if the controls were added automatically or if the
+   * user will need to specify control images manually.
+   * @param subsetName
+   * @param datasetID
+   * @param imageIDs
+   * @return
+   */
   def defineSubset(subsetName, datasetID, imageIDs) {
     def message = ''
     def images = []
@@ -113,6 +129,16 @@ class AdminService {
     return [nocontrol:nocontrol, message:message]
   }
 
+  /**
+   * Populates the database using the project's imagedb.csv file, which lists all project images
+   * as well as the parasites segmented in each image.
+   * This requires parsing the file names according to QDREC's file name convention,
+   * reading the images to determine their sizes and appropriate display scales,
+   * and parsing the parasite definitions.
+   * @param datadir
+   * @param dataset
+   * @return
+   */
   def initImage(String datadir, Dataset dataset) {
     CSVReader reader = new CSVReader(new FileReader(datadir + File.separator + "imagedb.csv"))
     List<String[]> lines = reader.readAll()
@@ -212,6 +238,10 @@ class AdminService {
     return dataset
   }
 
+  /**
+   * Identifies the each image's control image and updates the database accordingly.
+   * @param dataset
+   */
   def assocControls(Dataset dataset) {
     for (Image image : dataset.images) {
       def control = null
@@ -236,6 +266,11 @@ class AdminService {
     }
   }
 
+  /**
+   * Adds the project parasites' bounding boxes to the MySQL spatial index.
+   * The only place in QDREC where a native database call is required (i.e. SQL vs. GORM).
+   * @param dataset
+   */
   def initParasite(Dataset dataset) {
     def parasites = dataset.images.parasites.flatten()
       for (Parasite p : parasites) {
@@ -253,34 +288,5 @@ class AdminService {
         }
       }
     }
-
-  def findDatasetDir(dataset) {
-    return grailsApplication.config.PhenomeTrainer.dataDir + File.separator + dataset.token
-  }
-
-  def validateDataset(String datasetName, String datasetDir, String visible, String seg) {
-    def segmentation = 0
-    if (seg.startsWith('Asa')) segmentation = 1
-    if (seg.startsWith('Can')) segmentation = 2
-
-    def imgDir = new File(datasetDir + File.separator + 'img')
-    def segDir = new File(datasetDir + File.separator + 'bw')
-
-    def imgFiles = imgDir.listFiles(new PngFilter())
-    def segFiles = segDir.listFiles(new PngFilter())
-
-    if (segmentation==0) {
-      if (imgFiles?.length != segFiles?.length) return 'Number of uploaded files must match. Double check uploaded files.'
-    }
-    if (imgFiles?.length < 2) return 'At least two image files must be provided.'
-
-    return null
-  }
-
-  class PngFilter implements FilenameFilter {
-  	public boolean accept(File f, String filename) {
-  		return filename.endsWith("png")
-  	}
-  }
 
 }

@@ -4,12 +4,24 @@ import grails.util.Holders
 
 import java.nio.file.Files
 
+/**
+ * Handles actions related to project creation and subset definition.
+ */
 class ProjectController {
-
+  // Objects for dependency injection via Spring.
   def adminService
   def grailsApplication = Holders.getGrailsApplication()
   def trainService
 
+  /**
+   * Main action for Create Project - maps to /project or /project/index.
+   * If no project loaded, prepares a new project working directory in the system temp directory,
+   * otherwise displays project selection form and information on loaded project.
+   * Create Project / Create Project and Create Project / Load Project force the creation and
+   * loading forms to be displayed, respectively.
+   * Also nulls out the uploadr plugin to avoid file conflicts.
+   * @return
+   */
   def index() {
     trainService.saveCurrentImageState(session["parasites"])
     if (params.load=='true') {
@@ -24,6 +36,13 @@ class ProjectController {
     }
   }
 
+  /**
+   * RESTful API call to create a new project.
+   * Uses AdminService instance to validate the dataset and then initialize it
+   * by segmenting images and registering parasites in the database.
+   * Returns a failure message if project creation is unsuccessful.
+   * @return
+   */
   def createDataset() {
     def verdict = adminService.validateDataset(params.datasetName, params.datasetDir, params.visible, params.segmentation)
     if (verdict==null) {
@@ -40,6 +59,11 @@ class ProjectController {
     }
   }
 
+  /**
+   * RESTful API call to load a project (selected from the drop-down menu or by identifier token).
+   * The selected project's ID is stored in the session.
+   * @return
+   */
   def load() {
     def dataset = Dataset.findByToken(params.token) ?: Dataset.get(params.datasetID)
     if (dataset==null) {
@@ -50,6 +74,11 @@ class ProjectController {
     }
   }
 
+  /**
+   * Action for Define Subsets - maps to /project/define.
+   * Redirects if no project is loaded and ensures in-progress annotation is saved.
+   * @return
+   */
   def define() {
     trainService.saveCurrentImageState(session["parasites"])
     def dataset = Dataset.get(session['datasetID'])
@@ -70,14 +99,28 @@ class ProjectController {
     }
   }*/
 
+  /**
+   * RESTful API call determines the identifier token for a project.
+   * @return
+   */
   def datasetInfo() {
     render Dataset.get(params.datasetID)?.token
   }
 
+  /**
+   * Renders the dataset template (part of subset definition interface).
+   * @return
+   */
   def dataset() {
     render(template: 'dataset', model: [dataset: Dataset.get(params.datasetID)])
   }
 
+  /**
+   * RESTful API call to define a new subset based on selections in subset definition interface.
+   * If all needed controls are not selected, they will be added automatically, and the user notified.
+   * If controls cannot be identified automatically, the user will be asked to specify them manually.
+   * @return
+   */
   def createSubset() {
     def output = adminService.defineSubset(params.subsetName, params.datasetID, params.imageList)
     def nocontrol = output.nocontrol as List<Image>
@@ -85,11 +128,21 @@ class ProjectController {
     render(template: 'dataset', model: [dataset: Dataset.get(params.datasetID), nocontrol: nocontrol, message: message])
   }
 
+  /**
+   * RESTful API call to list the images in a subset.
+   * @return
+   */
   def imageList() {
     def subset = Subset.get(params.subsetID)
     render( template: 'imageList', model: [dataset:subset.dataset, imageIDs:subset.imageSubsets.image.id])
   }
 
+  /**
+   * Action for Create Project / Review Segmentation.
+   * Redirects if no project loaded.
+   * Renders the view for reviewing image segmentation conducted during project creation.
+   * @return
+   */
   def review() {
     def dataset = Dataset.get(session['datasetID'])
     if (!dataset) {
@@ -112,6 +165,10 @@ class ProjectController {
     }
   }
 
+  /**
+   * RESTful API call to advance to next image during segmentation review.
+   * @return
+   */
   def nextImage() {
     def image = Image.get(params.imageID)
     def idx = image.position
@@ -120,6 +177,10 @@ class ProjectController {
     forward(action: 'selectImage', params: [switchTo: nextImage.id])
   }
 
+  /**
+   * RESTful API call to return to previous image during segmentation review.
+   * @return
+   */
   def prevImage() {
     def image = Image.get(params.imageID)
     def idx = image.position
@@ -128,6 +189,11 @@ class ProjectController {
     forward(action: 'selectImage', params: [switchTo: prevImage.id])
   }
 
+  /**
+   * RESTful API call used internally to switch the image displayed during segmentation review.
+   * Renders the view corresponding to the segmentation review interface.
+   * @return
+   */
   def selectImage() {
     def image = Image.get(params.switchTo)
     session["parasites"] = null
@@ -141,6 +207,9 @@ class ProjectController {
                                          parasites: parasites as JSON])
   }
 
+  /**
+   * RESTful API call returning byte stream for a specified image.
+   */
   def image() {
     def image = Image.get(params.imageID)
     def imagef
@@ -156,11 +225,20 @@ class ProjectController {
     response.outputStream.flush()
   }
 
+  /**
+   * RESTful API call returning list of all images associated with a project.
+   * @return
+   */
   def allimages() {
     def dataset = Dataset.get(session['datasetID'])
     render dataset.images as JSON
   }
 
+  /**
+   * RESTful API call used to manually specify control images during subset definition.
+   * Only used if user attempts to define a subset without identifiable controls.
+   * @return
+   */
   def addcontrol() {
     def image = Image.get(params.imageID)
     def control = Image.get(params.controlID)

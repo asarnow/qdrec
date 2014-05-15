@@ -1,17 +1,27 @@
 package edu.sfsu.ntd.phenometrainer
-
 import com.mathworks.toolbox.javabuilder.MWException
-import com.mathworks.toolbox.javabuilder.MWNumericArray
 import grails.converters.JSON
 import grails.util.Holders
-import phenomj.PhenomJ
+/**
+ * Handles all actions related to classification,
+ * including classifier construction/training, running the classifier and display of results.
+ * (Note annotation/training is handled by TrainController).
+ */
 
 class ClassifyController {
-
+  // Objects for dependency injection via Spring.
   def classifyService
   def trainService
   def grailsApplication = Holders.getGrailsApplication()
 
+  /**
+   * Main action for Run Classifier - maps to /classify/ or /classify/index.
+   * Redirects if classification is not possible (project not loaded / no subsets available),
+   * and displays the classification view.
+   *
+   * Ensures in-progress annotation is saved.
+   * @return
+   */
   def index() {
     trainService.saveCurrentImageState(session["parasites"])
     def dataset = Dataset.get(session['datasetID'])
@@ -32,6 +42,13 @@ class ClassifyController {
     render(view: 'classify', model: [dataset:dataset, subsets:subsets, svmsFileExists: svmsFileExists, classifierType: classifierType])
   }
 
+  /**
+   * RESTful API call for classification.
+   * Validates the classification form input, passes parameters to ClassifyService instance,
+   * stores the results in the session and renders the results template.
+   *
+   * @return
+   */
   def classify(){
       def subset = Subset.get(params.testingID)
       def result = classifyService.classifyOnly(params.datasetID,params.testingID,params.useSVM)
@@ -45,6 +62,11 @@ class ClassifyController {
                                                  error:session['tr']==null||session['dr']==null])
   }
 
+  /**
+   * Action for Create New Classifier / Train Classifier - maps to /classify/trainClassifier.
+   * Checks type of existing classifier, if any, and displays the trainClassifier view.
+   * @return
+   */
   def trainClassifier() {
     def dataset = Dataset.get(session['datasetID'])
     def datasetDir = grailsApplication.config.PhenomeTrainer.dataDir + File.separator + dataset.token
@@ -53,6 +75,12 @@ class ClassifyController {
     render(view: 'trainClassifier', model: [dataset: dataset, subsets: dataset?.subsets, svmsFileExists: svmsFileExists, classifierType: classifierType])
   }
 
+  /**
+   * RESTful API call for creating a new classifier.
+   * Validates the subset and classifier parameters, then pass them to ClassifyService instance
+   * for classifier training. Renders the cross-validated training results.
+   * @return
+   */
   def trainSVM() {
     def subset = Subset.get(params.trainingID)
     def result = null
@@ -77,73 +105,10 @@ class ClassifyController {
                    message: message])
   }
 
-  def testClassify() {
-    trainService.saveCurrentImageState(session["parasites"])
-    session['datasetID'] = Dataset.first().id
-    def dataset1 = Dataset.get(session['datasetID'])
-
-    if (!dataset1) {
-      redirect(controller: 'project', action: 'index', params: [message: "Incorrect project or no project selected."])
-      return
-    } else if (dataset1.subsets?.size() < 1) { // true if list is null OR size is 0
-      redirect(controller: 'project', action: 'define', params: [message: "At least one subset must be defined."])
-      return
-    }
-
-    double[][] cm = [ [87.0, 3.0], [0.0, 76.0] ]
-
-    double[][] Rtrain = [[0.04, 27.0],
-                         [0.04, 25.0],
-                         [0.13, 32.0],
-                         [0.7,  30.0],
-                         [1.0,  29.0],
-                         [1.0,  23.0] ]
-
-    double[][] Rtest = [[0.03, 31.0],
-                        [0.0,	 23.0],
-                        [0.13, 31.0],
-                        [0.75, 24.0],
-                        [0.97, 30.0],
-                        [1.0,	 18.0] ]
-
-    def trainImages = ["072913-CTRL-0-4-b",
-                       "072913-NIC-0001-4-b",
-                       "072913-NIC-001-4-b",
-                       "072913-NIC-01-4-b",
-                       "072913-NIC-1-4-b",
-                       "072913-NIC-10-4-b"]
-
-    def testImages = ["072913-CTRL-0-4-b",
-                      "072913-NIC-0001-4-b",
-                      "072913-NIC-001-4-b",
-                      "072913-NIC-01-4-b",
-                      "072913-NIC-1-4-b",
-                      "072913-NIC-10-4-b"]
-
-    session['result'] = [:]
-    session['result'].testImages = Image.where({name in testImages && dataset==dataset1}).list()
-    session['result'].trainImages = Image.where({name in trainImages && dataset==dataset1}).list()
-    session['result'].Rtest = Rtest
-    session['result'].Rtrain = Rtrain
-    session['result'].cm = cm
-
-    session['dr'] = classifyService.doseResponse(Image.where({name in testImages && dataset==dataset1}).list(), Rtest)
-    session['tr'] = classifyService.timeResponse(Image.where({name in testImages && dataset==dataset1}).list(), Rtest)
-
-    def compounds = (session['dr'] as Map).keySet() as List
-
-    render(view: 'testClassify',
-                  model: [cm: cm as double[][],
-                          Rtrain: Rtrain as double[][],
-                          Rtest: Rtest as double[][],
-                          trainImages: trainImages as List,
-                          testImages: testImages as List,
-                          dataset: dataset1,
-                          subsets: dataset1.subsets,
-                          compounds:compounds,
-                          error:session['tr']==null||session['dr']==null])
-  }
-
+  /**
+   * RESTful API call used to update the curves listed in the plot legends.
+   * @return
+   */
   def curves() {
     def curves = [] as Set
     if (params.xdim=='time') {
@@ -156,52 +121,11 @@ class ClassifyController {
     render(template: 'curves', model: [curves:(curves as List).sort(), xdim:params.xdim])
   }
 
-  def plotsrc() {
-    render(createLink(action: 'genplot', params: params))
-  }
-
-  def genplot() {
-    def stream = null
-    def curves = params.curves as List
-    def curve_cell = classifyService.list2cell(curves as List<String>)
-    def compound = params.compound
-    def tr = session['tr'][compound] as Map<Integer,Map<Double,Map>>;
-    def dr = session['dr'][compound] as Map<Double,Map<Integer,Map>>;
-    def phenomj = new PhenomJ()
-    if (params.xdim=='time') {
-      def x = (tr.keySet() as List).toArray() as int[]
-      double[][] rmat = new double[x.size()][curves.size()];
-      double[][] smat = new double[x.size()][curves.size()]
-      for (int i=0; i<x.size(); i++) {
-        for (int j=0; j<curves.size(); j++) {
-          def c = tr[x[i] as Integer]
-          def t = curves[j] as Double
-          def r = c[t].r
-          rmat[i][j] = classifyService.mean(r)
-          smat[i][j] = classifyService.std(r)
-        }
-      }
-      stream = (phenomj.plotResponse(1,x,rmat,smat,'time',curve_cell,compound)[0] as MWNumericArray).byteData
-    } else {
-      def x = (dr.keySet() as List).toArray() as double[]
-      double[][] rmat = new double[x.size()][curves.size()]
-      double[][] smat = new double[x.size()][curves.size()]
-      for (int i=0; i<x.size(); i++) {
-        for (int j=0; j<curves.size(); j++) {
-          def c = dr[x[i]]
-          def t = curves[j] as Integer
-          def r = c[t].r
-          rmat[i][j] = classifyService.mean(r)
-          smat[i][j] = classifyService.std(r)
-        }
-      }
-      stream = (phenomj.plotResponse(1,x,rmat,smat,'conc',curve_cell,compound)[0] as MWNumericArray).byteData
-    }
-    response.contentLength = stream.length
-    response.contentType = 'image/png'
-    response.outputStream << stream
-    response.outputStream.flush()
-  }
+  /**
+   * RESTful API call formats and retrieves stored results for QDREC internal use (plotting).
+   * The data format, labels, etc. set below are specific to the Dygraphs JavaScript library.
+   * @return
+   */
 
   def csvdata() {
     def compound = params.compound
@@ -278,6 +202,11 @@ class ClassifyController {
     render result as JSON
   }
 
+  /**
+   * Forms a CSV file from the classification results stored in the session,
+   * and dumps the CSV to the output stream for client download.
+   * @return
+   */
   def downloadResults() {
     def testImages = session['result'].testImages as List<Image>
     def trainImages = session['result'].trainImages as List<Image>
@@ -315,6 +244,11 @@ class ClassifyController {
     response.outputStream << csv.toString().bytes
   }
 
+  /**
+   * RESTful API call to retrieve boolean training vector for a given subset.
+   * Result is rendered as JSON (for e.g. AJAX calls).
+   * @return
+   */
   def trainingVec() {
     def training = Subset.get(params.subsetID)
     boolean[] G = classifyService.findTrainingVector(training)
