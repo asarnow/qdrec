@@ -70,9 +70,38 @@ class AdminService {
     def src = new File(datasetDir)
 
     FileUtils.copyDirectory(src,dest)
-    FileUtils.deleteDirectory(src)
+    try {
+      FileUtils.deleteDirectory(src)
+    } catch (IOException e) {
+      log.error(e)
+    }
 
     return dataset.save(flush: true)
+  }
+
+  def validateDataset(String datasetName, String datasetDir, String visible, String seg) {
+    def segmentation = 0
+    if (seg.startsWith('Asa')) segmentation = 1
+    if (seg.startsWith('Can')) segmentation = 2
+
+    def imgDir = new File(datasetDir + File.separator + 'img')
+    def segDir = new File(datasetDir + File.separator + 'bw')
+
+    def imgFiles = imgDir.listFiles(new PngFilter())
+    def segFiles = segDir.listFiles(new PngFilter())
+
+    if (segmentation==0) {
+      if (imgFiles?.length != segFiles?.length) return 'Number of uploaded files must match. Double check uploaded files.'
+    }
+    if (imgFiles?.length < 2) return 'At least two image files must be provided.'
+
+    return null
+  }
+
+  class PngFilter implements FilenameFilter {
+    public boolean accept(File f, String filename) {
+      return filename.endsWith("png")
+    }
   }
 
   /**
@@ -175,6 +204,8 @@ class AdminService {
       image.width = info.cols
       image.height = info.rows
       image.displayScale = image.width*image.height > 768**2 ? 0.5 : 1.0;
+
+      pngReader.close()
 
       dataset.addToImages(image)
       image.save(flush: true)

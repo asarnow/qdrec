@@ -121,6 +121,10 @@ class ClassifyController {
     render(template: 'curves', model: [curves:(curves as List).sort(), xdim:params.xdim])
   }
 
+  def options() {
+    render(template: 'options', model: [xdim:params.xdim])
+  }
+
   /**
    * RESTful API call formats and retrieves stored results for QDREC internal use (plotting).
    * The data format, labels, etc. set below are specific to the Dygraphs JavaScript library.
@@ -253,6 +257,80 @@ class ClassifyController {
     def training = Subset.get(params.subsetID)
     boolean[] G = classifyService.findTrainingVector(training)
     render G as JSON
+  }
+
+  def testClassify() {
+    trainService.saveCurrentImageState(session["parasites"])
+    session['datasetID'] = Dataset.first().id
+    def dataset1 = Dataset.get(session['datasetID'])
+
+    if (!dataset1) {
+      redirect(controller: 'project', action: 'index', params: [message: "Incorrect project or no project selected."])
+      return
+    } else if (dataset1.subsets?.size() < 1) { // true if list is null OR size is 0
+      redirect(controller: 'project', action: 'define', params: [message: "At least one subset must be defined."])
+      return
+    }
+
+    double[][] cm = [ [87.0, 3.0], [0.0, 76.0] ]
+
+    double[][] Rtrain = [[0.04, 27.0],
+                         [0.04, 25.0],
+                         [0.13, 32.0],
+                         [0.7,  30.0],
+                         [1.0,  29.0],
+                         [1.0,  23.0] ]
+
+    double[][] Rtest = [[0.03, 31.0],
+                        [0.06, 31.0],
+                        [0.0,	 23.0],
+                        [0.04, 23.0],
+                        [0.13, 31.0],
+                        [0.2,  31.0],
+                        [0.75, 24.0],
+                        [0.65, 24.0],
+                        [0.97, 30.0],
+                        [0.89, 30.0],
+                        [1.0,	 18.0],
+                        [0.95, 18.0]]
+
+    def testImages = ["072913-control-0-4-b",
+                       "072913-niclosamide-0001-4-b",
+                       "072913-niclosamide-001-4-b",
+                       "072913-niclosamide-01-4-b",
+                       "072913-niclosamide-1-4-b",
+                       "072913-niclosamide-10-4-b",
+                       "072913-control-0-4-a",
+                       "072913-niclosamide-0001-4-a",
+                       "072913-niclosamide-001-4-a",
+                       "072913-niclosamide-01-4-a",
+                       "072913-niclosamide-1-4-a",
+                       "072913-niclosamide-10-4-a"]
+
+    testImages = testImages.sort()
+
+    session['result'] = [:]
+    session['result'].testImages = Image.where({name in testImages && dataset==dataset1}).list()
+//    session['result'].trainImages = Image.where({name in trainImages && dataset==dataset1}).list()
+    session['result'].Rtest = Rtest
+//    session['result'].Rtrain = Rtrain
+//    session['result'].cm = cm
+
+    session['dr'] = classifyService.doseResponse(Image.where({name in testImages && dataset==dataset1}).list(), Rtest)
+    session['tr'] = classifyService.timeResponse(Image.where({name in testImages && dataset==dataset1}).list(), Rtest)
+
+    def compounds = (session['dr'] as Map).keySet() as List
+
+    render(view: 'testClassify',
+                  model: [cm: null,
+                          Rtrain: null,
+                          Rtest: Rtest as double[][],
+                          trainImages: null,
+                          testImages: testImages as List,
+                          dataset: dataset1,
+                          subsets: dataset1.subsets,
+                          compounds:compounds,
+                          error:session['tr']==null||session['dr']==null])
   }
 
 }

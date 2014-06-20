@@ -17,7 +17,11 @@
           title: \$('#compound').val(),
           ylabel: 'Fraction Degenerate',
           xlabel: 'Log Concentration (&micro;M)',
-          connectSeparatedPoints: false
+          connectSeparatedPoints: false,
+          pointSize: 3,
+          errorBarRadius: 8,
+          fillAlpha: 0.85,
+          plotter: [DygraphCanvasRenderer.errorBarPlotter, DygraphCanvasRenderer.pointPlotter]
         });
 
         \$('#dygraphArea2').addClass('dygraphDiv');
@@ -31,7 +35,11 @@
           title: \$('#compound').val(),
           ylabel: 'Fraction Degenerate',
           xlabel: 'Exposure Time',
-          connectSeparatedPoints: false
+          connectSeparatedPoints: false,
+          pointSize: 3,
+          errorBarRadius: 8,
+          fillAlpha: 0.85,
+          plotter: [DygraphCanvasRenderer.errorBarPlotter, DygraphCanvasRenderer.pointPlotter]
         });
         "
                   onComplete="updateCurves()">
@@ -60,12 +68,14 @@
       <div id="legend" class="dygraph-legend"></div>
       <div class="clearDiv"></div>
       <div id="curves1" class="curves"></div>
+      <div id="options1" class="options"></div>
     </div>
     <div class="dygraphOuter">
       <div id="dygraphArea2"></div>
       <div id="legend2" class="dygraph-legend"></div>
       <div class="clearDiv"></div>
       <div id="curves2" class="curves"></div>
+      <div id="options2" class="options"></div>
     </div>
     <div class="clearDiv"></div>
 

@@ -7,5 +7,4 @@
 <a href="${createLink(action: 'downloadResults')}"><button class="button" type="button">Download</button></a>
 <g:render template="result" model="[cm:cm, testImages:testImages, trainImages:trainImages, Rtest:Rtest, Rtrain:Rtrain]"/>
 <div class="clearDiv"></div>
-<g:render template="resultPlot" model="[error:error, compound:compounds]"/>
-
+<g:render template="resultPlot" model="[error:error, compounds:compounds]"/>

@@ -17,9 +17,10 @@
   <meta name="layout" content="main" />
   <r:require modules="jquery-validate"/>
   <g:javascript src="dygraph-combined.js"/>
+  <g:javascript src="dygraph-ext.js"/>
   <g:javascript>
     var g;
-
+    var g2
     function updateSubset(data,elem) {
         if (data) {
           var rselect = $(elem);
@@ -29,6 +30,36 @@
           });
         }
       }
+
+    function updateCurves() {
+        ${remoteFunction(action: 'curves', update: 'curves2',
+                     params: '\'xdim=time\'+\'&compound=\'+$(\'#compound\').val()', method: 'GET')}
+        ${remoteFunction(action: 'curves', update: 'curves1',
+                     params: '\'xdim=conc\'+\'&compound=\'+$(\'#compound\').val()', method: 'GET')}
+        ${remoteFunction(action: 'options', update: 'options2',
+                         params: '\'xdim=time\'', method: 'GET')}
+        ${remoteFunction(action: 'options', update: 'options1',
+                         params: '\'xdim=conc\'', method: 'GET')}
+    }
+
+    function destroyPlots() {
+        if (typeof g !== 'undefined') g.destroy();
+        if (typeof g2 !== 'undefined') g2.destroy();
+    }
+
+    function updatePlotters(g,lines) {
+      if (lines) {
+        g.updateOptions({
+          fillAlpha: 0.15,
+          plotter: [Dygraph.Plotters.fillPlotter, Dygraph.Plotters.errorPlotter, Dygraph.Plotters.linePlotter]
+        });
+      } else {
+        g.updateOptions({
+          fillAlpha: 0.85,
+          plotter: [DygraphCanvasRenderer.errorBarPlotter, DygraphCanvasRenderer.pointPlotter]
+        });
+      }
+    }
 
     $(document).ready(function(){
       $('#trainingDiv').hide();

@@ -19,5 +19,4 @@
   <g:else>
     <g:checkBox name="${xdim + it}" onclick="g.setVisibility(${it},this.checked)" checked="${true}"/>
   </g:else>
-
 </g:each>
