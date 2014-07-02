@@ -17,6 +17,27 @@
   <meta name="layout" content="main"/>
   <r:require modules="jquery-validate"/>
   <g:javascript>
+
+    function showOptions(classifier){
+      if (classifier === "SVM (RBF)") {
+        $('#svmParameterDiv').hide();
+        $('#tbParameterDiv').hide();
+        $('#rbfParameterDiv').show();
+      } else if (classifier === "SVM (Linear)") {
+        $('#svmParameterDiv').show();
+        $('#tbParameterDiv').hide();
+        $('#rbfParameterDiv').hide();
+      } else if (classifier === "Naive Bayes") {
+        $('#svmParameterDiv').hide();
+        $('#tbParameterDiv').hide();
+        $('#rbfParameterDiv').hide();
+      } else if (classifier === "Random Forest") {
+        $('#svmParameterDiv').hide();
+        $('#tbParameterDiv').show();
+        $('#rbfParameterDiv').hide();
+      }
+    }
+
     $(document).ready(function(){
         $('.validatedForm').validate({
             rules: {
@@ -24,30 +45,36 @@
                 number: true,
                 required: true
               },
+              rbfBoxConstraint: {
+                number: true,
+                required: true
+              },
+              rbfKktLevel: {
+                number: true,
+                required: true
+              },
+              rbfTolKkt: {
+                number: true,
+                required: true
+              },
               boxConstraint: {
+                number: true,
+                required: true
+              },
+              kktLevel: {
+                number: true,
+                required: true
+              },
+              tolKkt: {
+                number: true,
+                required: true
+              },
+              nTrees: {
                 number: true,
                 required: true
               }
             }
           });
-
-    $('input[name="classifier"]').change(function(){
-        var classifier = $('input[name="classifier"]:checked').val();
-            if (classifier == 0) {
-              $('input[name="sigma"]').val("6.9414");
-              $('label[for="sigma"]').text("Sigma")
-              $('input[name="boxConstraint"]').val("3.2789");
-              $('#parameterDiv').show();
-            } else if (classifier == 1) {
-              $('input[name="sigma"]').val("0.0498");
-              $('label[for="sigma"]').text("KKT violation level")
-              $('input[name="boxConstraint"]').val("0.0183");
-              $('#parameterDiv').show();
-            } else if (classifier == 2) {
-              $('#parameterDiv').hide();
-            }
-      });
-
     });
   </g:javascript>
 </head>
@@ -82,17 +109,40 @@
       <br />
 
       <label>Select classifier:</label>
-      <g:radioGroup labels="['SVM (RBF)','SVM (Linear)','Naive Bayes']" name="classifier" values="[0,1,2]" value="0">
-        ${it.label} ${it.radio}
-      </g:radioGroup>
+      <g:select name="classifier"
+                from="['SVM (RBF)','SVM (linear)','Naive Bayes','Random Forest']"
+                value="SVM (RBF)"
+                onchange="showOptions(this.value);" />
       <br />
 
-      <div id="parameterDiv">
+      <div id="rbfParameterDiv">
         <label for="sigma">RBF Sigma:</label>
         <g:textField name="sigma" value="6.9414" />
         <br />
+        <label for="rbfKktLevel">KKT violation level:</label>
+        <g:textField name="rbfKktLevel" value="0.05" />
+        <br />
+        <label for="rbfTolKkt">KKT violation tolerance:</label>
+        <g:textField name="rbfTolKkt" value="0.001" />
+        <br />
+        <label for="rbfBoxConstraint">Soft-margin box constraint:</label>
+        <g:textField name="rbfBoxConstraint" value="3.2789"/>
+      </div>
+
+      <div id="svmParameterDiv" hidden="hidden">
+        <label for="kktLevel">KKT violation level:</label>
+        <g:textField name="kktLevel" value="0.0498" />
+        <br />
+        <label for="tolKkt">KKT violation tolerance:</label>
+        <g:textField name="tolKkt" value="0.001" />
+        <br />
         <label for="boxConstraint">Soft-margin box constraint:</label>
-        <g:textField name="boxConstraint" value="3.2789"/>
+        <g:textField name="boxConstraint" value="0.0183"/>
+      </div>
+
+      <div id="tbParameterDiv" hidden="hidden">
+        <label for="nTrees">Number of trees:</label>
+        <g:textField name="nTrees" value="20" />
       </div>
 
       <g:if test="${svmsFileExists}">

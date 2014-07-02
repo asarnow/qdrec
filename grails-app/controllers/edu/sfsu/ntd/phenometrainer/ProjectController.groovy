@@ -247,4 +247,55 @@ class ProjectController {
     render ''
   }
 
+  /**
+   * RESTful API call for re-segmentation of project images.
+   * @return
+   */
+  def resegment() {
+    def dataset = Dataset.get(session['datasetID'])
+        if (!dataset) {
+          if (params.load=='true') {
+            redirect(action: 'index', params: [message: "Incorrect project or no project selected.", load:'true'])
+          } else {
+            redirect(action: 'index', params: [message: "Incorrect project or no project selected."])
+          }
+        } else {
+
+          def seg = params.segmentation
+              def segmentation = 1
+              if (seg.startsWith('Asa')) segmentation = 1
+              if (seg.startsWith('Can')) segmentation = 2
+              if (seg.startsWith('Wat')) segmentation = 3
+
+              def segmentationParams = [
+                      segmentation: segmentation as Integer,
+                      nscale: params.nscale as Integer,
+                      minwl: params.minwl as Integer,
+                      mult: params.mult as Double,
+                      sigma: params.sigma as Double,
+                      noise: params.noise as Double,
+                      sigmaCanny: params.sigmaCanny as Double,
+                      lowCanny: params.lowCanny as Double,
+                      highCanny: params.highCanny as Double,
+                      hmin: params.hmin as Integer,
+                      lighting: params.lighting as Integer,
+                      minSize: params.minSize as Integer,
+                      maxBorder: params.maxBorder as Integer
+              ]
+
+          def verdict = adminService.resegmentProject(dataset,segmentationParams)
+
+          def image = dataset.images.first()
+          session["parasites"] = [:]
+          image.parasites.each {it -> session["parasites"][it.id] = trainService.dom2web(it,image.displayScale)}
+          def parasites = []
+          session["parasites"].each {k,v -> parasites.add(v) }
+
+          render( template: 'reviewUI', model: [dataset: dataset,
+                                          image: image,
+                                          message: verdict,
+                                          parasites: parasites as JSON] )
+        }
+  }
+
 }

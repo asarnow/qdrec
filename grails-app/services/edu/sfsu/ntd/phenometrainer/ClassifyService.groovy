@@ -2,6 +2,8 @@ package edu.sfsu.ntd.phenometrainer
 import com.mathworks.toolbox.javabuilder.MWArray
 import com.mathworks.toolbox.javabuilder.MWCellArray
 import com.mathworks.toolbox.javabuilder.MWCharArray
+import com.mathworks.toolbox.javabuilder.MWException
+import com.mathworks.toolbox.javabuilder.MWJavaObjectRef
 import grails.util.Holders
 import phenomj.PhenomJ
 
@@ -37,19 +39,26 @@ class ClassifyService {
       svmsFile = grailsApplication.config.PhenomeTrainer.svmsFile
     }
 
-    PhenomJ phenomJ = new PhenomJ()
-
-    Object[] R = phenomJ.classifyOnly(1,vids_cell,svmsFile,datasetDir)
-
-    MWArray.disposeArray(vids_cell)
-
     def result = [:]
-    result.Rtest = (double[][])((MWArray)(R[0])).toArray()
-    result.testImages = vids
+    def verdict
+    try {
+      PhenomJ phenomJ = new PhenomJ()
 
-    R.each {MWArray.disposeArray(it)}
+      Object[] R = phenomJ.classifyOnly(1,vids_cell,svmsFile,datasetDir)
 
-    return result
+      MWArray.disposeArray(vids_cell)
+
+      result.Rtest = (double[][])((MWArray)(R[0])).toArray()
+      result.testImages = vids
+
+      R.each {MWArray.disposeArray(it)}
+      verdict = "Classification completed successfully"
+    } catch (MWException e) {
+      log.error(e)
+      verdict = "Error during classification"
+    }
+
+    return [result: result, message: verdict]
   }
 
   /**
@@ -152,12 +161,9 @@ class ClassifyService {
    * @param classifierType
    * @return
    */
-  def trainOnly(datasetID,trainingID,String sigmaS,String boxConstraint, String classifierType) {
+  def trainOnly(datasetID,trainingID, Map parameters) {
     def dataset = Dataset.get(datasetID)
     def training = Subset.get(trainingID)
-    double sigma = Double.valueOf(sigmaS)
-    double C = Double.valueOf(boxConstraint)
-    int classifier = Integer.valueOf(classifierType)
 
     boolean[] G = findTrainingVector(training)
 
@@ -167,19 +173,30 @@ class ClassifyService {
     def datasetDir = grailsApplication.config.PhenomeTrainer.dataDir + File.separator + dataset.token
     String svmsFile = datasetDir + File.separator + 'svms.mat'
 
-    PhenomJ phenomJ = new PhenomJ();
-    Object[] R = phenomJ.trainOnly(2,vids_train_cell,datasetDir,classifier,svmsFile,G,C,sigma)
-
-    MWArray.disposeArray(vids_train_cell)
-
+    def verdict
     def result = [:]
-    result.cm = (double[][])((MWArray)(R[0])).toArray()
-    result.Rtrain = (double[][])((MWArray)(R[1])).toArray()
-    result.trainImages = vids_train
+    try {
+      PhenomJ phenomJ = new PhenomJ();
+      MWJavaObjectRef parametersRef = new MWJavaObjectRef(parameters)
 
-    R.each {MWArray.disposeArray(it)}
+      Object[] R = phenomJ.trainOnly(2,vids_train_cell,datasetDir,svmsFile,G,parametersRef)
 
-    return result
+      MWArray.disposeArray(parametersRef)
+      MWArray.disposeArray(vids_train_cell)
+
+      result.cm = (double[][])((MWArray)(R[0])).toArray()
+          result.Rtrain = (double[][])((MWArray)(R[1])).toArray()
+          result.trainImages = vids_train
+
+      R.each {MWArray.disposeArray(it)}
+
+      verdict = "Training of " + parameters.classifierName + " completed successfully"
+    } catch (MWException e) {
+      log.error(e)
+      verdict = "Error during training"
+    }
+
+    return [result: result, message: verdict]
   }
 
   /**

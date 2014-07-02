@@ -35,6 +35,7 @@
       <li><a href="${createLink(action: 'index')}">Create Project</a></li>
       <li><a href="${createLink(action: 'index', params: [load:true])}">Load Project</a></li>
       <li><a href="${createLink(action: 'review', params: [load:datasetDir==null])}">Review Segmentation</a></li>
+      <li><a href="${createLink(controller: 'project', action: 'define')}">Define Subsets</a></li>
     </ul>
   </div>
   <div class="clearDiv"></div>

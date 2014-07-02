@@ -78,7 +78,7 @@
 <body>
   <div id="subnav" class="nav">
     <ul class="nav">
-
+      <li><a href="${createLink(action: 'index')}">Run Classifier</a></li>
     </ul>
   </div>
   <div class="clearDiv"></div>

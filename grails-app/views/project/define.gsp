@@ -62,7 +62,10 @@
 <body>
   <div id="subnav" class="nav">
     <ul class="nav">
-
+      <li><a href="${createLink(action: 'index')}">Create Project</a></li>
+      <li><a href="${createLink(action: 'index', params: [load:true])}">Load Project</a></li>
+      <li><a href="${createLink(action: 'review', params: [load:true])}">Review Segmentation</a></li>
+      <li><a href="${createLink(controller: 'project', action: 'define')}">Define Subsets</a></li>
     </ul>
   </div>
   <div class="clearDiv"></div>

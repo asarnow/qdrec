@@ -1,12 +1,18 @@
 package edu.sfsu.ntd.phenometrainer
 import ar.com.hjg.pngj.PngReader
 import au.com.bytecode.opencsv.CSVReader
+import com.mathworks.toolbox.javabuilder.MWArray
 import com.mathworks.toolbox.javabuilder.MWException
+import com.mathworks.toolbox.javabuilder.MWJavaObjectRef
 import grails.util.Holders
 import groovy.sql.Sql
 import org.apache.commons.io.FileUtils
 import org.apache.commons.lang.RandomStringUtils
+import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
 import phenomj.PhenomJ
+
+import java.nio.file.Files
+import java.nio.file.Path
 
 /**
  * Service class which provides administrative functions such as creating projects and subsets,
@@ -76,7 +82,7 @@ class AdminService {
       log.error(e)
     }
 
-    return dataset.save(flush: true)
+    return dataset.save(flush: true )
   }
 
   def validateDataset(String datasetName, String datasetDir, String visible, String seg) {
@@ -98,9 +104,101 @@ class AdminService {
     return null
   }
 
+  /**
+   * FilenameFilter inner class, filters for PNG images.
+   */
   class PngFilter implements FilenameFilter {
     public boolean accept(File f, String filename) {
       return filename.endsWith("png")
+    }
+  }
+
+  /**
+   * Performs database manipulation and calls PhenomJ MATLAB Builder library in order to resegment project images.
+   * @param dataset
+   * @param grailsParameterMap
+   */
+  def resegmentProject(Dataset dataset, Map segmentationParams) {
+    def verdict = null
+    def datasetDirPath = grailsApplication.config.PhenomeTrainer.dataDir + File.separator + dataset.token
+    def datasetDir = new File(datasetDirPath)
+
+    def tempDirPath
+    def tempDir
+    try {
+      tempDir = Files.createTempDirectory('qdrec').toFile()
+      tempDirPath = tempDir.path
+      Files.createDirectory(new File(tempDirPath + File.separator + 'bw').toPath())
+    } catch (IOException e) {
+      log.error(e)
+      return "Can't create temporary directory"
+    }
+
+
+    try {
+      PhenomJ phenomJ = new PhenomJ()
+      MWJavaObjectRef segmentationParamsRef = new MWJavaObjectRef(segmentationParams)
+      phenomJ.resegmentDataset(datasetDirPath,tempDirPath,segmentationParamsRef)
+      MWArray.disposeArray(segmentationParamsRef)
+        // Simulate resegmentation by copying old info over.
+//        FileUtils.copyDirectory(datasetDir,tempDir)
+      } catch (MWException e) {
+        log.error(e)
+        return "One or more images could not be segmented" // segmentation failure, exit here
+      }
+
+    // Resegmentation successful: clear DB, copy segmented images, reinit DB
+    clearParasites(dataset)
+
+    // Clear bw dir and copy segmented images
+    try {
+      def bw = new File(datasetDirPath + File.separator + 'bw')
+      FileUtils.deleteDirectory(bw) // make sure old segmentated images aren't left around
+      FileUtils.copyDirectory(tempDir,datasetDir) // will merge (copying imagedb.csv and bw subdir)
+      } catch (IOException e) {
+        log.error(e)
+        return "Can't copy new data to project directory"
+      }
+
+    // Delete tempDir if possible.
+    try {
+      FileUtils.deleteDirectory(tempDir)
+    } catch (IOException e) {
+      log.warn(e)
+    }
+
+    // Re-init DB
+    dataset = initImage(datasetDirPath,dataset)
+    initParasite(dataset)
+
+    return verdict
+  }
+
+  /**
+   * Clears all parasites and training data for dataset.
+   */
+  def clearParasites(Dataset dataset) {
+    def images = dataset.images
+    images.each { im ->
+      /*def parasites = im.parasites.toList()
+      parasites.each { p ->
+        *//*def trainStates = p.trainStates
+        trainStates.each { ts ->
+          ts.delete(flush: true)
+        }*//*
+        im.removeFromParasites(p)
+        p.delete(flush: true) // cascade to trainStates
+      }*/
+
+      im.parasites.clear()
+
+      im.segmented = false
+
+      def subsetImages = SubsetImage.findAllByImage(im)
+      subsetImages.each {si ->
+        def subsetPosition = SubsetPosition.findBySubset(si.subset)
+        subsetPosition?.delete(flush: true)
+      }
     }
   }
 
@@ -164,6 +262,7 @@ class AdminService {
    * This requires parsing the file names according to QDREC's file name convention,
    * reading the images to determine their sizes and appropriate display scales,
    * and parsing the parasite definitions.
+   * If an image already exists, only the parasites are initialized.
    * @param datadir
    * @param dataset
    * @return
@@ -175,47 +274,55 @@ class AdminService {
     for (int i=0; i<lines.size(); i++) {
       String[] line = lines[i]
 
-      Image image = new Image()
-      image.dataset = dataset
+      def imageName = line[0]
+      Image image = Image.findByName(imageName)
 
-      image.conc = Double.valueOf(line[2])
-      image.day = Integer.valueOf(line[3])
-      image.series = line[4].charAt(0)
-      image.date = Date.parse("MMddyy",line[5])
+      if (image==null) { // new image
 
-      image.name = line[0]
+        image = new Image()
+        image.dataset = dataset
 
-      def compound = null
-      if (!(line[1].equals("control") || image.conc==0D)) {
-        compound = Compound.findByAliasLike("%"+line[1]+"%")
-        if (compound==null) {
-          compound = new Compound()
-          compound.name = line[1]
-          compound.alias = line[1]
-          compound = compound.save(flush: true)
+        image.conc = Double.valueOf(line[2])
+        image.day = Integer.valueOf(line[3])
+        image.series = line[4].charAt(0)
+        image.date = Date.parse("MMddyy",line[5])
+
+        image.name = line[0]
+
+        def compound = null
+        if (!(line[1].equals("control") || image.conc==0D)) {
+          compound = Compound.findByAliasLike("%"+line[1]+"%")
+          if (compound==null) {
+            compound = new Compound()
+            compound.name = line[1]
+            compound.alias = line[1]
+            compound = compound.save(flush: true)
+          }
         }
+        image.compound = compound
+  //      BufferedImage bi = ImageIO.read(new File(datadir + File.separator + line[0] + ".png"))
+  //      image.width = bi.getWidth()
+  //      image.height = bi.getHeight()
+        def pngReader = new PngReader( new File(datadir + File.separator + 'img' + File.separator + line[0] + ".png") )
+        def info = pngReader.getChunkseq().getImageInfo()
+        image.width = info.cols
+        image.height = info.rows
+        image.displayScale = image.width*image.height > 768**2 ? 0.5 : 1.0;
+
+        pngReader.close()
+
+        dataset.addToImages(image)
+        image.save(flush: true)
+        log.info "Inserted " + datadir + File.separator + 'img' + File.separator + line[0] + ".png"
       }
-      image.compound = compound
-//      BufferedImage bi = ImageIO.read(new File(datadir + File.separator + line[0] + ".png"))
-//      image.width = bi.getWidth()
-//      image.height = bi.getHeight()
-      def pngReader = new PngReader( new File(datadir + File.separator + 'img' + File.separator + line[0] + ".png") )
-      def info = pngReader.getChunkseq().getImageInfo()
-      image.width = info.cols
-      image.height = info.rows
-      image.displayScale = image.width*image.height > 768**2 ? 0.5 : 1.0;
+/*      image.addToImageData( new ImageData(new BufferedInputStream(new FileInputStream(datadir + File.separator + line[0] + ".png")).getBytes()) )
+      ImageData imageData = new ImageData()
+      imageData.stream = new BufferedInputStream(new FileInputStream(datadir + File.separator + line[0] + ".png")).getBytes()
+      imageData.image = image
+//      image.addToImageData(imageData)
+      imageData.save(flush: true)*/
 
-      pngReader.close()
-
-      dataset.addToImages(image)
-      image.save(flush: true)
-
-//      image.addToImageData( new ImageData(new BufferedInputStream(new FileInputStream(datadir + File.separator + line[0] + ".png")).getBytes()) )
-//      ImageData imageData = new ImageData()
-//      imageData.stream = new BufferedInputStream(new FileInputStream(datadir + File.separator + line[0] + ".png")).getBytes()
-//      imageData.image = image
-////      image.addToImageData(imageData)
-//      imageData.save(flush: true)
+      // Init parasites for new and extant images.
 
       String[] P = line[6].split(';')
 //      Set<Parasite> parasites = new HashSet<Parasite>()
@@ -241,6 +348,8 @@ class AdminService {
         parasite.save(flush: true)
       }
 //      image.parasites = parasites
+      image.segmented = true
+
       image.save(flush: true)
 //      dataset.addToImages(image)
       // Memory leak workaround
@@ -253,7 +362,7 @@ class AdminService {
         DomainClassGrailsPlugin.PROPERTY_INSTANCE_MAP.get().clear()
         dataset = Dataset.get(datasetID)
       }*/
-      log.info "Inserted " + datadir + File.separator + 'img' + File.separator + line[0] + ".png"
+      log.info "Inserted parasites for " + datadir + File.separator + 'img' + File.separator + line[0] + ".png"
     }
     reader.close()
 

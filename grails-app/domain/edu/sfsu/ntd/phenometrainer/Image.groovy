@@ -22,6 +22,7 @@ class Image {
   char series
   Image control
   Integer position
+  boolean segmented = false
 
   static constraints = {
     control nullable: true
@@ -34,6 +35,7 @@ class Image {
 
   static mapping = {
     position updateable: false, insertable: false
+    parasites cascade: "all-delete-orphan"
   }
 
 }

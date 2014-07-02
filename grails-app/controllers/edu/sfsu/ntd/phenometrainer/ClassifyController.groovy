@@ -51,13 +51,13 @@ class ClassifyController {
    */
   def classify(){
       def subset = Subset.get(params.testingID)
-      def result = classifyService.classifyOnly(params.datasetID,params.testingID,params.useSVM)
-      session['result'] = result
-      session['dr'] = classifyService.doseResponse(SubsetImage.findAllBySubset(subset).image, result.Rtest)
-      session['tr'] = classifyService.timeResponse(SubsetImage.findAllBySubset(subset).image, result.Rtest)
+      def r = classifyService.classifyOnly(params.datasetID,params.testingID,params.useSVM)
+      session['result'] = r.result
+      session['dr'] = classifyService.doseResponse(SubsetImage.findAllBySubset(subset).image, r.result.Rtest)
+      session['tr'] = classifyService.timeResponse(SubsetImage.findAllBySubset(subset).image, r.result.Rtest)
       def compounds = (session['dr'] as Map).keySet() as List
-      render(template: 'combinedResult', model: [Rtest: result.Rtest as double[][],
-                                                 testImages: (result.testImages as List<Image>)?.name,
+      render(template: 'combinedResult', model: [Rtest: r.result.Rtest as double[][],
+                                                 testImages: (r.result.testImages as List<Image>)?.name,
                                                  compounds: compounds,
                                                  error:session['tr']==null||session['dr']==null])
   }
@@ -87,16 +87,33 @@ class ClassifyController {
     def message
     if (!trainService.doneTraining(subset)) {
       message = 'Subset is not completely annotated.'
-    } else if (params.classifier == '2' && classifyService.distinctControls(subset).size() < 2) {
+    } else if (params.classifier == 'Naive Bayes' && classifyService.distinctControls(subset).size() < 2) {
       message = 'Naive Bayes classifier requires training set using at least 2 controls.'
     } else {
-      try {
-        result = classifyService.trainOnly(params.datasetID,params.trainingID,params.sigma,params.boxConstraint,params.classifier)
-        message = 'Training completed successfully.'
-      } catch (MWException e) {
-        log.error(e)
-        message = 'Error during training.'
-      }
+
+        def clas = params.classifier
+        def classifier = 0
+          if (clas == 'SVM (RBF)') classifier = 0
+          if (clas == 'SVM (linear)') classifier = 1
+          if (clas == 'Naive Bayes')  classifier = 2
+          if (clas == 'Random Forest') classifier = 3
+
+        def parameters = [
+                classifierName: clas as String,
+                classifier: classifier as int,
+                sigma: params.sigma as double,
+                rbfKktLevel: params.rbfKktLevel as double,
+                rbfTolKkt: params.rbfTolKkt as double,
+                rbfBoxConstraint: params.rbfBoxConstraint as double,
+                kktLevel: params.kktLevel as double,
+                tolKKt: params.tolKkt as double,
+                boxConstraint: params.boxConstraint as double,
+                nTrees: params.nTrees as int
+        ]
+
+        def r = classifyService.trainOnly(params.datasetID,params.trainingID,parameters)
+        result = r.result
+        message = r.message
     }
     render(template: 'result',
            model: [cm: result?.cm as double[][],

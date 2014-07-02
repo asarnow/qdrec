@@ -77,6 +77,7 @@
                 %{--onSuccess="${remoteFunction(action: "imageParasites", params: [imageID: image.id], onSuccess: "setParasites(data);")}">--}%
     <button class="button" type="button">Next</button>
   </g:remoteLink>
+  <button id="resegmentationButton" type="button" class="button" onclick="beginResegmentation();">Resegment Project</button>
   <script>
     parasites = ${parasites};
     imageID = ${image.id};
