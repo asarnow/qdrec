@@ -1,0 +1,27 @@
+When using the Matlab Compiler Runtime (MCR) with QDREC training a
+Random Forest classifier may fail. QDREC will report "An error occurred
+during training" and remain on the Train Classifier screen.
+
+Inspection of the QDREC log file (location given in Config.groovy) will
+reveal an error similar to the following:
+
+ERROR phenometrainer.ClassifyService  - com.mathworks.toolbox.javabuilder.MWException: Invalid MEX-file '/home/dev/mcr-cache/.mcrCache7.16/phenom0/toolbox/stats/stats/@classregtree/private/classregtreeRCcritval.mexa64': libmwstats_res.so: cannot open shared object file: No such file or directory
+
+The error is caused by a bug in the MCR cache functionality, which
+results in the libmwstats_res.so shared library not being copied into
+the MCR cache. To fix the error, manually copy this file from the MCR
+installation directory to the MCR cache.
+
+For example:
+
+cp <MCR INSTALLATION ROOT>/v716/bin/glnxa64/libmwstats_res.so \
+   <MCR CACHE ROOT>/.mcrCache7.16/phenom0/toolbox/stats/stats/@classregtree/private/
+
+It may also be necessary to copy the file to the glnxa64/bin directory 
+of the MCR cache:
+
+cp <MCR INSTALLATION ROOT>/v716/bin/glnxa64/libmwstats_res.so \
+   <MCR CACHE ROOT>/.mcrCache7.16/phenom0/bin/glnxa64/
+
+Both the MCR installation root and MCR cache root directories are
+specified during installation of the MCR.
