@@ -101,6 +101,7 @@ class ClassifyController {
         def parameters = [
                 classifierName: clas as String,
                 classifier: classifier as int,
+                twoStage: params.twoStage as boolean,
                 sigma: params.sigma as double,
                 rbfKktLevel: params.rbfKktLevel as double,
                 rbfTolKkt: params.rbfTolKkt as double,

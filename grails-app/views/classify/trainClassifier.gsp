@@ -23,7 +23,7 @@
         $('#svmParameterDiv').hide();
         $('#tbParameterDiv').hide();
         $('#rbfParameterDiv').show();
-      } else if (classifier === "SVM (Linear)") {
+      } else if (classifier === "SVM (linear)") {
         $('#svmParameterDiv').show();
         $('#tbParameterDiv').hide();
         $('#rbfParameterDiv').hide();
@@ -108,11 +108,13 @@
       <g:select name="trainingID" from="${subsets}" optionKey="id" optionValue="description"/>
       <br />
 
-      <label>Select classifier:</label>
+      <label for="classifier">Select classifier:</label>
       <g:select name="classifier"
                 from="['SVM (RBF)','SVM (linear)','Naive Bayes','Random Forest']"
                 value="SVM (RBF)"
                 onchange="showOptions(this.value);" />
+      <label for="twoStage">Two-stage classifier</label>
+      <g:checkBox name="twoStage" value="${false}"/>
       <br />
 
       <div id="rbfParameterDiv">
