@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2014 Daniel Asarnow
+ * San Francisco State University
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package edu.sfsu.ntd.phenometrainer
 import ar.com.hjg.pngj.PngReader
 import au.com.bytecode.opencsv.CSVReader
@@ -177,41 +195,41 @@ class BootStrapService {
   }
 
   def initCompound() {
-    new Compound(name:"chlorophenothiazine", alias: "2cpt").save(flush: true)                                            
-    new Compound(name:"acepromazine", alias: "ace#acetopromazine#aceto").save(flush: true)                        
-    new Compound(name:"atorvastatin", alias: "ato#ator#atoravastin").save(flush: true)                            
-    new Compound(name:"chlorpromazine", alias: "chl#chloropromazine#chlorprimazine#chloro#chlor").save(flush: true) 
+    new Compound(name:"chlorophenothiazine", alias: "2cpt").save(flush: true)
+    new Compound(name:"acepromazine", alias: "ace#acetopromazine#aceto").save(flush: true)
+    new Compound(name:"atorvastatin", alias: "ato#ator#atoravastin").save(flush: true)
+    new Compound(name:"chlorpromazine", alias: "chl#chloropromazine#chlorprimazine#chloro#chlor").save(flush: true)
     new Compound(name:"clozapine", alias: "cloz#clos#closapine").save(flush: true)
-    new Compound(name:"fluvastatin", alias: "flu#fluv#fluva").save(flush: true)                                  
+    new Compound(name:"fluvastatin", alias: "flu#fluv#fluva").save(flush: true)
     new Compound(name:"K11777", alias: "k77#k777").save(flush: true)
-    new Compound(name:"lovastatin", alias: "lov#lova").save(flush: true)                                        
-    new Compound(name:"mevastatin", alias: "mev#meva").save(flush: true)                                        
-    new Compound(name:"pravastatin", alias: "pra#prav#prava").save(flush: true)                                  
-    new Compound(name:"promethazine", alias: "pro#prom").save(flush: true)                                        
-    new Compound(name:"praziquantel", alias: "pzq#praz").save(flush: true)                                        
-    new Compound(name:"quinacrine", alias: "qui#quin").save(flush: true)                                        
-    new Compound(name:"simvastatin", alias: "sim#simv#simva").save(flush: true)                                  
-    new Compound(name:"imipramine", alias: "imi#imip#c8").save(flush: true)                                     
+    new Compound(name:"lovastatin", alias: "lov#lova").save(flush: true)
+    new Compound(name:"mevastatin", alias: "mev#meva").save(flush: true)
+    new Compound(name:"pravastatin", alias: "pra#prav#prava").save(flush: true)
+    new Compound(name:"promethazine", alias: "pro#prom").save(flush: true)
+    new Compound(name:"praziquantel", alias: "pzq#praz").save(flush: true)
+    new Compound(name:"quinacrine", alias: "qui#quin").save(flush: true)
+    new Compound(name:"simvastatin", alias: "sim#simv#simva").save(flush: true)
+    new Compound(name:"imipramine", alias: "imi#imip#c8").save(flush: true)
     new Compound(name:"desipramine", alias: "a10").save(flush: true)
     new Compound(name:"clomipramine", alias: "a11").save(flush: true)
     new Compound(name:"trimipramine", alias: "e2").save(flush: true)
     new Compound(name:"doxepin", alias: "b5").save(flush: true)
-    new Compound(name:"nortriptyline", alias: "b11").save(flush: true)                                             
+    new Compound(name:"nortriptyline", alias: "b11").save(flush: true)
     new Compound(name:"hycanthone", alias: "d8").save(flush: true)
-    new Compound(name:"chlorprothixene", alias: "e3").save(flush: true)                                              
+    new Compound(name:"chlorprothixene", alias: "e3").save(flush: true)
     new Compound(name:"amitriptyline", alias: "a2").save(flush: true)
-    new Compound(name:"cyclobenzaprine", alias: "d7").save(flush: true)                                              
-    new Compound(name:"metrifonate", alias: "metrif").save(flush: true)                                          
-    new Compound(name:"alimemazine", alias: "trimeprazine#c4").save(flush: true)                                 
-    new Compound(name:"rosuvastatin", alias: "rosu#rosuv#rosuva").save(flush: true)                               
+    new Compound(name:"cyclobenzaprine", alias: "d7").save(flush: true)
+    new Compound(name:"metrifonate", alias: "metrif").save(flush: true)
+    new Compound(name:"alimemazine", alias: "trimeprazine#c4").save(flush: true)
+    new Compound(name:"rosuvastatin", alias: "rosu#rosuv#rosuva").save(flush: true)
     new Compound(name:"bs-181", alias: "").save(flush: true)
-    new Compound(name:"metitepine", alias: "methiopin#e4").save(flush: true)                                    
+    new Compound(name:"metitepine", alias: "methiopin#e4").save(flush: true)
     new Compound(name:"promazine", alias: "a5").save(flush: true)
     new Compound(name:"triflupromazine", alias: "b8").save(flush: true)
     new Compound(name:"ibandronate", alias: "iban").save(flush: true)
     new Compound(name:"niclosamide", alias: "nic").save(flush: true)
     new Compound(name:"sorafenib", alias: "sor").save(flush: true)
-    
+
   }
 
   def initImagePos() {
