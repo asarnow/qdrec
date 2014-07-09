@@ -1,0 +1,175 @@
+=================== QDREC Installation Instructions ====================
+
+====== Table of Contents ======
+0. Introduction
+1. Install Java
+2. Install Groovy
+3. Install Grails
+4. Install MySQL
+5. Install MATLAB Compiler Runtime
+6. Install Apache Tomcat (optional)
+7. Build PhenomJ MATLAB/Java library (optional)
+
+========================================================================
+
+====== 0. Introduction ======
+
+This document will explain step-by-step how to install QDREC and its dependencies.
+
+QDREC fully supports the following platforms:
+
+glnxa64 -   GNU/Linux on x86_64 (64-bit)
+win64   -   Microsoft Windows (64-bit)
+
+QDREC also probably supports these additional platforms:
+
+maci64  -   Apple Macintosh OS X on Intel (64-bit)
+glnx86  -   GNU/Linux on x86 (32-bit)
+win32   -   Microsoft Windows (32-bit)
+
+However, running QDREC on Mac, Win32 or GLNX86 will require a full MATLAB
+installation (as opposed to the free MATLAB Compiler Runtime) in order to
+build the correct platform-dependent PhenomJ MATLAB/Java JAR file.
+
+Once installation is complete please double check that the required
+environment variables have been correctly defined.
+
+JAVA_HOME       Must contain path to JDK home directory
+GROOVY_HOME     Must contain path to Groovy home directory
+GRAILS_HOME     Must contain path to Grails home directory
+MYSQL_HOME      Must contain path to MySQL home directory
+
+PATH        <JAVA_HOME>/bin, <GROOVY_HOME>/bin, <GRAILS_HOME>/bin and
+            <MYSQL_HOME>/bin must all be on the system PATH
+
+Now proceed to the CONFIGURE file in order to configure and run QDREC.
+
+
+====== 1. Install Java ======
+
+QDREC requires the Oracle Java 7 JDK to be installed.
+The most recent version of Java 7 can be found at:
+http://www.oracle.com/technetwork/java/javase/downloads/index.html
+
+One the JDK has been installed/unpacked:
+    Define the environment variable JAVA_HOME.
+    JAVA_HOME must contain the installation root of the JDK, for example:
+    C:\Program Files\Java\jdk1.7.0_45
+    
+    Add $JAVA_HOME/bin (%JAVA_HOME%\bin on Windows) to the PATH.
+
+    
+====== 2. Install Groovy ======
+
+QDREC requires Groovy 2.3 to be installed.
+The most recent version of Groovy 2.3 can be found at:
+http://groovy.codehaus.org/Download
+
+Once Groovy has been installed/unpacked:
+    Define the environment variable GROOVY_HOME.
+    GROOVY_HOME must contain the installation root of Groovy, for example:
+    C:\Program Files\Groovy\groovy-2.3.0
+    
+    Add $GROOVY_HOME/bin (%GROOVY_HOME%\bin on Windows) to the PATH.
+
+    
+====== 3. Install Grails ======
+
+QDREC requires Grails to be installed. QDREC was developed using Grails 2.2,
+but will probably work with later versions.
+
+Grails can be found at:
+https://grails.org/download
+
+In order to download Grails 2.2, select "2.2" from the drop-down menu under
+the "Download previous release" header.
+
+Once Grails has been installed/unpacked:
+    Define the environment variable GRAILS_HOME.
+    GRAILS_HOME must contain the installation root of Grails, for example:
+    C:\Program Files\Grails\grails-2.2.2
+    
+    Add $GRAILS_HOME/bin (%GRAILS_HOME%\bin on Windows) to the PATH.
+
+
+====== 4. Install MySQL ======
+
+QDREC requires MySQL to be installed. QDREC was developed using MySQL 5.6,
+but will probably work with later versions.
+
+MySQL can be found at:
+https://dev.mysql.com/downloads/mysql/
+
+Once MySQL has been installed/unpacked:
+    Define the environment variable MYSQL_HOME.
+    MYSQL_HOME must contain the installation root of MySQL, for example:
+    C:\Program Files\MySQL\mysql-5.6.19-winx64
+    
+    Add $MYSQL_HOME/bin (%MYSQL_HOME%\bin on Windows) to the PATH.
+    
+See the QDREC documentation file CONFIGURE for information on configuring
+and running MySQL for use with QDREC.
+
+
+====== 5. Install MATLAB Compiler Runtime (MCR)
+
+QDREC requires the MATLAB Compiler Runtime (MCR) to be installed.
+The MCR is a freely distributable runtime which provides the MATLAB
+functionality used in the PhenomJ Java library, containing the algorithmic
+core of the QDREC software.
+
+The WIN64 and GLNXA64 and MCR installation files can be found at:
+http://tintin.sfsu.edu/software/MCR/MCRInstaller-v716-win64.exe
+http://tintin.sfsu.edu/software/MCR/MCRInstaller-v716-glnxa64.zip
+
+To install under Windows, run the installer EXE and follow the directions.
+
+Under Linux, unpack the ZIP archive and then run the install script and
+follow the directions given.
+
+The PhenomJ JAR files distributed with QDREC require MCR version v716,
+which was originally distributed with MATLAB R2011b.
+
+
+====== 7. Build PhenomJ MATLAB/Java library (optional) ======
+
+In order to run QDREC Mac OS, 32-bit Windows or 32-bit Linux systems,
+it will be necessary to build platform-dependent versions of then
+PhenomJ MATLAB/Java JAR file.
+
+In order to build this file, first run MATLAB.
+Once the MATLAB command window is open, drag the file 'phenomj.prj'
+(found in the QDREC project files under the PhenomJ directory)
+on to the MATLAB command window. The deployment tool GUI utility will
+open automatically. Click the "build" icon and wait for the build process
+to complete. When finished, the PhenomJ/phenomj/distrib directory will
+contain a new JAR file, phenomj.jar, with the PhenomJ library for your
+platform. When using this library, be sure to also find the correct javabuilder.jar
+and MCRInstaller versions.
+
+MATLAB/Java JARs, the javabuilder.jar file and the MCR must all be from the same
+OS platform / architecture and MATLAB version.
+
+IN CASE THE PHENOMJ.prj FILE DOES NOT WORK:
+
+Create a new project using the MATLAB deploytool command.
+The command will open the deploytool GUI.
+Choose to create a Java package in the PhenomJ directory
+in the QDREC project files.
+
+Then, configure the MATLAB path. Click "Add with subfolders"
+and select the PhenomJ/MATLAB directory in the QDREC files.
+Save the path.
+
+Next, create a new class in the deploytool project.
+Name the class 'PhenomJ' (case sensitive).
+Then click 'add files' and add the following five files
+from the PhenomJ/MATLAB directory:
+
+    classifierType.m
+    classifyOnly.m
+    imageDatabase.m
+    resegmentDatabase.m
+    trainOnly.m
+
+Now, click the "build" icon and follow the instructions given above.

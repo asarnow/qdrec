@@ -1,3 +1,16 @@
+This document contains notes on using the MATLAB Compiler Runtime (MCR) with QDREC.
+
+Errors encountered in using QDREC which appear related to the MCR may be fixed using
+the advice the following notes.
+
+Errors pertaining to the MCR should be clearly noticeable as such in the QDREC log file,
+configured in the Config.groovy file in the QDREC project.
+
+* NOTE: <matlabroot> is the directory where MATLAB is installed on the target machine.
+        <mcr_root> is the directory where MCR is installed on the target machine.
+
+============ NOTE 1 ============
+
 When using the Matlab Compiler Runtime (MCR) with QDREC training a
 Random Forest classifier may fail. QDREC will report "An error occurred
 during training" and remain on the Train Classifier screen.
@@ -25,3 +38,71 @@ cp <MCR INSTALLATION ROOT>/v716/bin/glnxa64/libmwstats_res.so \
 
 Both the MCR installation root and MCR cache root directories are
 specified during installation of the MCR.
+
+If using an architecture other than glnxa64, such as win64, be sure to
+make the appropriate changes to the filesystem paths used above.
+
+============ NOTE 2 ============
+
+Adding MCR files to the library path under Linux and Mac.
+Normally this step is taken care of during the MCR installation and
+will not be necessary.
+
+A. Linux systems:
+   On the target machine, add the MCR directory to the environment variable 
+   LD_LIBRARY_PATH by issuing the following commands:
+
+        NOTE: <mcr_root> is the directory where MCR is installed
+              on the target machine.         
+
+            setenv LD_LIBRARY_PATH
+                $LD_LIBRARY_PATH:
+                <mcr_root>/v716/runtime/glnx86:
+                <mcr_root>/v716/bin/glnx86:
+                <mcr_root>/v716/sys/os/glnx86:
+                <mcr_root>/v716/sys/java/jre/glnx86/jre/lib/i386/native_threads:
+                <mcr_root>/v716/sys/java/jre/glnx86/jre/lib/i386/server:
+                <mcr_root>/v716/sys/java/jre/glnx86/jre/lib/i386
+            setenv XAPPLRESDIR <mcr_root>/v716/X11/app-defaults
+   
+B. Linux x86-64 systems:   
+   On the target machine, add the MCR directory to the environment variable 
+   LD_LIBRARY_PATH by issuing the following commands:
+
+        NOTE: <mcr_root> is the directory where MCR is installed
+              on the target machine.         
+
+            setenv LD_LIBRARY_PATH
+                $LD_LIBRARY_PATH:
+                <mcr_root>/v716/runtime/glnxa64:
+                <mcr_root>/v716/bin/glnxa64:
+                <mcr_root>/v716/sys/os/glnxa64:
+                <mcr_root>/v716/sys/java/jre/glnxa64/jre/lib/amd64/native_threads:
+                <mcr_root>/v716/sys/java/jre/glnxa64/jre/lib/amd64/server:
+                <mcr_root>/v716/sys/java/jre/glnxa64/jre/lib/amd64 
+            setenv XAPPLRESDIR <mcr_root>/v716/X11/app-defaults
+ 
+C. Mac systems: 
+   On the target machine, add the MCR directory to the environment variable 
+   DYLD_LIBRARY_PATH by issuing the following commands:
+
+        NOTE: <mcr_root> is the directory where MCR is installed
+              on the target machine.         
+
+            setenv DYLD_LIBRARY_PATH
+                $DYLD_LIBRARY_PATH:
+                <mcr_root>/v716/runtime/maci64:
+                <mcr_root>/v716/sys/os/maci64:
+                <mcr_root>/v716/bin/maci64:
+                /System/Library/Frameworks/JavaVM.framework/JavaVM:
+                /System/Library/Frameworks/JavaVM.framework/Libraries
+            setenv XAPPLRESDIR <mcr_root>/v716/X11/app-defaults
+
+        NOTE: To make these changes persistent after logout on Linux or 
+              Mac machines, modify the .cshrc file to include this  
+              setenv command.
+        NOTE: On Windows, the environment variable syntax utilizes 
+              backslashes (\), delimited by semi-colons (;). 
+              On Linux or Mac, the environment variable syntax utilizes   
+              forward slashes (/), delimited by colons (:).  
+        NOTE: On Maci64, ensure you are using 64-bit JVM.

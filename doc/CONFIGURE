@@ -1,0 +1,98 @@
+=================== QDREC Configuration Instructions ====================
+
+====== Table of Contents ======
+0. Introduction
+1. Configure and Run MySQL
+2. Configure QDREC
+3. Run QDREC
+
+========================================================================
+
+====== 0. Introduction ======
+
+This document will explain step-by-step how to configure and run QDREC.
+
+
+====== 1. Configure and Run MySQL ======
+
+First make any desired changes the MySQL's my.cnf configuration file.
+Instructions for configuring the my.cnf can be found in the MySQL 
+documentation files.
+
+Next, run the MySQL server. This will need to be repeated every time
+QDREC is to be run.
+
+If the official MySQL installer or operating system package was used
+(instead of the tarball or zip archive), then this step is not needed
+as MySQL will already be running in the background.
+                
+Simply open a command window or terminal and use the command:
+$ mysqld --console
+
+This will run the server and output messages to the console window.
+
+The FIRST TIME ONLY running QDREC, after the MySQL server is running,
+open a second command window or terminal.
+
+Log into the MySQL command line client as the root user:
+$ mysql -u root
+
+You will then see the MySQL command prompt.
+
+Create the QDREC database:
+
+> create database phenome_trainer2;
+
+Once the query completes, exit the mysql client and close the command window.
+
+
+====== 2. Configure QDREC ======
+
+Before running QDREC a few configuration steps must be dealt with.
+
+First, copy the correct platform versions of javabuilder.jar and phenomj.jar
+into the QDREC lib directory. The javabuilder and PhenomJ jars are found under
+the PhenomJ directory in the QDREC project files.
+
+Next, edit the Config.groovy file, under the grails-app/conf directory in the
+QDREC project files. Make the following changes:
+
+On line 71, change the dataDir path to point to location of the QDREC
+project on your system. For example, change
+    dataDir = "C:/Users/da/Documents/IDEAProjects/qdrec/app-data"
+to
+    dataDir = "C:/Users/MyUser/qdrec/app-data"
+
+
+On line 72, change the svmsFile path to point to location of the QDREC
+project on your system. For example, change
+    svmsFile = "C:/Users/da/Documents/IDEAProjects/qdrec/app-data/svms.mat"
+to
+    svmsFile = "C:/Users/MyUser/qdrec/app-data/svms.mat"
+
+On line 82, change the path of the QDREC log file to the location of the
+QDREC project on your system. For example, change
+    rollingFile name: 'file', file:'C:/Users/da/Documents/IDEAProjects/qdrec/qdrec.log'
+to
+    rollingFile name: 'file', file:'C:/Users/MyUser/qdrec/qdrec.log'
+
+
+====== 3. Run QDREC ======
+
+QDREC is now ready to run.
+
+Open a new command window or terminal, and navigate to the QDREC
+project directory.
+
+Next, use the command:
+$ grails run-app
+
+When QDREC has started, a message will appear to browse to
+
+http://localhost/8080/qdrec/
+
+in your web browser.
+
+If there is an error in starting QDREC, try using the commands:
+$ grails clean
+$ grails run-app
