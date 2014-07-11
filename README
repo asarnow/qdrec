@@ -1,0 +1,72 @@
+Thank you for downloading Quantal Dose Response Calculator (QDREC)!
+
+====== Copyright and License ===
+
+Copyright (C) 2014 Daniel Asarnow
+Rahul Singh
+San Francisco State University
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+PLEASE NOTE:
+
+Libraries and data files distributed with QDREC are the properties of their
+respective copyright holders and may be distributed under open-source licenses
+other than AGPLv3.
+
+====== README ======
+
+QDREC (pronounced as 'QuadRec') is a web server for automatically 
+determining quantal dose-response characteristics of macroparasites in phenotypic 
+drug screening. Such parasites include the etiological agents of tropical 
+diseases such as schistosomiasis, lymphatic filariasis, and onchocerciasis, which 
+together afflict over 500 million people worldwide.
+Using a combination of biological imaging and supervised machine learning, QDREC 
+automatically determines the number of parasites which differ significantly from 
+controls at specific experimental conditions (e.g. compound and concentration). 
+This statistic is then utilized to determine the corresponding quantitative 
+dose-response characteristics of the parasite population. The image analysis part 
+of QDREC has been optimized with a focus on post-infective larvae (schistosomula) 
+of the parasitic Schistosoma flatworm, which cause the disease schistosomiasis. 
+However, the algorithmic basis underlying the methodology for determining 
+dose-response characteristics in QDREC is generic and the web server can equally 
+be used for analyzing other macroparasites.
+QDREC is part of our effort to provide publicly available technologies that can 
+be used to quantitatively, automatically, and effectively discover drugs against 
+the neglected diseases of humankind.
+
+QDREC was designed and conceived by Rahul Singh and Daniel Asarnow and implemented
+by Daniel Asarnow.
+
+Documentation for installing and running QDREC can be found in the
+doc/ subdirectory of the project.
+
+doc/INSTALL     Installation instructions for QDREC and dependencies
+doc/CONFIGURE   Configuration and launch instructions for QDREC and MySQL
+doc/MCR_NOTES   Troubleshooting tips for the MATLAB Compiler Runtime (MCR)
+
+====== Related Publications ======
+
+See the following related publications for more information:
+
+D. Asarnow and R. Singh, "Determination of Quantal Dose-Response Characteristics in Phenotypic Assays using Supervised Classification," San Francisco State Technical Report, 2014.  
+D. Asarnow and R. Singh, "Segmenting the Etiological Agent of Schistosomiasis for High-Content Screening," IEEE Transactions on Medical Imaging, vol. 32, no. 6, pp. 1007-10018, 2013.  
+L. Rojo-Arreola, T. Long, D. Asarnow, B.M. Suzuki, R. Singh and C.R. Caffrey, "Chemical and genetic validation of the statin drug target for the potential treatment of the helminth disease, schistosomiasis," PLoS ONE, 9(1): e87594, 2014. (Corresponding author C.R. Caffrey).  
+R. Singh, "Quantitative High-Content Screening-Based Drug Discovery against Helmintic Diseases", in Parasitic Helminths: Targets, Screens, Drugs, and Vaccines, Ed. C. Caffrey, Wiley-Blackwell, pp. 159-179 2012. 
+C. Marcellino, J. Gut, K. C. Lim, R. Singh, J. McKerrow, J. Sakanari, "WormAssay: A Novel Computer Application for Whole-Plate Screening of Macroscopic Parasites", PLoS Neglected Tropical Diseases, Vol. 6(1):e1494, 2012 (Corresponding author C. Marcellino).  
+H. Lee*, A. Moody-Davis, U. Saha, B. Suzuki, D. Asarnow, S. Chen, M. Arkin, C. Caffrey, and R. Singh*, "Quantification and Clustering of Phenotypic Screening Data Using Time Series Analysis for Chemotherapy of Schistosomiasis", BMC Genomics, 12 (Suppl 1):S4, 2012 (*H. Lee and R. Singh equal contributors. Corresponding author R. Singh).  
+R. Singh, M. Pittas, I. Heskia, F. Xu, J. H. McKerrow, and C. Caffrey, "Automated Image-Based Phenotypic Screening for High-Throughput Drug Discovery", IEEE Symposium on Computer-Based Medical Systems (CBMS), pp. 1-8, 2009.  
+
+
+

@@ -3,7 +3,7 @@
   - San Francisco State University
   -
   - This program is free software: you can redistribute it and/or modify
-  - it under the terms of the GNU General Public License as published by
+  - it under the terms of the GNU Affero General Public License as published by
   - the Free Software Foundation, either version 3 of the License, or
   - (at your option) any later version.
   -
@@ -12,7 +12,7 @@
   - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
   - GNU General Public License for more details.
   -
-  - You should have received a copy of the GNU General Public License
+  - You should have received a copy of the GNU Affero General Public License
   - along with this program.  If not, see <http://www.gnu.org/licenses/>.
   --}%
 
@@ -77,7 +77,7 @@
       <p>
         Images must conform strictly to the following requirements:
       </p>
-      <h3>Parasite images</h3>
+      <h4>Parasite images</h4>
       <ul>
         <li>Must follow the file name convention defined below</li>
         <li>Must be <strong>non-indexed</strong> grayscale or RGB images</li>
@@ -85,7 +85,7 @@
         <li>Must be use the Portable Network Graphics (PNG) format</li>
         <li>Must have the ".png" file extension</li>
       </ul>
-      <h3>Segmented images</h3>
+      <h4>Segmented images</h4>
       <ul>
         <li>Must have the same name as the corresponding parasite image</li>
         <li>Must have a bit-depth of 1</li>
@@ -93,7 +93,7 @@
         <li>Must use the Portable Network Graphics (PNG) format</li>
         <li>Must have the ".png" file extension</li>
       </ul>
-      <h3>File name convention</h3>
+      <h4>File name convention</h4>
       <p>
         QDREC requires that you use a specific file name convention.
         The convention permits QDREC to record each image uniquely in the database and, critically, to associate each
@@ -180,7 +180,19 @@
           </tr>
         </tbody>
       </table>
-      <h2>Define Subsets</h2>
+      <h3>Review Segmentation</h3>
+      <p>
+        When a new project is created, you will be given the chance to review the segmented images, to ensure that they are
+        sufficiently accurate. If previously segmented images were uploaded, or if an existing project is loaded, segmentation
+        review will not launch immediately. Instead, it may be accessed by navigating to Review Segmentation.
+      </p>
+      <p>
+        If segmented images appear insufficiently accurate, you may resegment the project.
+        Click the <button class="button">Resegment Project</button> to show the form for resegmentation.
+        After selected the appropriate segmentation algorithm, fields for any required method parameters will appear.
+        For details, see <a href="${createLink(action: 'about')}">here</a>.
+      </p>
+      <h3>Define Subsets</h3>
       <p>
         Different sets of images should be used to train and test the classifier. Thus, it is necessary to divide a project
         into subsets which can be separately selected for training or testing. If only testing will be performed, it is acceptable to
@@ -266,12 +278,7 @@
         When training is complete, the cross-validated confusion matrix for classification of the training set, as well as the single-image
         response values, will be displayed in tabular form.
       </p>
-      <h3>Review Segmentation</h3>
-      <p>
-        When a new project is created, you will be given the chance to review the segmented images, to ensure that they are
-        sufficiently accurate. If previously segmented images were uploaded, or if an existing project is loaded, segmentation
-        review will not launch immediately. Instead, it may be accessed by navigating to Review Segmentation.
-      </p>
+
       <h2>Run Classifier</h2>
       <p>
         If no new classifier has been trained, simply select a subset from the first drop-down list, and click
@@ -280,9 +287,11 @@
       </p>
 
       <p>
-        When classification is complete, the results will be available in two forms.
+        When classification is complete, the results will be available in two forms (see below). Keep in mind that the most
+        recent classification results will be stored until you either 1) create or load a new project or 2) end the browser session.
       </p>
-      <h3>Plot Results</h3>
+
+      <h4>Plot Results</h4>
       <p>
         First, a simple plotting interface will appear under the "Plot Results" heading. Click this heading to hide and show the plotting interface.
       </p>
@@ -290,7 +299,7 @@
         A particular drug compound can be chosen from the drop-down menu.
         Click <button class="button">Plot</button> in order to display interactive response plots for the selected compound.
       </p>
-      <h3>Tabular Results</h3>
+      <h4>Tabular Results</h4>
       <p>
         The tabular results include single-image response values for the test set. Click <button class="button">Display</button>
         under this heading in order to view the results table. Click <button class="button">Download</button> to download the results

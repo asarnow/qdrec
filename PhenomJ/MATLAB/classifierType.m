@@ -22,5 +22,7 @@ function typ = classifierType(svmsFile)
 load(svmsFile,'svmsInfo');
 typ = svmsInfo.classifierType;
 if svmsInfo.twoStage
-    typ = ['Two-stage ' typ];
+    typ = ['two-stage ' typ];
+else
+    typ = ['one-stage ' typ];
 end
