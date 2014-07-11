@@ -54,6 +54,9 @@ First, copy the correct platform versions of javabuilder.jar and phenomj.jar
 into the QDREC lib directory. The javabuilder and PhenomJ jars are found under
 the PhenomJ directory in the QDREC project files.
 
+For example, on 64-bit Windows, copy the 'win64' versions of javabuilder and
+phenomj from the PhenomJ directory into the lib directory.
+
 Next, edit the Config.groovy file, under the grails-app/conf directory in the
 QDREC project files. Make the following changes:
 

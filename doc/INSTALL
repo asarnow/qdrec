@@ -19,15 +19,15 @@ This document will explain step-by-step how to install QDREC and its dependencie
 QDREC fully supports the following platforms:
 
 glnxa64 -   GNU/Linux on x86_64 (64-bit)
+glnx86  -   GNU/Linux on x86 (32-bit)
 win64   -   Microsoft Windows (64-bit)
+win32   -   Microsoft Windows (32-bit)
 
 QDREC also probably supports these additional platforms:
 
 maci64  -   Apple Macintosh OS X on Intel (64-bit)
-glnx86  -   GNU/Linux on x86 (32-bit)
-win32   -   Microsoft Windows (32-bit)
 
-However, running QDREC on Mac, Win32 or GLNX86 will require a full MATLAB
+However, running QDREC on Mac will require a full MATLAB
 installation (as opposed to the free MATLAB Compiler Runtime) in order to
 build the correct platform-dependent PhenomJ MATLAB/Java JAR file.
 
@@ -133,9 +133,8 @@ which was originally distributed with MATLAB R2011b.
 
 ====== 7. Build PhenomJ MATLAB/Java library (optional) ======
 
-In order to run QDREC Mac OS, 32-bit Windows or 32-bit Linux systems,
-it will be necessary to build platform-dependent versions of then
-PhenomJ MATLAB/Java JAR file.
+In order to run QDREC Mac OS it will be necessary to build platform-dependent
+versions of the PhenomJ MATLAB/Java JAR file.
 
 In order to build this file, first run MATLAB.
 Once the MATLAB command window is open, drag the file 'phenomj.prj'
