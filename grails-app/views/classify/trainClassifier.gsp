@@ -128,7 +128,7 @@
                 value="SVM (RBF)"
                 onchange="showOptions(this.value);" />
       <label for="twoStage">Two-stage classifier</label>
-      <g:checkBox name="twoStage" value="${false}"/>
+      <g:checkBox name="twoStage" value="${true}"/>
       <br />
 
       <div id="rbfParameterDiv">

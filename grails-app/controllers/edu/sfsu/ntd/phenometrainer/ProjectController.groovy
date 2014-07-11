@@ -68,6 +68,7 @@ class ProjectController {
     if (verdict==null) {
       def dataset = adminService.initDataset(params.datasetName, params.datasetDir, params.visible, params.segmentation)
       session['datasetID'] = dataset.id
+      session['result'] = null // Clear any classification results still in session
       /*if (params.segmentation=='Upload') {
         redirect(controller: 'project', action: 'define')
       } else {
@@ -90,6 +91,7 @@ class ProjectController {
       redirect(action: 'index', params: [load: 'true', message: "Incorrect project or no project selected."])
     } else {
       session['datasetID'] = dataset?.id
+      session['result'] = null // Clear any classification results still in session
       redirect(action: 'index', params: [load: 'true', dataset: dataset])
     }
   }

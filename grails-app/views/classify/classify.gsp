@@ -110,6 +110,9 @@
       <g:render template="classifyForm" model="[dataset:dataset, subsets:subsets, svmsFileExists: svmsFileExists, classifierType: classifierType]"/>
     </div>
     <div id="resultsDiv">
+      <g:if test="${hasResult}">
+        <g:render template="combinedResult" model="[Rtest: Rtest, testImages: testImages, compounds: compounds, error: error]"/>
+      </g:if>
     </div>
     <div id="spinner" style="display: none">
       <img src="${resource(dir: 'images', file: 'ajax-loader.gif')}" alt="Loading..."/>

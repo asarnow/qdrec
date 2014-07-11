@@ -59,7 +59,20 @@ class ClassifyController {
     def classifierType = svmsFileExists ? classifyService.classifierType(datasetDir + File.separator + 'svms.mat') : ""
 
     def subsets = dataset.subsets
-    render(view: 'classify', model: [dataset:dataset, subsets:subsets, svmsFileExists: svmsFileExists, classifierType: classifierType])
+
+    if (session['result'] != null) {
+      def Rtest = session['result'].Rtest as double[][]
+      def testImages = (session['result'].testImages as List<Image>)?.name
+      def compounds = (session['dr'] as Map)?.keySet() as List
+      render(view: 'classify', model: [dataset:dataset, subsets:subsets, svmsFileExists: svmsFileExists, classifierType: classifierType,
+                                       hasResult: true,
+                                       Rtest: Rtest,
+                                       testImages: testImages,
+                                       compounds: compounds,
+                                       error: session['tr']==null||session['dr']==null ])
+    } else {
+      render(view: 'classify', model: [dataset:dataset, subsets:subsets, svmsFileExists: svmsFileExists, classifierType: classifierType, hasResult: false])
+    }
   }
 
   /**
@@ -75,7 +88,7 @@ class ClassifyController {
       session['result'] = r.result
       session['dr'] = classifyService.doseResponse(SubsetImage.findAllBySubset(subset).image, r.result.Rtest)
       session['tr'] = classifyService.timeResponse(SubsetImage.findAllBySubset(subset).image, r.result.Rtest)
-      def compounds = (session['dr'] as Map).keySet() as List
+      def compounds = (session['dr'] as Map)?.keySet() as List
       render(template: 'combinedResult', model: [Rtest: r.result.Rtest as double[][],
                                                  testImages: (r.result.testImages as List<Image>)?.name,
                                                  compounds: compounds,
