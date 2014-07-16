@@ -118,9 +118,11 @@ The MCR is a freely distributable runtime which provides the MATLAB
 functionality used in the PhenomJ Java library, containing the algorithmic
 core of the QDREC software.
 
-The WIN64 and GLNXA64 and MCR installation files can be found at:
-http://tintin.sfsu.edu/software/MCR/MCRInstaller-v716-win64.exe
+The MCR installation files can be found at:
 http://tintin.sfsu.edu/software/MCR/MCRInstaller-v716-glnxa64.zip
+http://tintin.sfsu.edu/software/MCR/MCRInstaller-v716-glnx86.zip
+http://tintin.sfsu.edu/software/MCR/MCRInstaller-v716-win64.exe
+http://tintin.sfsu.edu/software/MCR/MCRInstaller-v716-win32.zip
 
 To install under Windows, run the installer EXE and follow the directions.
 
