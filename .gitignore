@@ -65,3 +65,4 @@ trunk/web/target/*
 app-data/*
 .idea/*
 PhenomJ/phenomj/*
+archives/*
