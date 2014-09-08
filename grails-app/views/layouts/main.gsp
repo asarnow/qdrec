@@ -66,11 +66,11 @@
           <li>
             <a href="${createLink(controller: 'page', action: 'help')}">Help</a>
           </li>
-          %{--<li>
-            <a href="${createLink(controller: 'page', action: 'tutorial')}">Tutorial</a>
-          </li>--}%
           <li>
             <a href="${createLink(controller: 'page', action: 'tutorial')}">Sample Screening Data and Tutorial</a>
+          </li>
+          <li>
+            <a href="http://tintin.sfsu.edu/projects/phenotypicAssays.html">Source Code and Data Sets</a>
           </li>
           <li class="bottom">
             <a href="${createLink(controller: 'page', action: 'about')}">About</a>
