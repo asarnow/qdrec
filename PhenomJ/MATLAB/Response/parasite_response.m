@@ -13,6 +13,7 @@ function R = parasite_response(VI,G)
 % classifications in each population.
 %
 % Copyright (C) 2014 Daniel Asarnow
+% Rahul Singh
 % San Francsico State University
 % 
 % This program is free software: you can redistribute it and/or modify

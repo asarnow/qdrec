@@ -25,6 +25,7 @@ function [Gp,svms] = trainClassifier(Z,G,svmsInfo)
 % employed.
 %
 % Copyright (C) 2014 Daniel Asarnow
+% Rahul Singh
 % San Francisco State University
 % 
 % This program is free software: you can redistribute it and/or modify

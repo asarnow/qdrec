@@ -12,6 +12,7 @@ function R = classifyOnly(images,svmsFile,datasetDir)
 % parasite counts (1st and 2nd columns respectively) for each image.
 %
 % Copyright (C) 2014 Daniel Asarnow
+% Rahul Singh
 % San Francisco State University
 % 
 % This program is free software: you can redistribute it and/or modify

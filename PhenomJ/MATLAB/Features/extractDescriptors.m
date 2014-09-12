@@ -10,6 +10,7 @@ function parasites = extractDescriptors(images,datasetDir)
 % This struct array is output for further analysis.
 %
 % Copyright (C) 2014 Daniel Asarnow
+% Rahul Singh
 % San Francisco State University
 % 
 % This program is free software: you can redistribute it and/or modify

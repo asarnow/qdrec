@@ -8,6 +8,7 @@ function images_controls = vids2controls(images)
 % trainAndClassify.m.
 %
 % Copyright (C) 2014 Daniel Asarnow
+% Rahul Singh
 % San Francisco State University
 % 
 % This program is free software: you can redistribute it and/or modify

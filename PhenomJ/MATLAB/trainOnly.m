@@ -26,6 +26,7 @@ function [cm,R_train] = trainOnly(images,datasetDir,svmsFile,G,params)
 % These response values are also cross-validated.
 %
 % Copyright (C) 2014 Daniel Asarnow
+% Rahul Singh
 % San Francisco State University
 % 
 % This program is free software: you can redistribute it and/or modify

@@ -12,6 +12,7 @@ function relevantEdges = findRelevantEdges3(bw,edges)
 % vol. 32, no. 6, pp. 1007-10018, 2013.
 % 
 % Copyright (C) 2013 Daniel Asarnow
+% Rahul Singh
 % San Francisco State University
 % 
 % This program is free software: you can redistribute it and/or modify

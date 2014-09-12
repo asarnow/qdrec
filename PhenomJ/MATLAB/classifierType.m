@@ -5,6 +5,7 @@ function typ = classifierType(svmsFile)
 % struct is two-stage, classifierType will add that to the returned string.
 %
 % Copyright (C) 2014 Daniel Asarnow
+% Rahul Singh
 % San Francisco State University
 % 
 % This program is free software: you can redistribute it and/or modify

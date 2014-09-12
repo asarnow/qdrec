@@ -18,6 +18,7 @@ function [G,Gp_full] = svm_voting(svms,Z,flag,param)
 %                  parameter.
 %
 % Copyright (C) 2014 Daniel Asarnow
+% Rahul Singh
 % San Francisco State University
 % 
 % This program is free software: you can redistribute it and/or modify
