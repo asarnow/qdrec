@@ -8,7 +8,9 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 		<title>%{--
-  - Copyright (C) 2014 Daniel Asarnow
+  - Copyright (C) 2014
+  - Daniel Asarnow
+  - Rahul Singh
   - San Francisco State University
   -
   - This program is free software: you can redistribute it and/or modify

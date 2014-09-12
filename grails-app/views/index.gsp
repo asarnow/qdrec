@@ -82,7 +82,9 @@
 	</head>
 	<body>
 		<a href="#page-body" class="skip">%{--
-  - Copyright (C) 2014 Daniel Asarnow
+  - Copyright (C) 2014
+  - Daniel Asarnow
+  - Rahul Singh
   - San Francisco State University
   -
   - This program is free software: you can redistribute it and/or modify
