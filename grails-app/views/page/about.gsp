@@ -90,6 +90,10 @@
           R. Singh, M. Pittas, I. Heskia, F. Xu, J. H. McKerrow, and C. Caffrey, "Automated Image-Based Phenotypic Screening for High-Throughput Drug Discovery", <i>IEEE Symposium on Computer-Based Medical Systems (CBMS)</i>, pp. 1-8, 2009.
           <a href="http://tintin.sfsu.edu/papers/IEEE-CBMS-2009.pdf"><g:img dir="images" file="pdf.gif"/></a>
         </li>
+        <li>
+          A. Moody-Davis, L. Mennillo and R. Singh, "Region Based Segmentation of Parasites for High-Throughput Screening," G. Bebis et al. (Eds.): <i>International Symposium on Visiual Computing</i>, Part I, LNCS 6938, pp. 44-54, 2011.
+          <a href="http://tintin.sfsu.edu/papers/ISVC-2011.pdf"><g:img dir="images" file="pdf.gif"/></a>
+      </li>
       </ol>
     </div>
   </div>

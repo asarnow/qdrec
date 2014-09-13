@@ -11,7 +11,13 @@ function relevantEdges = findRelevantEdges3(bw,edges)
 % IEEE Transactions on Medical Imaging, 
 % vol. 32, no. 6, pp. 1007-10018, 2013.
 % 
+% A. Moody-Davis, L. Mennillo and R. Singh, 
+% "Region Based Segmentation of Parasites for High-Throughput Screening," 
+% G. Bebis et al. (Eds.): International Symposium on Visiual Computing, 
+% Part I, LNCS 6938, pp. 44-54, 2011.
+%
 % Copyright (C) 2013 Daniel Asarnow
+% Laurent Mennillo
 % Rahul Singh
 % San Francisco State University
 % 
