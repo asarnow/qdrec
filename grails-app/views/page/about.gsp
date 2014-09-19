@@ -58,6 +58,12 @@
       <ol class="publist">
         <li>
           D.&nbsp;Asarnow and R.&nbsp;Singh,
+          "The QDREC Webserver: Determining Dose-Response Characteristics of Complex Macroparasites in Phenotypic Drug Screens,"
+          2014.
+          <a href="http://tintin.sfsu.edu/software/qdrec/QDREC_Application_Notes.doc"><g:img dir="images" file="pdf.gif"/></a>
+        </li>
+        <li>
+          D.&nbsp;Asarnow and R.&nbsp;Singh,
           "Determination of Quantal Dose-Response Characteristics in Phenotypic Assays using Supervised Classification,"
           <i>San Francisco State Technical Report</i>, 2014.
           <a href="http://cs.sfsu.edu/techreports/14/QDREC.TechReport.14.01.pdf"><g:img dir="images" file="pdf.gif"/></a>
