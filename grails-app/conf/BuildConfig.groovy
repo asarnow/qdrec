@@ -86,7 +86,7 @@ grails.project.dependency.resolution = {
         compile: ":jquery-validation:1.9"
 //        compile ":spring-security-core:1.2.7.3"
 //        runtime ":ajax-uploader:1.1"
-        compile ":uploadr:latest.integration"
+        compile ":uploadr:0.8.2"
         // Uncomment these (or add new ones) to enable additional resources capabilities
         //runtime ":zipped-resources:1.0"
         //runtime ":cached-resources:1.0"
